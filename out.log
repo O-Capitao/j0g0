@@ -1,0 +1,1372 @@
+j0g0 launched
+RenderingContext -> initting
+
+
+Viewport size: w= 26.0163, h= 14.6341.
+
+Window size: w= 1280, h= 720.
+RenderingContext -> initted
+SpriteSheet::SpriteSheet()Setting content for TextSpriteThing,4
+overall w= 40 px, h= 8px.
+XChange state
+~PauseState()
+SpriteSheet::~SpriteSheet()PlayState()
+SpriteSheet::SpriteSheet()changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 1340, dT = 1340.
+timebeforeframechange: 0
+Sprite>>update(). T= 1356, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 1373, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 1390, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 1406, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 1423, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 0 y:32
+Sprite>>update(). T= 1440, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 1456, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 1473, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 1490, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 1507, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 1523, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 0 y:64
+Sprite>>update(). T= 1540, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 1556, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 1576, dT = 20.
+timebeforeframechange: 36
+Sprite>>update(). T= 1590, dT = 14.
+timebeforeframechange: 50
+Sprite>>update(). T= 1607, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 1623, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 0 y:96
+Sprite>>update(). T= 1640, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 1656, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 1673, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 1690, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 1706, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 1723, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 0 y:128
+Sprite>>update(). T= 1740, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 1756, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 1773, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 1790, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 1806, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 1823, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 0 y:160
+Sprite>>update(). T= 1842, dT = 19.
+timebeforeframechange: 0
+Sprite>>update(). T= 1856, dT = 14.
+timebeforeframechange: 14
+Sprite>>update(). T= 1873, dT = 17.
+timebeforeframechange: 31
+Sprite>>update(). T= 1890, dT = 17.
+timebeforeframechange: 48
+Sprite>>update(). T= 1906, dT = 16.
+timebeforeframechange: 64
+Sprite>>update(). T= 1923, dT = 17.
+timebeforeframechange: 81
+Sprite>>update(). T= 1940, dT = 17.
+timebeforeframechange: 98
+changing frame
+Frame Count: 6 , selected frame at : x 0 y:192
+Sprite>>update(). T= 1956, dT = 16.
+timebeforeframechange: 0
+Sprite>>update(). T= 1973, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 1990, dT = 17.
+timebeforeframechange: 34
+Sprite>>update(). T= 2006, dT = 16.
+timebeforeframechange: 50
+Sprite>>update(). T= 2023, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2040, dT = 17.
+timebeforeframechange: 84
+changing frame
+Frame Count: 7 , selected frame at : x 0 y:224
+Sprite>>update(). T= 2056, dT = 16.
+timebeforeframechange: 0
+Sprite>>update(). T= 2073, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2090, dT = 17.
+timebeforeframechange: 34
+Sprite>>update(). T= 2106, dT = 16.
+timebeforeframechange: 50
+Sprite>>update(). T= 2123, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2140, dT = 17.
+timebeforeframechange: 84
+changing frame
+Frame Count: 8 , selected frame at : x 0 y:256
+Sprite>>update(). T= 2156, dT = 16.
+timebeforeframechange: 0
+Sprite>>update(). T= 2173, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2190, dT = 17.
+timebeforeframechange: 34
+Sprite>>update(). T= 2206, dT = 16.
+timebeforeframechange: 50
+Sprite>>update(). T= 2223, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2242, dT = 19.
+timebeforeframechange: 86
+changing frame
+Frame Count: 9 , selected frame at : x 0 y:288
+Sprite>>update(). T= 2257, dT = 15.
+timebeforeframechange: 0
+Sprite>>update(). T= 2273, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 2290, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 2306, dT = 16.
+timebeforeframechange: 49
+Sprite>>update(). T= 2323, dT = 17.
+timebeforeframechange: 66
+Sprite>>update(). T= 2342, dT = 19.
+timebeforeframechange: 85
+Sprite>>update(). T= 2356, dT = 14.
+timebeforeframechange: 99
+changing frame
+Frame Count: 10 , selected frame at : x 0 y:320
+Sprite>>update(). T= 2373, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2390, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2406, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2423, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2440, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2456, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 11 , selected frame at : x 0 y:352
+Sprite>>update(). T= 2473, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2490, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2506, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2523, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2540, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2556, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 2573, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2590, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2606, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2623, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2640, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2656, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 0 y:32
+Sprite>>update(). T= 2673, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2690, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2706, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2723, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2740, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2756, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 0 y:64
+Sprite>>update(). T= 2773, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2790, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2806, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2823, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2839, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 2856, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 0 y:96
+Sprite>>update(). T= 2873, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2890, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2906, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2923, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2939, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 2956, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 0 y:128
+Sprite>>update(). T= 2973, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2989, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3006, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3023, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3040, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3056, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 0 y:160
+Sprite>>update(). T= 3073, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3090, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3106, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 3123, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3139, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3156, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 0 y:192
+Sprite>>update(). T= 3173, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3189, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3206, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3223, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3239, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3256, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 0 y:224
+Sprite>>update(). T= 3273, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3289, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3306, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3323, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3339, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3356, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 8 , selected frame at : x 0 y:256
+Sprite>>update(). T= 3373, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3389, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3406, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3423, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3439, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3456, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 9 , selected frame at : x 0 y:288
+Sprite>>update(). T= 3473, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3490, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3506, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 3523, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3539, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3556, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 10 , selected frame at : x 0 y:320
+Sprite>>update(). T= 3573, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3589, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3606, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3623, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3639, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3656, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 11 , selected frame at : x 0 y:352
+Sprite>>update(). T= 3673, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3689, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3706, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3723, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3740, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3756, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 3773, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3790, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3806, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 3823, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3840, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3856, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 0 y:32
+Sprite>>update(). T= 3873, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3890, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3906, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 3923, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3940, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3956, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 0 y:64
+Sprite>>update(). T= 3973, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3989, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 4006, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 4023, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4040, dT = 17.
+timebeforeframechange: 67
+XChange state
+SpriteSheet::~SpriteSheet()SpriteSheet::SpriteSheet()Setting content for TextSpriteThing,4
+overall w= 40 px, h= 8px.
+XChange state
+~PauseState()
+SpriteSheet::~SpriteSheet()Destroyed RenderingContext
+Destroyed Game Obj
+j0g0 launched
+RenderingContext -> initting
+
+
+Viewport size: w= 26.0163, h= 14.6341.
+
+Window size: w= 1280, h= 720.
+RenderingContext -> initted
+SpriteSheet::SpriteSheet()Setting content for TextSpriteThing,4
+overall w= 40 px, h= 8px.
+XChange state
+~PauseState()
+SpriteSheet::~SpriteSheet()PlayState()
+SpriteSheet::SpriteSheet()changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 2679, dT = 2678.
+timebeforeframechange: 0
+Sprite>>update(). T= 2696, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 2712, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 2729, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2746, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 2762, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 32 y:0
+Sprite>>update(). T= 2779, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2795, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 2812, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 2829, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2845, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 2862, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 64 y:0
+Sprite>>update(). T= 2879, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2895, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 2912, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 2929, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 2945, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 2962, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 96 y:0
+Sprite>>update(). T= 2979, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 2995, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3012, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3029, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3045, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3062, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 128 y:0
+Sprite>>update(). T= 3079, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3095, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3112, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3129, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3145, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3162, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 160 y:0
+Sprite>>update(). T= 3179, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3195, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3212, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3229, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3245, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3262, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 192 y:0
+Sprite>>update(). T= 3279, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3295, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3312, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3329, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3345, dT = 16.
+timebeforeframechange: 66
+Sprite>>update(). T= 3362, dT = 17.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 224 y:0
+Sprite>>update(). T= 3381, dT = 19.
+timebeforeframechange: 0
+Sprite>>update(). T= 3395, dT = 14.
+timebeforeframechange: 14
+Sprite>>update(). T= 3412, dT = 17.
+timebeforeframechange: 31
+Sprite>>update(). T= 3429, dT = 17.
+timebeforeframechange: 48
+Sprite>>update(). T= 3445, dT = 16.
+timebeforeframechange: 64
+Sprite>>update(). T= 3462, dT = 17.
+timebeforeframechange: 81
+Sprite>>update(). T= 3479, dT = 17.
+timebeforeframechange: 98
+changing frame
+Frame Count: 8 , selected frame at : x 256 y:0
+Sprite>>update(). T= 3495, dT = 16.
+timebeforeframechange: 0
+Sprite>>update(). T= 3512, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3529, dT = 17.
+timebeforeframechange: 34
+Sprite>>update(). T= 3545, dT = 16.
+timebeforeframechange: 50
+Sprite>>update(). T= 3562, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3579, dT = 17.
+timebeforeframechange: 84
+changing frame
+Frame Count: 9 , selected frame at : x 288 y:0
+Sprite>>update(). T= 3595, dT = 16.
+timebeforeframechange: 0
+Sprite>>update(). T= 3612, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3629, dT = 17.
+timebeforeframechange: 34
+Sprite>>update(). T= 3645, dT = 16.
+timebeforeframechange: 50
+Sprite>>update(). T= 3662, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3679, dT = 17.
+timebeforeframechange: 84
+changing frame
+Frame Count: 10 , selected frame at : x 320 y:0
+Sprite>>update(). T= 3696, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3712, dT = 16.
+timebeforeframechange: 16
+Sprite>>update(). T= 3729, dT = 17.
+timebeforeframechange: 33
+Sprite>>update(). T= 3745, dT = 16.
+timebeforeframechange: 49
+Sprite>>update(). T= 3762, dT = 17.
+timebeforeframechange: 66
+Sprite>>update(). T= 3779, dT = 17.
+timebeforeframechange: 83
+Sprite>>update(). T= 3795, dT = 16.
+timebeforeframechange: 99
+changing frame
+Frame Count: 11 , selected frame at : x 352 y:0
+Sprite>>update(). T= 3812, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3829, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3845, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 3862, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3879, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3895, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 3912, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 3929, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 3945, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 3962, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 3979, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 3995, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 32 y:0
+Sprite>>update(). T= 4012, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4029, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4045, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4062, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4079, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4095, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 64 y:0
+Sprite>>update(). T= 4112, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4129, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4145, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4162, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4179, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4195, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 96 y:0
+Sprite>>update(). T= 4212, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4229, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4245, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4262, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4279, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4295, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 128 y:0
+Sprite>>update(). T= 4312, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4329, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4345, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4362, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4379, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4395, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 160 y:0
+Sprite>>update(). T= 4412, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4429, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4445, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4462, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4479, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4495, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 192 y:0
+Sprite>>update(). T= 4512, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4529, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4545, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4562, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4579, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4595, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 224 y:0
+Sprite>>update(). T= 4612, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4629, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4645, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4662, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4679, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4695, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 8 , selected frame at : x 256 y:0
+Sprite>>update(). T= 4712, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4729, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4745, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4762, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4779, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4795, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 9 , selected frame at : x 288 y:0
+Sprite>>update(). T= 4812, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4829, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4845, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4862, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4879, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4895, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 10 , selected frame at : x 320 y:0
+Sprite>>update(). T= 4912, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 4929, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 4945, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 4962, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 4979, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 4995, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 11 , selected frame at : x 352 y:0
+Sprite>>update(). T= 5012, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5029, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5045, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5062, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5079, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5095, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 5112, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5129, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5145, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5162, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5179, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5195, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 32 y:0
+Sprite>>update(). T= 5212, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5229, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5245, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5262, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5279, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5295, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 64 y:0
+Sprite>>update(). T= 5312, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5329, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5345, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5362, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5379, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5395, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 96 y:0
+Sprite>>update(). T= 5412, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5429, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5445, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5462, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5479, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5495, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 128 y:0
+Sprite>>update(). T= 5512, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5529, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5545, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5562, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5579, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5595, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 160 y:0
+Sprite>>update(). T= 5612, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5629, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5645, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5662, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5679, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5695, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 192 y:0
+Sprite>>update(). T= 5712, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5729, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5745, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5762, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5779, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5795, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 224 y:0
+Sprite>>update(). T= 5812, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5829, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5845, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5862, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5879, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5895, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 8 , selected frame at : x 256 y:0
+Sprite>>update(). T= 5912, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 5929, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 5945, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 5962, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 5979, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 5995, dT = 16.
+timebeforeframechange: 83
+XChange state
+SpriteSheet::~SpriteSheet()SpriteSheet::SpriteSheet()Setting content for TextSpriteThing,4
+overall w= 40 px, h= 8px.
+XChange state
+~PauseState()
+SpriteSheet::~SpriteSheet()PlayState()
+SpriteSheet::SpriteSheet()changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 16112, dT = 16112.
+timebeforeframechange: 0
+Sprite>>update(). T= 16129, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16145, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16162, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16179, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16195, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 32 y:0
+Sprite>>update(). T= 16212, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16229, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16245, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16262, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16279, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16295, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 64 y:0
+Sprite>>update(). T= 16312, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16329, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16345, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16362, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16379, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16395, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 96 y:0
+Sprite>>update(). T= 16412, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16429, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16445, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16462, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16479, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16495, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 128 y:0
+Sprite>>update(). T= 16512, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16529, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16545, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16562, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16579, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16595, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 160 y:0
+Sprite>>update(). T= 16612, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16629, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16645, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16662, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16679, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16695, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 192 y:0
+Sprite>>update(). T= 16712, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16729, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16745, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16762, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16779, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16795, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 224 y:0
+Sprite>>update(). T= 16812, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16829, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16845, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16862, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16879, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16895, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 8 , selected frame at : x 256 y:0
+Sprite>>update(). T= 16912, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 16929, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 16945, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 16962, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 16979, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 16995, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 9 , selected frame at : x 288 y:0
+Sprite>>update(). T= 17012, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17029, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17045, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17062, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17079, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17095, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 10 , selected frame at : x 320 y:0
+Sprite>>update(). T= 17112, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17129, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17145, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17162, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17179, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17195, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 11 , selected frame at : x 352 y:0
+Sprite>>update(). T= 17212, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17229, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17245, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17262, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17279, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17295, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 17312, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17329, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17345, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17362, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17379, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17395, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 32 y:0
+Sprite>>update(). T= 17412, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17429, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17445, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17462, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17479, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17495, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 2 , selected frame at : x 64 y:0
+Sprite>>update(). T= 17512, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17529, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17545, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17562, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17579, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17595, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 96 y:0
+Sprite>>update(). T= 17612, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17629, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17645, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17662, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17679, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17695, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 128 y:0
+Sprite>>update(). T= 17712, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17729, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17745, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17762, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17779, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17795, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 160 y:0
+Sprite>>update(). T= 17812, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17829, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17845, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17862, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17879, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17895, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 192 y:0
+Sprite>>update(). T= 17912, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 17929, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 17945, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 17962, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 17979, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 17995, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 224 y:0
+Sprite>>update(). T= 18012, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18029, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18045, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18062, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18079, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18095, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 8 , selected frame at : x 256 y:0
+Sprite>>update(). T= 18112, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18129, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18145, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18162, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18179, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18195, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 9 , selected frame at : x 288 y:0
+Sprite>>update(). T= 18212, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18229, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18245, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18262, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18279, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18295, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 10 , selected frame at : x 320 y:0
+Sprite>>update(). T= 18312, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18329, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18345, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18362, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18379, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18395, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 11 , selected frame at : x 352 y:0
+Sprite>>update(). T= 18412, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18429, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18445, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18462, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18479, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18495, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 0 , selected frame at : x 0 y:0
+Sprite>>update(). T= 18512, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18529, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18545, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18562, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18579, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18595, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 1 , selected frame at : x 32 y:0
+Sprite>>update(). T= 18612, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18629, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18645, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18662, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18679, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18696, dT = 17.
+timebeforeframechange: 84
+changing frame
+Frame Count: 2 , selected frame at : x 64 y:0
+Sprite>>update(). T= 18712, dT = 16.
+timebeforeframechange: 0
+Sprite>>update(). T= 18729, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18745, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18762, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18779, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18795, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 3 , selected frame at : x 96 y:0
+Sprite>>update(). T= 18812, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18829, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18845, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18862, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18879, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18895, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 4 , selected frame at : x 128 y:0
+Sprite>>update(). T= 18912, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 18929, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 18945, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 18962, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 18979, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 18995, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 5 , selected frame at : x 160 y:0
+Sprite>>update(). T= 19012, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 19029, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 19045, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 19062, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 19079, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 19095, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 6 , selected frame at : x 192 y:0
+Sprite>>update(). T= 19112, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 19129, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 19145, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 19162, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 19179, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 19195, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 7 , selected frame at : x 224 y:0
+Sprite>>update(). T= 19212, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 19229, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 19245, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 19262, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 19279, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 19295, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 8 , selected frame at : x 256 y:0
+Sprite>>update(). T= 19312, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 19329, dT = 17.
+timebeforeframechange: 17
+Sprite>>update(). T= 19345, dT = 16.
+timebeforeframechange: 33
+Sprite>>update(). T= 19362, dT = 17.
+timebeforeframechange: 50
+Sprite>>update(). T= 19379, dT = 17.
+timebeforeframechange: 67
+Sprite>>update(). T= 19395, dT = 16.
+timebeforeframechange: 83
+changing frame
+Frame Count: 9 , selected frame at : x 288 y:0
+Sprite>>update(). T= 19412, dT = 17.
+timebeforeframechange: 0
+Sprite>>update(). T= 19429, dT = 17.
+timebeforeframechange: 17
+XChange state
+SpriteSheet::~SpriteSheet()Destroyed RenderingContext
+Destroyed Game Obj
+j0g0 launched
+RenderingContext -> initting
+
+
+Viewport size: w= 26.0163, h= 14.6341.
+
+Window size: w= 1280, h= 720.
+RenderingContext -> initted
+SpriteSheet::SpriteSheet()Setting content for TextSpriteThing,4
+overall w= 40 px, h= 8px.
+XChange state
+~PauseState()
+SpriteSheet::~SpriteSheet()PlayState()
+SpriteSheet::SpriteSheet()XChange state
+SpriteSheet::~SpriteSheet()Destroyed RenderingContext
+Destroyed Game Obj

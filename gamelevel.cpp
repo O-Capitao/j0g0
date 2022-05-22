@@ -12,21 +12,21 @@ GameLevel::GameLevel( const GameLevelProperties& props, RenderingContext* _conte
     worldSize = props.size;
     backgroundColor = {.r = 255, .g = 255, .b= 235, .a = 255 };
     
-    // init terrain
-    TileMapThing* thing = new TileMapThing(_context, "asset/platformThing.png", 9, 3, 3, &viewport);
+    // // init terrain
+    // TileMapThing* thing = new TileMapThing(_context, "asset/platformThing.png", 9, 3, 3, &viewport);
 
-    Vec2D_Float blockP = { .x = 0, .y = 0.5 };
-    Vec2D_Int blockSize = {.x = 20, .y = 1 };
+    // Vec2D_Float blockP = { .x = 0, .y = 0.5 };
+    // Vec2D_Int blockSize = {.x = 20, .y = 1 };
 
-    int blockIndex = thing->createBlockAndGetIndex(
-        blockP,
-        blockSize
-    );
+    // int blockIndex = thing->createBlock(
+    //     blockP,
+    //     blockSize
+    // );
 
-    TileBlock* ground = thing->tileBlocks[blockIndex];
-    ground->setAllTiles(1);
+    // TileBlock* ground = thing->tileBlocks[blockIndex];
+    // ground->setAllTiles(1);
 
-    things.push_back(thing);
+    // things.push_back(thing);
 
     PlayerThing* mything = new PlayerThing(  
         _context, 

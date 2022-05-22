@@ -91,8 +91,7 @@ TileMapThing::TileMapThing(
     int y_divisions,
     ViewPort* _vp_p
 ) 
-: GameThing(_context, {0,0,0,0} ),
-spriteSheet(SpriteSheet(_context)) {
+: GameThing(_context, {0,0,0,0} ),spriteSheet(SpriteSheet(_context)),tileBlock( {0, 0}, {0,0} ) {
 
     spriteSheet.initSpriteSheet( path_to_img, x_divisions, y_divisions );
     viewPort_p = _vp_p;

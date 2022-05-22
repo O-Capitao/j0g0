@@ -5,12 +5,29 @@
  **/ 
 namespace j0g0 {
 
-    struct Polygon {
+    struct Vec2D_Int {
+        int x, y;
+    };
 
-        private:
-            int _line_count, _point_count;
-            FloatLine *_linesArray;
-            Vec2D_Float *_pointsArray;
+    struct Vec2D_Float {
+        float x, y;
+    }; 
+
+    struct FloatRect {
+        float x,y,w,h;
+    };
+
+    struct RotMatrix2D {
+        
+        float matrix[2][2] = {
+            {0,0},
+            {0,0}
+        };
+
+        RotMatrix2D(float angle_in_rad);
+
+        Vec2D_Float rotateVec2D_Float( const Vec2D_Float& original);
+
     };
 
     /**
@@ -26,38 +43,13 @@ namespace j0g0 {
 
         bool intersectsWith( const FloatLine& other );
 
-        // private:
-        //     // we can form a formula for each line
-        //     // with the form 
-        //     // y = a * x + b;
-        //     float a, b;
-        //     // for a vertical line there is no suitable Equation. -> not a function
-        //     bool _isVertical;
-
     };
+    struct Polygon {
 
-    struct RotMatrix2D {
-        
-        float matrix[2][2] = {
-            {0,0},
-            {0,0}
-        };
-
-        RotMatrix2D(float angle_in_rad);
-
-        Vec2D_Float rotateVec2D_Float( const Vec2D_Float& original);
-
-    };
-    struct Vec2D_Int {
-        int x, y;
-    };
-
-    struct Vec2D_Float {
-        float x, y;
-    }; 
-
-    struct FloatRect {
-        float x,y,w,h;
+        private:
+            int _line_count, _point_count;
+            FloatLine *_linesArray;
+            Vec2D_Float *_pointsArray;
     };
 
 

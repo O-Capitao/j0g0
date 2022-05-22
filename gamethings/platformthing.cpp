@@ -29,3 +29,7 @@ PlatformThing::PlatformThing(
 
     
 }
+
+PlatformThing::~PlatformThing(){
+
+}

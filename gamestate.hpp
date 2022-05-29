@@ -5,7 +5,7 @@
 #include <SDL.h>
 
 #include "graphics/rendering.hpp"
-#include "gamethings/gamething.hpp"
+// #include "gamethings/gamething.hpp"
 #include "gamelevel.hpp"
 
 namespace j0g0 {
@@ -51,7 +51,7 @@ namespace j0g0 {
         size_t handleEvents();
         
         // SDL_Texture* masterTexture;
-        BitmapTextThing message;
+        // BitmapTextThing message;
     };
 
 
@@ -74,7 +74,7 @@ namespace j0g0 {
 
             // FOR DEBUG
             bool debugEnabled = true;
-            BitmapTextThing message;
+            // BitmapTextThing message;
             int frameCounter;
             int lastDisplay;
     };

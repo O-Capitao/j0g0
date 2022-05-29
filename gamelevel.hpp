@@ -6,8 +6,8 @@
 
 #include "graphics/gamegeometry.hpp"
 #include "graphics/viewport.hpp"
-#include "gamethings/gamething.hpp"
-#include "gamethings/playerthing.hpp"
+// #include "gamethings/gamething.hpp"
+// #include "gamethings/playerthing.hpp"
 
 namespace j0g0 {
 
@@ -32,8 +32,8 @@ namespace j0g0 {
             ViewPort viewport;
             SDL_Color backgroundColor;      
             
-            std::vector<GameThing*> things;
+            // std::vector<GameThing*> things;
 
-            PlayerThing* player_thing_p = NULL;
+            // PlayerThing* player_thing_p = NULL;
     };
 }

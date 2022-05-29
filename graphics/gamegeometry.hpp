@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 /***
  * Utility Geometry objs
  **/ 
@@ -34,22 +36,28 @@ namespace j0g0 {
      * Points should be defined CCW for normals to be pointing outwards
      */
     struct FloatLine {
-
-        FloatLine( const Vec2D_Float& _pA, const Vec2D_Float& _pB );
+        
+        FloatLine( const Vec2D_Float& _pA, const Vec2D_Float& _pB, bool definedCounterClockwise);
 
         Vec2D_Float point_a, point_b;
         Vec2D_Float tangent;
         Vec2D_Float normal;
 
-        bool intersectsWith( const FloatLine& other );
+        bool intersectsWith( const FloatLine& other, Vec2D_Float &intersection );
 
     };
     struct Polygon {
 
+        // Polygon(){};
+        Polygon(std::vector<Vec2D_Float> outline, bool definedCounterClockwise);
+        
+        std::vector<FloatLine*> getLinesFacingAgainst( Vec2D_Float direction );
+        
         private:
-            int _line_count, _point_count;
-            FloatLine *_linesArray;
-            Vec2D_Float *_pointsArray;
+        
+            int _vertexCount;
+            std::vector<FloatLine> lines;
+            std::vector <Vec2D_Float> points;
     };
 
 

@@ -31,15 +31,15 @@ GameState::~GameState(){
  * 
  */
 PauseState::PauseState( RenderingContext* _context )
-    :GameState(_context),
-    message( BitmapTextThing( _context, 2 ))
+    :GameState(_context) //,
+    // message( BitmapTextThing( _context, 2 ))
 {
     background_color = {.r = 255, .g = 107, .b= 151, .a = 255 };
 
     context->setBackgroundColor(background_color);
 
-    message.setContent("PAUSE");
-    message.centerOnCanvas();
+    // message.setContent("PAUSE");
+    // message.centerOnCanvas();
 
 }
 
@@ -50,7 +50,7 @@ void PauseState::render(){
 
     context->beginRenderStep();
 
-    message.render();
+    // message.render();
 
     context->endRenderStep();
 }
@@ -91,8 +91,8 @@ void PauseState::update(){
  * 
  */
 PlayState::PlayState( RenderingContext* _context, GameLevelProperties levelProperties )
-    :GameState(_context), level( levelProperties, _context ),
-    message( BitmapTextThing( _context, 1 ))
+    :GameState(_context), level( levelProperties, _context ) //,
+    // message( BitmapTextThing( _context, 1 ))
 {
 
     background_color = {.r = 255, .g = 181, .b= 181, .a = 255 };
@@ -123,7 +123,7 @@ void PlayState::update(){
         if ( _ellapsedTimeSinceLastDisplay >= 1000 ){
             
             std::string debug_string = "Displaying at " + std::to_string( frameCounter ) + " FPS.\n";
-            SDL_Log( debug_string.c_str() );
+            SDL_Log( "%s", debug_string.c_str() );
 
             lastDisplay += _ellapsedTimeSinceLastDisplay;
             frameCounter = 0;

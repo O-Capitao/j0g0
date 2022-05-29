@@ -11,26 +11,21 @@
 namespace j0g0
 {
 
-    struct SpriteFrame {
-        int index;
+    struct SpriteSlice {
+        
         float duration_ms;
+        short quarter_turns_ccw = 0;
+        
+        SDL_RendererFlip flip;
+        Vec2D_Int offset_for_rotation;
+        SDL_Point center_of_rotation;
         SDL_Rect frame;
     };
 
-
-
-
-
-    struct SpriteSheetAnimation {
+    struct SpriteAnimation {
         std::string id;
-        std::vector<SpriteFrame> animation_frames;
+        std::vector<SpriteSlice> animation_frames;
     };
-
-
-
-
-
-
 
     /*
     * Wraps around SDL_Texture.
@@ -38,7 +33,13 @@ namespace j0g0
     */
     struct SpriteSheet
     {
-        SpriteSheet(RenderingContext* _context);
+        SpriteSheet( 
+            RenderingContext* _context,
+            const std::string &path, 
+            const Vec2D_Int &sliceSize, 
+            int _scaling_factor = 1 
+        );
+
         ~SpriteSheet();
 
         // Set color modulation
@@ -51,20 +52,30 @@ namespace j0g0
         void setAlpha( Uint8 alpha );
 
 		// Renders texture at given point
-		void render( int x, int y, int frame_index );
+		void render( const Vec2D_Int &positionInCanvas, int frame_index );
 
-        void initSpriteSheet( std::string path, int _x_divisions = 1, int _y_divisions = 1, int _scaling_factor = 1);
-        
-        int width, height;    
-        int n_rows, n_columns;
-        int scaling_factor;
-        int step_x, step_y;
-        
-        SDL_Texture* texture;
-        
-        SpriteFrame getFrameAt(int index);
+        void renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice);
+
+        SpriteSlice getFrameAt(int index);
+
+        SpriteAnimation createAnimation( std::vector<int> slice_ids);
+
+        const Vec2D_Int& getSliceSize();
 
         private:
+
+            Vec2D_Int _size;
+            Vec2D_Int _sliceSize;
+
+            int _n_rows, _n_columns;
+            int _scalingFactor;
+            // int step_x, step_y;
+
+            std::string _ori_path;
+            std::vector<SpriteSlice> _slices; // all slices from image -> no rotation or flip
+            
+            SDL_Texture* _texture_p;
+            RenderingContext* _context_p;
 
             // Deallocates texture
             void _free();
@@ -72,13 +83,9 @@ namespace j0g0
             // Loads image at specified path
             bool _loadFromFile( std::string& path );
 
-            RenderingContext* context;
-  
-            std::vector<SpriteFrame> frames;
+            void _initSpriteSheet();
 
-            std::string ori_path;
-    };  
-
-
+            
+    };
 }
 

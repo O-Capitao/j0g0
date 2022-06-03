@@ -64,6 +64,10 @@
         "compare": "cpp",
         "concepts": "cpp",
         "iostream": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "__tree": "cpp",
+        "map": "cpp",
+        "list": "cpp",
+        "set": "cpp"
     }
 }

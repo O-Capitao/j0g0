@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "SDL.h"
 
@@ -86,6 +87,28 @@ namespace j0g0
             void _initSpriteSheet();
 
             
+    };
+
+    struct SpriteSheetManager {
+
+        SpriteSheetManager();
+
+        ~SpriteSheetManager();
+
+        SpriteSheet* getSpriteSheet( const std::string &spriteKey );
+        
+        SpriteSheet* insertSpriteSheet( 
+            std::string spriteKey, 
+            RenderingContext* _context,
+            const std::string &path, 
+            const Vec2D_Int &sliceSize, 
+            int _scaling_factor
+        );
+
+        void removeAndDestroySpriteSheet( const std::string &spriteKey );
+
+        private:
+            std::unordered_map<std::string,SpriteSheet*> available_sheets;
     };
 }
 

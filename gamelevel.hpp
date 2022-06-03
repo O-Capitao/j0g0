@@ -1,23 +1,54 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include <SDL.h>
+#include <yaml-cpp/yaml.h>
 
 #include "graphics/gamegeometry.hpp"
 #include "graphics/viewport.hpp"
-// #include "gamethings/gamething.hpp"
-// #include "gamethings/playerthing.hpp"
+#include "graphics/spritesheet.hpp"
+
 
 namespace j0g0 {
 
     struct GameLevelProperties {
-        Vec2D_Float size;
-    };
+
+        std::string title;
+        Vec2D_Float worldSize;
+        SDL_Color backgroundColor;
     
+    };
+
+    struct GameLevelConfigReader {
+        
+        GameLevelProperties buildGameLevelProperties( std::string config_path );
+        
+        void addLevelSpritesToManager( 
+            std::string config_path,
+            RenderingContext *context,
+            SpriteSheetManager *ssm
+        );
+
+        private:
+        
+            std::string _configFilePath;
+            
+            Vec2D_Float _parseToVec2D_Float(YAML::Node node);
+            Vec2D_Int _parseToVec2D_Int(YAML::Node node);
+            SDL_Color _parseToSDL_Color(YAML::Node node);
+
+    };
+
     struct GameLevel {
 
-        GameLevel(const GameLevelProperties& props, RenderingContext* _context);
+        GameLevel( 
+            std::string levelPropsFile, 
+            RenderingContext* _context,
+            SpriteSheetManager *ssm
+        );
+
         ~GameLevel();
 
         void render();
@@ -27,13 +58,10 @@ namespace j0g0 {
 
         private:
 
-            RenderingContext* context;
-            Vec2D_Float worldSize;
-            ViewPort viewport;
-            SDL_Color backgroundColor;      
-            
-            // std::vector<GameThing*> things;
-
-            // PlayerThing* player_thing_p = NULL;
+            RenderingContext* _context_p;
+            SpriteSheetManager *_ssm_p;
+            GameLevelProperties _properties;
+            ViewPort _viewport;
+            GameLevelConfigReader _reader;
     };
 }

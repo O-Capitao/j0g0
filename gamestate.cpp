@@ -13,13 +13,15 @@ using namespace j0g0;
 /*
  *  GameState - Helper Methods Implementation 
  */
-GameState::GameState(RenderingContext* _context)
-:context(_context){
-}
+GameState::GameState(RenderingContext* c, SpriteSheetManager *ssm)
+:_context_p(c),
+_spriteSheetManager_p(ssm){}
+
 
 GameState::~GameState(){
+    _context_p = NULL;
+    _spriteSheetManager_p = NULL;
 }
-
 
 
 
@@ -30,17 +32,12 @@ GameState::~GameState(){
  *  PauseState 
  * 
  */
-PauseState::PauseState( RenderingContext* _context )
-    :GameState(_context) //,
-    // message( BitmapTextThing( _context, 2 ))
+PauseState::PauseState(RenderingContext* cntxt, SpriteSheetManager *ssm)
+:GameState(cntxt,ssm)
 {
     background_color = {.r = 255, .g = 107, .b= 151, .a = 255 };
 
-    context->setBackgroundColor(background_color);
-
-    // message.setContent("PAUSE");
-    // message.centerOnCanvas();
-
+    _context_p->setBackgroundColor(background_color);
 }
 
 PauseState::~PauseState(){
@@ -48,11 +45,11 @@ PauseState::~PauseState(){
 
 void PauseState::render(){
 
-    context->beginRenderStep();
+    _context_p->beginRenderStep();
 
     // message.render();
 
-    context->endRenderStep();
+    _context_p->endRenderStep();
 }
 
 size_t PauseState::handleEvents()
@@ -90,13 +87,11 @@ void PauseState::update(){
  *  PlayState
  * 
  */
-PlayState::PlayState( RenderingContext* _context, GameLevelProperties levelProperties )
-    :GameState(_context), level( levelProperties, _context ) //,
-    // message( BitmapTextThing( _context, 1 ))
+PlayState::PlayState( RenderingContext* cntxt, SpriteSheetManager *ssm )
+:GameState(cntxt,ssm ), 
+level( "config/test_level.yaml", cntxt, ssm )
 {
 
-    background_color = {.r = 255, .g = 181, .b= 181, .a = 255 };
-    context->setBackgroundColor(background_color);
     frameCounter = 0;
     lastDisplay = SDL_GetTicks();
 
@@ -106,9 +101,9 @@ PlayState::~PlayState(){
 }
 
 void PlayState::render(){
-    context->beginRenderStep();
+    _context_p->beginRenderStep();
     level.render();
-    context->endRenderStep();
+    _context_p->endRenderStep();
 }
 
 void PlayState::update(){

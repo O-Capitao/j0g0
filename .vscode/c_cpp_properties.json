@@ -3,7 +3,10 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**","/opt/homebrew/include/SDL2"
+                "${workspaceFolder}/**",
+                "/opt/homebrew/include/SDL2",
+                "/opt/homebrew/Cellar/yaml-cpp/0.7.0/include",
+                "/opt/homebrew/Cellar/yaml-cpp/0.7.0/include/yaml-cpp"
             ],
             "defines": [],
             "macFrameworkPath": [

@@ -1,0 +1,23 @@
+---
+title: "Test Level"
+world-size:
+  x: 50
+  y: 100
+background-color:
+  r: 255
+  g: 255
+  b: 235
+sprite-sheets:
+  - id: "crocboy"
+    path: "asset/crocboy.png"
+    slice-size:
+      x: 32
+      y: 32
+    scaling-factor: 1
+  - id: "candy-cotton-floor"
+    path: "asset/candy-cotton-floor.png"
+    slice-size:
+      x: 16
+      y: 16
+    scaling-factor: 1
+  

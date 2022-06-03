@@ -6,16 +6,17 @@
 
 using namespace j0g0;
 
-SpriteSheet::SpriteSheet(RenderingContext* _context,
+SpriteSheet::SpriteSheet(
+    RenderingContext* _context,
     const std::string &path, 
     const Vec2D_Int &sliceSize, 
     int _scaling_factor)
 :_context_p(_context) {
-   
+
     _texture_p = NULL;
     
     _sliceSize = {
-        .x = _sliceSize.x, .y= _sliceSize.y
+        .x = sliceSize.x, .y= sliceSize.y
     };
 
     _ori_path = path;
@@ -82,11 +83,9 @@ bool SpriteSheet::_loadFromFile( std::string& path )
 	}
 	else
 	{
-		//Color key image
-		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
-
 		//Create _texture_p from surface pixels
         newTexture = SDL_CreateTextureFromSurface( _context_p->renderer, loadedSurface );
+        
 		if( newTexture == NULL )
 		{
 			printf( "Unable to create _texture_p from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );

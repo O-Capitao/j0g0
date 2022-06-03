@@ -1,38 +1,26 @@
 #include <iostream>
 
 #include "gamelevel.hpp"
-// #include "gamethings/tilemapthing.hpp"
-// #include "gamethings/platformthing.hpp"
-// #include "gamethings/playerthing.hpp"
 
 using namespace j0g0;
 
-GameLevel::GameLevel( const GameLevelProperties& props, RenderingContext* _context )
-: viewport( ViewPort( {.x=0,.y=0}, 10, _context->canvasProperties ) ) {
+GameLevel::GameLevel( std::string levelPropsFile, RenderingContext* _context, SpriteSheetManager *ssm)
+:_context_p(_context),
+_ssm_p(ssm),
+_viewport( ViewPort( {.x=0,.y=0}, 10, _context->canvasProperties ) )
+{
 
-    worldSize = props.size;
-    backgroundColor = {.r = 255, .g = 255, .b= 235, .a = 255 };
+    _properties = _reader.buildGameLevelProperties( levelPropsFile );
+    
+    _reader.addLevelSpritesToManager(
+        levelPropsFile,
+        _context_p,
+        _ssm_p
+    );
 
-    // things.push_back(new PlatformThing(
-    //     _context, 
-    //     "asset/2simpleTiles16_16.png", 
-    //     2, 2, 1, 
-    //     &viewport, 
-    //     {.x=0,.y=1}, 
-    //     {.x=10, .y=10})
-    // );
 
-    // PlayerThing* mything = new PlayerThing(  
-    //     _context, 
-    //     "asset/crocboy.png", 
-    //     20, 
-    //     12, 
-    //     2, 
-    //     {.x=1.0f,.y=4.0f},
-    //     &viewport
-    // );
-    // player_thing_p = mything;
-    // things.push_back( mything );
+
+    // do init with Properties
 }
 
 GameLevel::~GameLevel(){
@@ -67,3 +55,65 @@ void GameLevel::update(){
 void GameLevel::handleEvents( const SDL_Event& evt ){
     // player_thing_p->handleEvent( evt );
 }
+
+GameLevelProperties GameLevelConfigReader::buildGameLevelProperties( std::string config_path ){
+
+    YAML::Node levelProperties = YAML::LoadFile( config_path );
+
+    auto title = levelProperties["title"].as<std::string>();
+    auto worldSize = _parseToVec2D_Float(levelProperties["world-size"]);
+    auto color = _parseToSDL_Color(levelProperties["background-color"]);
+
+    return {
+        .title = title,
+        .backgroundColor = color,
+        .worldSize = worldSize
+    };
+}   
+
+void GameLevelConfigReader::addLevelSpritesToManager( 
+    std::string config_path,
+    RenderingContext *context,
+    SpriteSheetManager *ssm
+){
+
+    YAML::Node levelProperties = YAML::LoadFile( config_path );
+    YAML::Node spriteSheets = levelProperties["sprite-sheets"];
+
+    for (std::size_t i=0 ;i<spriteSheets.size();i++) {
+
+        YAML::Node _spriteConfig = spriteSheets[i];
+
+        auto id = _spriteConfig["id"].as<std::string>();
+        auto path = _spriteConfig["path"].as<std::string>();
+        auto scalingFactor = _spriteConfig["scaling-factor"].as<int>();
+        auto spriteSliceSize =  _parseToVec2D_Int(_spriteConfig["slice-size"]);
+
+        ssm->insertSpriteSheet(id, context, path, spriteSliceSize, scalingFactor );
+
+    }
+
+}
+
+Vec2D_Float GameLevelConfigReader::_parseToVec2D_Float(YAML::Node node){
+    return {
+        .x = node["x"].as<float>(),
+        .y = node["y"].as<float>()
+    };
+}
+
+Vec2D_Int GameLevelConfigReader::_parseToVec2D_Int(YAML::Node node){
+    return {
+        .x = node["x"].as<int>(),
+        .y = node["y"].as<int>()
+    };
+}
+
+SDL_Color GameLevelConfigReader::_parseToSDL_Color(YAML::Node node){
+    return {
+        .r = node["r"].as<unsigned char>(),
+        .g = node["g"].as<unsigned char>(),
+        .b = node["b"].as<unsigned char>()
+    };
+}
+

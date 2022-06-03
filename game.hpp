@@ -2,6 +2,7 @@
 
 #include "gamestate.hpp"
 #include "graphics/rendering.hpp"
+#include "graphics/spritesheet.hpp"
 
 namespace j0g0 {
 
@@ -9,11 +10,12 @@ namespace j0g0 {
 
         int stateId, nextState;
         RenderingContext* context;
+        SpriteSheetManager *spriteSheetManager;
         GameState* state;
 
         // TODO - make this an array or Collection
         GameLevelProperties level;
-
+        
         ~Game();
 
         void init(RenderingContext* _context);
@@ -21,7 +23,8 @@ namespace j0g0 {
         void changeState();
 
         private:
-            void cleanUp();
+            void _cleanUp();
+            void _initSpriteSheets();
     };
 
 }

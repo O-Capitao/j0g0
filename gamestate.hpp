@@ -5,7 +5,6 @@
 #include <SDL.h>
 
 #include "graphics/rendering.hpp"
-// #include "gamethings/gamething.hpp"
 #include "gamelevel.hpp"
 
 namespace j0g0 {
@@ -17,7 +16,7 @@ namespace j0g0 {
     struct GameState {
 
         public:
-            GameState(RenderingContext* _context);
+            GameState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
             virtual ~GameState();
 
             virtual void render() = 0;
@@ -25,12 +24,9 @@ namespace j0g0 {
             virtual size_t handleEvents() = 0;
 
         protected:
-            SDL_Texture* canvasTexture;
-
-        protected:
         
-            RenderingContext* context;
-            SDL_Color background_color;
+            RenderingContext* _context_p;
+            SpriteSheetManager* _spriteSheetManager_p;
     };
 
 
@@ -40,7 +36,7 @@ namespace j0g0 {
 
     struct PauseState: public GameState {
 
-        PauseState(RenderingContext* _context);
+        PauseState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
         ~PauseState();
 
         // init Sprites and 
@@ -52,6 +48,9 @@ namespace j0g0 {
         
         // SDL_Texture* masterTexture;
         // BitmapTextThing message;
+
+        private:
+            SDL_Color background_color;
     };
 
 
@@ -60,7 +59,7 @@ namespace j0g0 {
 
     struct PlayState: public GameState {
 
-        PlayState(RenderingContext* _context, GameLevelProperties _levelProps);
+        PlayState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
         ~PlayState();
         
         void render();

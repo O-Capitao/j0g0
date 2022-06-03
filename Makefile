@@ -1,6 +1,6 @@
-CFLAGS = -std=c++17 -I. `pkg-config --cflags-only-I sdl2 sdl2_image`
+CFLAGS = -std=c++17 -I. `pkg-config --cflags-only-I sdl2 sdl2_image yaml-cpp`
 
-LDFLAGS = `pkg-config --libs sdl2 sdl2_image`
+LDFLAGS = `pkg-config --libs sdl2 sdl2_image yaml-cpp`
 
 SOURCES = $(wildcard *.cpp) $(wildcard */*.cpp)
 OBJS = $(wildcard *.o) $(wildcard */*.o)

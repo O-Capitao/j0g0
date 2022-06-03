@@ -2,15 +2,18 @@
 
 #include "game.hpp"
 #include "gamestate.hpp"
+#include "graphics/spritesheet.hpp"
 
 using namespace j0g0;
 
 Game::~Game(){
 }
 
-void Game::init(RenderingContext* _context){
-
+void Game::init(RenderingContext* _context)
+{
     context = _context;
+    spriteSheetManager = new SpriteSheetManager();
+
     state = NULL;
 
     // initial state is PauseState
@@ -20,10 +23,7 @@ void Game::init(RenderingContext* _context){
     nextState = stateId;
 
     // Init Pause State
-    state = new PauseState(context);
-
-    // init level.
-    level.size = {.x=10, .y=10};
+    state = new PauseState(context,spriteSheetManager);
 }
 
 void Game::run(){
@@ -46,10 +46,10 @@ void Game::changeState(){
 
         switch (nextState){
             case GameStates::STATE_PAUSE:
-                state = new PauseState( context );
+                state = new PauseState( context,spriteSheetManager );
                 break;
             case GameStates::STATE_PLAY:
-                state = new PlayState( context, level );
+                state = new PlayState( context,spriteSheetManager );
                 break;
         }
 

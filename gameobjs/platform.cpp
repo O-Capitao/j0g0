@@ -3,18 +3,16 @@
 using namespace j0g0;
 
 Platform::Platform( 
-    RenderingContext* _context, 
-    SpriteSheet* _spriteSheet, 
-    const Vec2D_Int& blockSizeInTiles,
-    std::vector<SpriteSlice> tileSet,
-    const Vec2D_Float& positionInWorld,
-    ViewPort* vp
+    RenderingContext* _cntxt, 
+    SpriteSheet* _ss, 
+    ViewPort* vp,
+    PlatformProperties &p
 )
-:GameObj(_context),
-_spriteSheet_p(_spriteSheet),
-_tileMap( _spriteSheet->getSliceSize(), blockSizeInTiles, tileSet ),
-_hardOutline( _createOutline(blockSizeInTiles, _spriteSheet->getSliceSize(), vp) ),
-_positionInWorld(positionInWorld)
+:GameObj(_cntxt),
+_spriteSheet_p(_ss),
+_tileMap( _ss->getSliceSize(), p.sizeInTiles, p.calculateTileSet(_ss) ),
+_hardOutline( _createOutline(p.sizeInTiles, _ss->getSliceSize(), vp) ),
+_properties(p)
 {}
 
 Platform::~Platform(){
@@ -25,7 +23,7 @@ Platform::~Platform(){
 void Platform::render(){
 
     Vec2D_Int positionCanvas = _viewport_p->viewPortToCanvas( 
-        _viewport_p->worldToViewPort( _positionInWorld ) 
+        _viewport_p->worldToViewPort( _properties.positionInWorld ) 
     );
 
     const Vec2D_Int& platformSize = _tileMap.getSizeInTiles();
@@ -46,9 +44,9 @@ void Platform::render(){
     }
 }
 
-void Platform::setViewport( ViewPort *vp ){
-    _viewport_p = vp;
-}
+// void Platform::setViewport( ViewPort *vp ){
+//     _viewport_p = vp;
+// }
 
 Polygon Platform::_createOutline( const Vec2D_Int& blockSizeInTiles, const Vec2D_Int& tileSize, ViewPort *vp ){
     return Polygon({
@@ -69,5 +67,43 @@ Polygon Platform::_createOutline( const Vec2D_Int& blockSizeInTiles, const Vec2D
             .y = (float)(blockSizeInTiles.y * tileSize.y) / vp->pixel_per_meter,
         }
     }, true);
+}
+
+std::vector<SpriteSlice> PlatformProperties::calculateTileSet(SpriteSheet* ss){
+    
+    assert( 
+        tileMapSpriteSliceMatrix.size() == sliceRotations_in90Deg.size() 
+        && sliceRotations_in90Deg.size() == sliceFlip_H.size()
+        && sliceFlip_H.size() == (sizeInTiles.x * sizeInTiles.y)
+    );
+
+    std::vector<SpriteSlice> slices;
+
+    for (int i = 0; i < (sizeInTiles.x * sizeInTiles.y); i++){
+
+        SDL_RendererFlip i_flip = sliceFlip_V[i] ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+
+        if (sliceFlip_H[i]){
+            i_flip = SDL_FLIP_HORIZONTAL;
+        }
+
+        // TODO - rotation stuff
+        SpriteSlice i_slice = {
+            .duration_ms = 0,
+            .quarter_turns_ccw = (short)sliceRotations_in90Deg[i],
+            .flip = i_flip,
+            .offset_for_rotation = {
+                .x = 0, .y = 0
+            },
+            .center_of_rotation = {
+                .x = 0, .y = 0
+            },
+            .frame = ss->getFrameAt(tileMapSpriteSliceMatrix[i]).frame
+        };
+        
+        slices.push_back(i_slice);
+    }
+
+    return slices;
 }
 

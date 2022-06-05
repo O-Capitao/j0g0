@@ -20,4 +20,16 @@ sprite-sheets:
       x: 16
       y: 16
     scaling-factor: 1
-  
+platforms:
+  - sprite-sheet: "candy-cotton-floor"
+    size:
+      x: 3
+      y: 2
+    position:
+      x: 2
+      y: 3
+    tile-map: [ 0, 1, 2, 3, 4, 5 ]
+    quarter-turns-ccw: [ 0, 0, 0, 0, 0, 0 ]
+    flip-horizontal: [ n,n,n,n,n,n ]
+    flip-vertical: [ n,n,n,n,n,n ]
+

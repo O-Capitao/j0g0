@@ -10,6 +10,8 @@
 #include "graphics/viewport.hpp"
 #include "graphics/spritesheet.hpp"
 
+#include "gameobjs/platform.hpp"
+
 
 namespace j0g0 {
 
@@ -31,6 +33,8 @@ namespace j0g0 {
             SpriteSheetManager *ssm
         );
 
+        std::vector<PlatformProperties> generatePlatformProperties( std::string config_path );
+
         private:
         
             std::string _configFilePath;
@@ -38,6 +42,8 @@ namespace j0g0 {
             Vec2D_Float _parseToVec2D_Float(YAML::Node node);
             Vec2D_Int _parseToVec2D_Int(YAML::Node node);
             SDL_Color _parseToSDL_Color(YAML::Node node);
+            
+            Platform _parseToPlatform(YAML::Node node);
 
     };
 
@@ -63,5 +69,7 @@ namespace j0g0 {
             GameLevelProperties _properties;
             ViewPort _viewport;
             GameLevelConfigReader _reader;
+
+            std::vector<Platform*> _platforms_p_vec;
     };
 }

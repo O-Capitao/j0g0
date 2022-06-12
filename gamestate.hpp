@@ -5,6 +5,7 @@
 #include <SDL.h>
 
 #include "graphics/rendering.hpp"
+#include "gameobjs/bitmaptext.hpp"
 #include "gamelevel.hpp"
 
 namespace j0g0 {
@@ -39,18 +40,13 @@ namespace j0g0 {
         PauseState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
         ~PauseState();
 
-        // init Sprites and 
-        // other assets/ logic exclusive to this State
-        // void init();
         void render();
         void update();
         size_t handleEvents();
         
-        // SDL_Texture* masterTexture;
-        // BitmapTextThing message;
-
         private:
             SDL_Color background_color;
+            BitmapText message;
     };
 
 

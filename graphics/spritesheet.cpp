@@ -14,13 +14,11 @@ SpriteSheet::SpriteSheet(
 :_context_p(_context) {
 
     _texture_p = NULL;
-    
     _sliceSize = {
         .x = sliceSize.x, .y= sliceSize.y
     };
 
     _ori_path = path;
-
     _scalingFactor = _scaling_factor;
 
 	_initSpriteSheet();
@@ -137,7 +135,7 @@ void SpriteSheet::setAlpha( Uint8 alpha )
 	SDL_SetTextureAlphaMod( _texture_p, alpha );
 }
 
-void SpriteSheet::render( const Vec2D_Int &positionInCanvas, int frame_index )
+void SpriteSheet::renderBySliceIndex( const Vec2D_Int &positionInCanvas, int frame_index )
 {
 
     SpriteSlice& slice = _slices[frame_index];
@@ -161,6 +159,23 @@ void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSl
         slice.quarter_turns_ccw * 90, 
         &slice.center_of_rotation, 
         slice.flip
+    );
+}
+
+void SpriteSheet::renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice )
+{
+    SDL_Rect src = slice.frame;
+    SDL_Rect tgt;
+
+    tgt.x = positionInCanvas.x;
+    tgt.y = positionInCanvas.y;
+    
+    tgt.w = _scalingFactor * _sliceSize.x;
+    tgt.h = _scalingFactor * _sliceSize.y;
+    
+	SDL_RenderCopy( 
+        _context_p->renderer, _texture_p, 
+        &src, &tgt
     );
 }
 

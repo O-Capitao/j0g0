@@ -2,12 +2,15 @@
 
 #include "gamegeometry.hpp"
 #include "rendering.hpp"
+#include "gameconfig.hpp"
 
 namespace j0g0 {
+
     struct ViewPort {
         
-        ViewPort( const Vec2D_Float& initialPositionInWorld, float viewportWidth, const CanvasProperties& CanvasProperties );
-        
+        // ViewPort( const Vec2D_Float& initialPositionInWorld, float viewportWidth, const CanvasProperties& CanvasProperties );
+        ViewPort( const ViewPortProperties &vp_conf, const CanvasProperties& CanvasProperties );
+
         Vec2D_Float positionInWorld;
         Vec2D_Float sizeInWorld;
         Vec2D_Int canvasSize;

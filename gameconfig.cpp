@@ -1,8 +1,8 @@
-#include "gamelevel.hpp"
+#include "gameconfig.hpp"
 
 using namespace j0g0;
 
-GameLevelProperties GameLevelConfigReader::buildGameLevelProperties( std::string config_path ){
+GameLevelProperties GameConfigReader::buildGameLevelProperties( std::string config_path ){
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
 
@@ -17,7 +17,7 @@ GameLevelProperties GameLevelConfigReader::buildGameLevelProperties( std::string
     };
 }   
 
-void GameLevelConfigReader::addLevelSpritesToManager( 
+void GameConfigReader::addLevelSpritesToManager( 
     std::string config_path,
     RenderingContext *context,
     SpriteSheetManager *ssm
@@ -38,24 +38,24 @@ void GameLevelConfigReader::addLevelSpritesToManager(
         ssm->insertSpriteSheet(id, context, path, spriteSliceSize, scalingFactor );
 
     }
-
 }
 
-Vec2D_Float GameLevelConfigReader::_parseToVec2D_Float(YAML::Node node){
+Vec2D_Float GameConfigReader::_parseToVec2D_Float(YAML::Node node){
     return {
         .x = node["x"].as<float>(),
         .y = node["y"].as<float>()
     };
 }
 
-Vec2D_Int GameLevelConfigReader::_parseToVec2D_Int(YAML::Node node){
+Vec2D_Int GameConfigReader::_parseToVec2D_Int(YAML::Node node){
     return {
         .x = node["x"].as<int>(),
         .y = node["y"].as<int>()
     };
 }
 
-SDL_Color GameLevelConfigReader::_parseToSDL_Color(YAML::Node node){
+SDL_Color GameConfigReader::_parseToSDL_Color(YAML::Node node){
+
     SDL_Color color = {
         .r = node["r"].as<Uint8>(),
         .g = node["g"].as<Uint8>(),
@@ -66,7 +66,7 @@ SDL_Color GameLevelConfigReader::_parseToSDL_Color(YAML::Node node){
     return color;
 }
 
-std::vector<PlatformProperties> GameLevelConfigReader::generatePlatformProperties( std::string config_path ){
+std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( std::string config_path ){
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
     YAML::Node platformsYaml = levelProperties["platforms"];
@@ -91,3 +91,17 @@ std::vector<PlatformProperties> GameLevelConfigReader::generatePlatformPropertie
 
     return retVal;
 }
+
+ViewPortProperties GameConfigReader::generateViewPortProperties( std::string config_path ){
+
+    YAML::Node lvlProps = YAML::LoadFile( config_path );
+    YAML::Node vpYaml = lvlProps["viewport"];
+
+    ViewPortProperties vp_conf = {
+        .width = vpYaml["width"].as<float>(),
+        .worldPosition = _parseToVec2D_Float( vpYaml["position"] )
+    };
+
+    return vp_conf;
+}
+

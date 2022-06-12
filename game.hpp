@@ -25,6 +25,7 @@ namespace j0g0 {
         private:
             void _cleanUp();
             void _initSpriteSheets();
+            
     };
 
 }

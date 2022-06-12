@@ -5,17 +5,17 @@
 
 using namespace j0g0;
 
-ViewPort::ViewPort( const Vec2D_Float& initialPositionInWorld, float viewportWidth, const CanvasProperties& CanvasProperties ){
+ViewPort::ViewPort( const ViewPortProperties &vp_conf, const CanvasProperties& CanvasProperties ){
     
-    positionInWorld = initialPositionInWorld;
+    positionInWorld = vp_conf.worldPosition;
     
     canvasSize = CanvasProperties.size;
 
     float _canvasAspectRatio = (float)canvasSize.x / (float)canvasSize.y;
 
     sizeInWorld = {
-        .x = viewportWidth,
-        .y = viewportWidth / _canvasAspectRatio
+        .x = vp_conf.width,
+        .y = vp_conf.width / _canvasAspectRatio
     };
 
     pixel_per_meter = (float) canvasSize.x / sizeInWorld.x;

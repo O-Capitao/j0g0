@@ -13,7 +13,8 @@ namespace j0g0{
         TileMap( 
             const Vec2D_Int &tileSize,
             const Vec2D_Int &blockSize,
-            std::vector<SpriteSlice> tileSet
+            std::vector<SpriteSlice> tileSet,
+            std::vector<Uint8> sliceMap
         );
 
         ~TileMap();

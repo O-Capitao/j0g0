@@ -15,7 +15,8 @@ using namespace j0g0;
  */
 GameState::GameState(RenderingContext* c, SpriteSheetManager *ssm)
 :_context_p(c),
-_spriteSheetManager_p(ssm){}
+_spriteSheetManager_p(ssm){
+}
 
 
 GameState::~GameState(){
@@ -33,11 +34,18 @@ GameState::~GameState(){
  * 
  */
 PauseState::PauseState(RenderingContext* cntxt, SpriteSheetManager *ssm)
-:GameState(cntxt,ssm)
+:GameState(cntxt,ssm),
+message( cntxt, ssm->getSpriteSheet("bitmap-text") )
 {
     background_color = {.r = 255, .g = 107, .b= 151, .a = 255 };
-
     _context_p->setBackgroundColor(background_color);
+
+    message.setContent("PAUSE");
+    
+    message.setPositionInCanvas({
+        .x = (_context_p->canvasProperties.size.x - message.getContentSize().x)/2,
+        .y = (_context_p->canvasProperties.size.y - message.getContentSize().y)/2,
+    });
 }
 
 PauseState::~PauseState(){
@@ -46,8 +54,9 @@ PauseState::~PauseState(){
 void PauseState::render(){
 
     _context_p->beginRenderStep();
-
-    // message.render();
+    _context_p->setBackgroundColor(background_color);
+    
+    message.render();
 
     _context_p->endRenderStep();
 }
@@ -64,6 +73,7 @@ size_t PauseState::handleEvents()
             ret_val = GameStates::STATE_EXIT;
 
         } else if (e.type == SDL_KEYDOWN){
+
             switch( e.key.keysym.sym )
             {
                 case SDLK_SPACE:

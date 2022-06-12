@@ -3,6 +3,7 @@
 #include "game.hpp"
 #include "gamestate.hpp"
 #include "graphics/spritesheet.hpp"
+#include "gameconfig.hpp"
 
 using namespace j0g0;
 
@@ -13,6 +14,15 @@ void Game::init(RenderingContext* _context)
 {
     context = _context;
     spriteSheetManager = new SpriteSheetManager();
+
+
+    GameConfigReader _reader;
+    
+    _reader.addLevelSpritesToManager(
+        "config/test_level.yaml",
+        _context,
+        spriteSheetManager
+    );
 
     state = NULL;
 
@@ -28,12 +38,26 @@ void Game::init(RenderingContext* _context)
 
 void Game::run(){
 
+    // CAP FRAME RATE TO 60FPS
+    Uint32 _start_cycle, _end_cycle, _sleep_time;
+    Uint32 _fixed_cycle_duration = 1000 / 60;
+
     while ( stateId != GameStates::STATE_EXIT )
-    {
+    {   
+        _start_cycle = SDL_GetTicks();
+        
         state->render();
         state->update();
         nextState = state->handleEvents();
         changeState();
+
+        _end_cycle = SDL_GetTicks();
+
+        // CAP RATE
+        if (_end_cycle - _start_cycle < _fixed_cycle_duration){
+            _sleep_time = _fixed_cycle_duration - (_end_cycle - _start_cycle );
+            SDL_Delay(_sleep_time);
+        }
         
     }
 }

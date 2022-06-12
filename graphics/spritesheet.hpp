@@ -53,9 +53,11 @@ namespace j0g0
         void setAlpha( Uint8 alpha );
 
 		// Renders texture at given point
-		void render( const Vec2D_Int &positionInCanvas, int frame_index );
+		void renderBySliceIndex( const Vec2D_Int &positionInCanvas, int frame_index );
 
         void renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice);
+
+        void renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice);
 
         SpriteSlice getFrameAt(int index);
 

@@ -11,6 +11,8 @@
 #include "graphics/spritesheet.hpp"
 
 #include "gameobjs/platform.hpp"
+#include "gameobjs/actorobj.hpp"
+
 #include "gameconfig.hpp"
 
 
@@ -39,5 +41,6 @@ namespace j0g0 {
             GameConfigReader _reader;
 
             std::vector<Platform*> _platforms_p_vec;
+            std::vector<Actor*> _actors_p_vec;
     };
 }

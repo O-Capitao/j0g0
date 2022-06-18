@@ -105,3 +105,16 @@ SDL_Rect ViewPort::transformRect_Viewport2Canvas( const FloatRect& boxInViewport
     };
 }
 
+FloatRect ViewPort::transformRect_canvasToWorld( const SDL_Rect& boxInCanvas ){
+    return transformRect_ViewPort2World(
+        transformRect_Canvas2Viewport( boxInCanvas )
+    );
+}
+
+SDL_Rect ViewPort::transformRect_WorldToCanvas( const FloatRect& boxInWorld ){
+    return transformRect_Viewport2Canvas(
+        transformRect_World2Viewport( boxInWorld )
+    );
+}
+
+

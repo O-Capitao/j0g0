@@ -39,15 +39,23 @@ sprite-sheets:
       y: 8
     scaling-factor: 1
 #
+  - id: "evil-eye"
+    path: "asset/olho.png"
+    slice-size:
+      x: 32
+      y: 32
+    scaling-factor: 1
+#
 # PLATFORMS SECTION
 platforms:
   - sprite-sheet: "candy-cotton-floor"
     size:
       x: 3
       y: 2
+    ## specificy the lower left point of the platforms base.
     position:
       x: 2
-      y: 1
+      y: 0
     tile-map: [ 0, 1, 2, 3 ,4 ,5 ]
     quarter-turns-ccw: [ 0, 0, 0, 0, 0, 0 ]
     flip-horizontal: [ n,n,n,n,n,n ]
@@ -59,11 +67,37 @@ platforms:
       y: 8
     position:
       x: 4
-      y: 3
+      y: 0
     tile-map: [ 0, 2, 3, 5 ,3 ,5, 3, 5, 3 ,5, 3, 5, 3 ,5, 3, 5 ]
     quarter-turns-ccw: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     flip-horizontal: [ n,n,n,n, n,n,n,n, n,n,n,n, n,n,n,n]
     flip-vertical: [ n,n,n,n, n,n,n,n, n,n,n,n, n,n,n,n]
     z-index: 0
+#
+# ACTORS
+actors:
+  #
+  # Bad guys first
+  - id: "evil-eye"
+    sprite-sheet-id: "evil-eye"
+    idle-animation-id: "idle"
+    initial-position:
+      x: 3
+      y: 1
+    bounding-box:
+      x: 2
+      y: 1
+      w: 28
+      h: 28
+    sprite-animations:
+      - id: "idle"
+        size: 4
+        slice-indexes: [ 4, 3, 4, 5 ]
+        slice-durations: [200,500,300,500]
+      - id: "look-right"
+        size: 5
+        slice-indexes: [4,3,2,1,0]
+        slice-durations: [50,70,80,90,0] #value means hold frame indefinetely
+    # END Actors
   
 

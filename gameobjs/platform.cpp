@@ -33,11 +33,12 @@ void Platform::render(){
 
         for (int _matrix_col = 0; _matrix_col < platformSize.x; _matrix_col++){
 
-            SpriteSlice slice = _tileMap.getTileAt(_matrix_row, _matrix_col);
+            SpriteSlice slice = _tileMap.getTileAt(platformSize.y - _matrix_row - 1, _matrix_col);
 
-            _spriteSheet_p->renderSlice({
+            _spriteSheet_p->renderSlice(
+                {
                     .x = positionCanvas.x + _matrix_col * slice.frame.w,
-                    .y = positionCanvas.y + _matrix_row * slice.frame.h
+                    .y = positionCanvas.y - _matrix_row * slice.frame.h
                 }, 
                 slice
             );

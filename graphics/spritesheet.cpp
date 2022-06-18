@@ -146,16 +146,17 @@ void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSl
 {
     SDL_Rect src = slice.frame;
     SDL_Rect tgt;
-
-    tgt.x = positionInCanvas.x + slice.offset_for_rotation.x;
-    tgt.y = positionInCanvas.y + slice.offset_for_rotation.y;
     
     tgt.w = _scalingFactor * _sliceSize.x;
     tgt.h = _scalingFactor * _sliceSize.y;
+
+    tgt.x = positionInCanvas.x + slice.offset_for_rotation.x;
+    tgt.y = positionInCanvas.y + slice.offset_for_rotation.y - tgt.h;
     
 	SDL_RenderCopyEx( 
         _context_p->renderer, _texture_p, 
-        &src, &tgt, 
+        &src, 
+        &tgt, 
         slice.quarter_turns_ccw * 90, 
         &slice.center_of_rotation, 
         slice.flip

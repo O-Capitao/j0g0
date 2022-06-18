@@ -1,4 +1,7 @@
+#include <iostream>
+
 #include "gameconfig.hpp"
+
 
 using namespace j0g0;
 
@@ -41,10 +44,13 @@ void GameConfigReader::addLevelSpritesToManager(
 }
 
 Vec2D_Float GameConfigReader::_parseToVec2D_Float(YAML::Node node){
-    return {
-        .x = node["x"].as<float>(),
-        .y = node["y"].as<float>()
-    };
+
+    Vec2D_Float out;
+    // return {
+        out.x = node["x"].as<float>();//,
+        out.y = node["y"].as<float>();
+    // };
+    return out;
 }
 
 Vec2D_Int GameConfigReader::_parseToVec2D_Int(YAML::Node node){
@@ -64,6 +70,17 @@ SDL_Color GameConfigReader::_parseToSDL_Color(YAML::Node node){
     };
 
     return color;
+}
+
+SDL_Rect GameConfigReader::_parseToSDL_Rect(YAML::Node node){
+    SDL_Rect rect = {
+        .x = node["x"].as<int>(),
+        .y = node["y"].as<int>(),
+        .w = node["w"].as<int>(),
+        .h = node["h"].as<int>(),
+    };
+
+    return rect;
 }
 
 std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( std::string config_path ){
@@ -97,11 +114,54 @@ ViewPortProperties GameConfigReader::generateViewPortProperties( std::string con
     YAML::Node lvlProps = YAML::LoadFile( config_path );
     YAML::Node vpYaml = lvlProps["viewport"];
 
-    ViewPortProperties vp_conf = {
+    ViewPortProperties vp_conf = 
+    {
         .width = vpYaml["width"].as<float>(),
         .worldPosition = _parseToVec2D_Float( vpYaml["position"] )
     };
 
     return vp_conf;
 }
+
+std::vector<ActorProperties> GameConfigReader::generateActorProperties( std::string config_path ){
+    
+    YAML::Node lvlProps = YAML::LoadFile( config_path );
+    YAML::Node actors = lvlProps["actors"];
+    std::vector<ActorProperties> props;
+
+    // for (std::size_t i = 0; i < actors.size(); i++) {
+    for (auto currActor : actors){
+        
+        ActorProperties actor = {
+            .id = currActor["id"].as<std::string>(),
+            .spriteSheetId = currActor["sprite-sheet-id"].as<std::string>(),
+            .initialPositionInWorld = _parseToVec2D_Float( currActor["initial-position"] ),
+            .boundingBox_SliceCoordinates = _parseToSDL_Rect( currActor["bounding-box"] ),
+            .idleAnimationId = currActor["idle-animation-id"].as<std::string>()
+        };
+
+        actor.spriteAnimations = _generateSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );
+        props.push_back(actor);
+    }
+
+    return props;
+}
+
+std::vector<SpriteAnimationProperties> GameConfigReader::_generateSpriteAnimationProperties_ForActorProperties( YAML::Node animations ){
+    std::vector<SpriteAnimationProperties> retval;
+
+    for (YAML::Node currAnimation: animations){
+        SpriteAnimationProperties spriteAnimation = {
+            .id = currAnimation["id"].as<std::string>(),
+            .size = currAnimation["size"].as<Uint8>(),
+            .sliceIndexes = currAnimation["slice-indexes"].as<std::vector<Uint8>>(),
+            .sliceDurations_ms = currAnimation["slice-durations"].as<std::vector<Uint16>>(),
+        };
+
+        retval.push_back(spriteAnimation);
+    }
+
+    return retval;
+}
+
 

@@ -180,3 +180,28 @@ std::vector<FloatLine*> Polygon::getLinesFacingAgainst( Vec2D_Float direction ){
     return retval;
 
 }
+
+
+
+
+
+CollisionBox::CollisionBox(
+    const Vec2D_Int& _pointA_Cnvs,
+    const Vec2D_Int& _pointB_Cnvs,
+    const Vec2D_Float& _viewportSize,
+    float pixel_to_meter
+){
+
+    pointA_Canvas = { _pointA_Cnvs.x, _pointA_Cnvs.y };
+    pointB_Canvas = { _pointB_Cnvs.x, _pointB_Cnvs.y };
+
+    size_Canvas = {
+        pointB_Canvas.x - pointA_Canvas.x,
+        pointB_Canvas.y - pointA_Canvas.y
+    };
+
+    size_World = {
+        (float)size_Canvas.x / pixel_to_meter,
+        (float)size_Canvas.y / pixel_to_meter
+    };
+}

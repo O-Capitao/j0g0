@@ -22,6 +22,15 @@ _ssm_p(ssm)
         _platforms_p_vec.push_back( new Platform( _context_p, _used_ss, _viewport_p, pp ) );
 
     }
+
+    std::vector<ActorProperties> _actors_in = _reader.generateActorProperties( levelPropsFile );
+
+    for (auto ap: _actors_in){
+        SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(ap.spriteSheetId);
+        _actors_p_vec.push_back( new Actor( _context_p, _used_ss, _viewport_p, ap ) );
+    }
+
+    SDL_Log("Done Constructing GameLevel.\n");
     
 }
 
@@ -41,14 +50,16 @@ void GameLevel::render(){
     for (Platform *_p: _platforms_p_vec){
         _p->render();
     }
+
+    for (Actor *_a: _actors_p_vec){
+        _a->render();
+    }
 }
 
 void GameLevel::update(){
-    // for (int i = 0; i < things.size(); i++){
-
-    //     things[i]->update();
-
-    // }
+    for (Actor *_a: _actors_p_vec){
+        _a->update();
+    }
 }
 
 void GameLevel::handleEvents( const SDL_Event& evt ){

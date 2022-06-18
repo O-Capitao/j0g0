@@ -29,8 +29,11 @@ namespace j0g0 {
         FloatRect transformRect_World2Viewport( const FloatRect& boxInWorld );
         SDL_Rect transformRect_Viewport2Canvas( const FloatRect& boxInViewport);
 
+        FloatRect transformRect_canvasToWorld( const SDL_Rect& boxInCanvas );
+        SDL_Rect transformRect_WorldToCanvas( const FloatRect& boxInWorld );
+
         // private:
         float pixel_per_meter;
-        
+
     };
 }

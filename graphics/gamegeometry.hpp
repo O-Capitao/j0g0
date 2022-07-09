@@ -21,6 +21,7 @@ namespace j0g0 {
         float x,y,w,h;
         // static SDL_Rect toCanvasRect( const FloatRect &worldRect );
         // static FloatRect toWorldRect( const SDL_Rect &canvasRect );
+        bool collidesWith( const FloatRect &other );
     };
 
     struct RotMatrix2D {
@@ -64,41 +65,59 @@ namespace j0g0 {
             std::vector <Vec2D_Float> points;
     };
 
+    // struct Vertical_FloatLine {
+    //     // the point with lowest y coord in line
+    //     Vec2D_Float point_a;
+    //     float verticalLength;
+    // };
+
+    // struct Horizontal_FloatLine {
+    //     // the point with lowest x coord in line
+    //     Vec2D_Float point_a;
+    //     float horizontalLength;
+    // };
         
-    
-    // TODO - use this?
-    struct CollisionBox {
-
-        CollisionBox(){}
-
-        CollisionBox(
-            const Vec2D_Int& _pointA_Cnvs,
-            const Vec2D_Int& _pointB_Cnvs,
-            const Vec2D_Float& _viewportSize,
-            float pixel_to_meter
-        );
-        // CollisionBox(const Vec2D_Float& _point_a,const Vec2D_Float& _point_b );
-        // Canvas
-        /*
-         *         -------------- PB
-         *         |             |
-         *         |             |
-         *     PA  --------------- 
-         */
-        Vec2D_Float pointA_World, pointB_World;
-        Vec2D_Int pointA_Canvas, pointB_Canvas;
-
-        Vec2D_Float size_World;
-        Vec2D_Int size_Canvas;
-
-        bool blockedLeft = false;
-        bool blockedRight = false;
-        bool blockedUp = false;
-        bool blockedDown = false;
-
-        bool collideWith( const CollisionBox& other );
-
+    struct StraightFloatLine {
+        // the point with lowest x/y coord in line
+        Vec2D_Float point_a;
+        Vec2D_Float normal;
+        float verticalLength;
+        float horizontalLength;
     };
+    
+    // // TODO - use this?
+    // struct CollisionBox {
+
+    //     CollisionBox(){}
+
+    //     CollisionBox(
+    //         const Vec2D_Int& _pointA_Cnvs,
+    //         const Vec2D_Int& _pointB_Cnvs,
+    //         const Vec2D_Float& _viewportSize,
+    //         float pixel_to_meter
+    //     );
+    //     // CollisionBox(const Vec2D_Float& _point_a,const Vec2D_Float& _point_b );
+    //     // Canvas
+    //     /*
+    //      *         -------------- PB
+    //      *         |             |
+    //      *         |             |
+    //      *     PA  --------------- 
+    //      */
+    //     Vec2D_Float pointA_World, pointB_World;
+    //     Vec2D_Int pointA_Canvas, pointB_Canvas;
+
+    //     Vec2D_Float size_World;
+    //     Vec2D_Int size_Canvas;
+
+    //     bool blockedLeft = false;
+    //     bool blockedRight = false;
+    //     bool blockedUp = false;
+    //     bool blockedDown = false;
+
+    //     bool collideWith( const CollisionBox& other );
+
+    // };
 
 
 }

@@ -2,6 +2,7 @@
 
 #include "vector"
 #include "string"
+#include "optional"
 
 #include "SDL.h"
 
@@ -10,8 +11,10 @@
 #include "graphics/viewport.hpp"
 #include "graphics/spritesheet.hpp"
 
+#include "physics/physics.hpp"
+
 #include "gameobjs/platform.hpp"
-#include "gameobjs/actorobj.hpp"
+#include "gameobjs/actor.hpp"
 
 #include "gameconfig.hpp"
 
@@ -40,7 +43,12 @@ namespace j0g0 {
             ViewPort *_viewport_p;
             GameConfigReader _reader;
 
-            std::vector<Platform*> _platforms_p_vec;
+            Uint32 _lastTick;
+
+            // GameEnvironment _environment;
+            PlatformGamePhysics _physicsModel;
+
+            std::vector<RectPlatform*> _platforms_p_vec;
             std::vector<Actor*> _actors_p_vec;
     };
 }

@@ -7,33 +7,31 @@
 #include "graphics/gamegeometry.hpp"
 #include "graphics/tilemap.hpp"
 #include "graphics/viewport.hpp"
-
+#include "physics/physics.hpp"
 
 namespace j0g0{
 
-    struct Platform : public GameObj{
+    struct RectPlatform : public GameObj{
 
-        Platform( 
+        RectPlatform( 
             RenderingContext* _context, 
             SpriteSheet* _spriteSheet,
             ViewPort *vp,
             PlatformProperties &properties
         );
         
-        ~Platform();
+        ~RectPlatform();
 
         void render();
-        void update(){};
-
+        void update(Uint32 dt){};
+        RectPlatformPhysicsModel *getPhysicsModel_ptr();
+        
         private:
             
             PlatformProperties _properties;
-            static Polygon _createOutline( const Vec2D_Int& blockSizeInTiles, const Vec2D_Int& tileSize, ViewPort *vp );
+            RectPlatformPhysicsModel _model;
             SpriteSheet *_spriteSheet_p;
-            TileMap _tileMap;
-            Polygon _hardOutline;
-            
-            
+            TileMap _tileMap;;
             ViewPort *_viewport_p;
 
             std::vector<SpriteSlice> _calculateTileSetFromConfig();

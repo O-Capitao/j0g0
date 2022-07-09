@@ -28,6 +28,8 @@ namespace j0g0 {
         std::vector<bool>sliceFlip_H;
         std::vector<bool>sliceFlip_V;
 
+        float ellasticCoef, frictionCoef;
+
     };
 
     struct ViewPortProperties{
@@ -54,6 +56,9 @@ namespace j0g0 {
 
         std::vector<SpriteAnimationProperties> spriteAnimations;
         std::string idleAnimationId;
+
+        float mass;
+        float frictionCoef;
     };
     
     

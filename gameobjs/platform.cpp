@@ -2,7 +2,7 @@
 
 using namespace j0g0;
 
-Platform::Platform( 
+RectPlatform::RectPlatform( 
     RenderingContext* _cntxt, 
     SpriteSheet* _ss, 
     ViewPort* vp,
@@ -11,17 +11,25 @@ Platform::Platform(
 :GameObj(_cntxt),
 _properties(p),
 _spriteSheet_p(_ss),
+_model({
+        .x = _properties.positionInWorld.x,
+        .y = _properties.positionInWorld.y,
+        .w = (float)(_properties.sizeInTiles.x * _ss->getSliceSize().x) / vp->pixel_per_meter,
+        .h = (float)(_properties.sizeInTiles.y * _ss->getSliceSize().y) / vp->pixel_per_meter
+    },
+    _properties.ellasticCoef,
+    _properties.frictionCoef
+),
 _tileMap( _ss->getSliceSize(), p.sizeInTiles, _calculateTileSetFromConfig(), p.tileMapSpriteSliceMatrix ),
-_hardOutline( _createOutline(p.sizeInTiles, _ss->getSliceSize(), vp) ),
 _viewport_p(vp)
 {}
 
-Platform::~Platform(){
-    _spriteSheet_p = NULL;
-    _viewport_p = NULL;
+RectPlatform::~RectPlatform(){
+    _spriteSheet_p = nullptr;
+    _viewport_p = nullptr;
 }
 
-void Platform::render(){
+void RectPlatform::render(){
 
     Vec2D_Int positionCanvas = _viewport_p->viewPortToCanvas( 
         _viewport_p->worldToViewPort( _properties.positionInWorld ) 
@@ -46,28 +54,11 @@ void Platform::render(){
     }
 }
 
-Polygon Platform::_createOutline( const Vec2D_Int& blockSizeInTiles, const Vec2D_Int& tileSize, ViewPort *vp ){
-    return Polygon({
-        {
-            .x = 0.0,
-            .y = 0.0
-        },
-        {
-            .x = (float)(blockSizeInTiles.x * tileSize.x) / vp->pixel_per_meter,
-            .y = 0
-        },
-        {
-            .x = (float)(blockSizeInTiles.x * tileSize.x)/ vp->pixel_per_meter,
-            .y = (float)(blockSizeInTiles.y * tileSize.y)/ vp->pixel_per_meter,
-        },
-        {
-            .x = 0,
-            .y = (float)(blockSizeInTiles.y * tileSize.y) / vp->pixel_per_meter,
-        }
-    }, true);
+RectPlatformPhysicsModel *RectPlatform::getPhysicsModel_ptr(){
+    return &_model;
 }
 
-std::vector<SpriteSlice> Platform::_calculateTileSetFromConfig(){
+std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
     
     assert( 
         _properties.tileMapSpriteSliceMatrix.size() == _properties.sliceRotations_in90Deg.size() 

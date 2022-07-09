@@ -34,6 +34,13 @@ ViewPort::ViewPort( const ViewPortProperties &vp_conf, const CanvasProperties& C
             - flipped y
 
  */ 
+float ViewPort::scaleToWorld(const int &lengthInCanvas){
+    return ((float)lengthInCanvas) / pixel_per_meter;
+}
+
+int ViewPort::scaleToCanvas(const float &lengthInCanvas){
+    return (int)floor( lengthInCanvas * pixel_per_meter );
+}
 
 Vec2D_Float ViewPort::worldToViewPort(const Vec2D_Float& worldPosition){
     return { 

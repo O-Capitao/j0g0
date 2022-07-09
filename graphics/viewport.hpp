@@ -8,12 +8,15 @@ namespace j0g0 {
 
     struct ViewPort {
         
-        // ViewPort( const Vec2D_Float& initialPositionInWorld, float viewportWidth, const CanvasProperties& CanvasProperties );
         ViewPort( const ViewPortProperties &vp_conf, const CanvasProperties& CanvasProperties );
 
         Vec2D_Float positionInWorld;
         Vec2D_Float sizeInWorld;
         Vec2D_Int canvasSize;
+
+        // scale transformation
+        float scaleToWorld(const int &lengthInCanvas);
+        int scaleToCanvas(const float &lengthInCanvas);
 
         // Point Tranformations
         Vec2D_Float worldToViewPort( const Vec2D_Float& worldPosition );

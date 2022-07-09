@@ -100,7 +100,9 @@ std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( st
             .tileMapSpriteSliceMatrix = curr_plat["tile-map"].as<std::vector<Uint8>>(),
             .sliceRotations_in90Deg = curr_plat["quarter-turns-ccw"].as<std::vector<Uint8>>(),
             .sliceFlip_H = curr_plat["flip-horizontal"].as<std::vector<bool>>(),
-            .sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>()
+            .sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>(),
+            .ellasticCoef = curr_plat["ellastic-coef"].as<float>(),
+            .frictionCoef = curr_plat["friction-coef"].as<float>(),
         };
 
         retVal.push_back( _props );
@@ -137,7 +139,9 @@ std::vector<ActorProperties> GameConfigReader::generateActorProperties( std::str
             .spriteSheetId = currActor["sprite-sheet-id"].as<std::string>(),
             .initialPositionInWorld = _parseToVec2D_Float( currActor["initial-position"] ),
             .boundingBox_SliceCoordinates = _parseToSDL_Rect( currActor["bounding-box"] ),
-            .idleAnimationId = currActor["idle-animation-id"].as<std::string>()
+            .idleAnimationId = currActor["idle-animation-id"].as<std::string>(),
+            .mass = currActor["mass"].as<float>(),
+            .frictionCoef = currActor["friction-coef"].as<float>(),
         };
 
         actor.spriteAnimations = _generateSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );

@@ -118,6 +118,28 @@ bool FloatLine::intersectsWith( const FloatLine& other, Vec2D_Float &intersectio
 }
 
 
+
+
+
+
+bool FloatRect::collidesWith( const FloatRect &other ){
+
+    if (
+        x < other.x + other.w &&
+        x + w > other.x &&
+        y < other.y + other.h &&
+        y + h > other.y
+    ){
+        return true;
+    }
+
+    return false;
+}
+
+
+
+
+
 RotMatrix2D::RotMatrix2D(float angle_in_rad){
     matrix[0][0] = cos( angle_in_rad );
     matrix[0][1] = - sin ( angle_in_rad );
@@ -179,29 +201,4 @@ std::vector<FloatLine*> Polygon::getLinesFacingAgainst( Vec2D_Float direction ){
 
     return retval;
 
-}
-
-
-
-
-
-CollisionBox::CollisionBox(
-    const Vec2D_Int& _pointA_Cnvs,
-    const Vec2D_Int& _pointB_Cnvs,
-    const Vec2D_Float& _viewportSize,
-    float pixel_to_meter
-){
-
-    pointA_Canvas = { _pointA_Cnvs.x, _pointA_Cnvs.y };
-    pointB_Canvas = { _pointB_Cnvs.x, _pointB_Cnvs.y };
-
-    size_Canvas = {
-        pointB_Canvas.x - pointA_Canvas.x,
-        pointB_Canvas.y - pointA_Canvas.y
-    };
-
-    size_World = {
-        (float)size_Canvas.x / pixel_to_meter,
-        (float)size_Canvas.y / pixel_to_meter
-    };
 }

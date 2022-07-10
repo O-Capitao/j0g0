@@ -46,7 +46,7 @@ void RectPlatform::render(){
             _spriteSheet_p->renderSlice(
                 {
                     .x = positionCanvas.x + _matrix_col * slice.frame.w,
-                    .y = positionCanvas.y - _matrix_row * slice.frame.h
+                    .y = positionCanvas.y - (_matrix_row + 1) * slice.frame.h
                 }, 
                 slice
             );

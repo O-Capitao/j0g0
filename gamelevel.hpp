@@ -50,5 +50,7 @@ namespace j0g0 {
 
             std::vector<RectPlatform*> _platforms_p_vec;
             std::vector<Actor*> _actors_p_vec;
+
+            bool _DEBUG_STROKE = true;
     };
 }

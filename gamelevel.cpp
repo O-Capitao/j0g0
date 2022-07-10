@@ -63,13 +63,64 @@ void GameLevel::render(){
 
     _context_p->setBackgroundColor(_properties.backgroundColor);
 
+
     for (RectPlatform *_p: _platforms_p_vec){
         _p->render();
+    }
+
+    if (_DEBUG_STROKE){
+
+        SDL_SetRenderDrawColor(_context_p->renderer, 18,200,100,50);
+
+        // try plot all world coordinates between the
+        // test if start of the viewpport and the end of the vp.
+        float ppm = _viewport_p->pixel_per_meter;
+
+        for (float x = 0 ; x <= _properties.worldSize.x; x++ ){
+
+            if ( x > _viewport_p->positionInWorld.x && x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x){
+                SDL_RenderDrawLine(
+                    _context_p->renderer, 
+                    x * ppm , 
+                    0,
+                    x * ppm, 
+                    _viewport_p->canvasSize.y    
+                );
+            }
+
+
+
+        }
+
+                    
+        for ( float y = 0; y <= _properties.worldSize.y; y++){
+            if (y > _viewport_p->positionInWorld.y && y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y){
+
+                Vec2D_Float aux_p = {
+                    .x = 0,
+                    .y = y
+                };
+
+                Vec2D_Int aux_p_in_canvas = _viewport_p->viewPortToCanvas(
+                    _viewport_p->worldToViewPort( aux_p )
+                );
+
+                SDL_RenderDrawLine(
+                    _context_p->renderer,
+                    0,
+                    aux_p_in_canvas.y,
+                    _viewport_p->canvasSize.x,
+                    aux_p_in_canvas.y
+                );
+
+            }
+        }
     }
 
     for (Actor *_a: _actors_p_vec){
         _a->render();
     }
+
 }
 
 void GameLevel::update(){

@@ -56,38 +56,50 @@ platforms:
     position:
       x: 2
       y: 0
-    tile-map: [ 0, 1, 2, 3 ,4 ,5 ]
-    quarter-turns-ccw: [ 0, 0, 0, 0, 0, 0 ]
-    flip-horizontal: [ n,n,n,n,n,n ]
-    flip-vertical: [ n,n,n,n,n,n ]
+    ## give th4e indexes of each tile, starting
+    ## at the top left corner of the Platform
+    tile-map: [ 0, 1, 1, 
+                3 ,4 ,4 ]
+    
+    quarter-turns-ccw: [ 0, 0, 0, 
+                         0, 0, 0 ]
+    
+    flip-horizontal: [ n,n,n,
+                       n,n,n ]
+    
+    flip-vertical: [ n,n,n,
+                     n,n,n ]
+    
     z-index: 0
     ellastic-coef: 0.1
     friction-coef: 0
   - sprite-sheet: "candy-cotton-floor"
     size:
-      x: 2
-      y: 8
+      x: 3
+      y: 4
     position:
-      x: 4
+      x: 3.5
       y: 0
-    tile-map: [ 0, 2, 3, 5 ,3 ,5, 3, 5, 3 ,5, 3, 5, 3 ,5, 3, 5 ]
-    quarter-turns-ccw: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    flip-horizontal: [ n,n,n,n, n,n,n,n, n,n,n,n, n,n,n,n]
-    flip-vertical: [ n,n,n,n, n,n,n,n, n,n,n,n, n,n,n,n]
-    z-index: 0
-    ellastic-coef: 0.1
-    friction-coef: 0
-  - sprite-sheet: "candy-cotton-floor"
-    size:
-      x: 2
-      y: 2
-    position:
-      x: -0.5
-      y: 2
-    tile-map: [ 0, 2, 3, 5 ]
-    quarter-turns-ccw: [ 0, 0, 0, 0]
-    flip-horizontal: [ n,n,n,n ]
-    flip-vertical: [ n,n,n,n ]
+    tile-map: [ 0, 1, 2, 
+                3 ,4 ,5, 
+                4 ,4 ,5, 
+                4 ,4 ,5]
+
+    quarter-turns-ccw: [ 0, 0, 0, 
+                         0, 0, 0,
+                         0, 0, 0,
+                         0, 0, 0 ]
+
+    flip-horizontal: [ n,n,n,
+                       n,n,n,
+                       n,n,n,
+                       n,n,n ]
+
+    flip-vertical: [ n,n,n,
+                     n,n,n,
+                     n,n,n,
+                     n,n,n ]
+
     z-index: 0
     ellastic-coef: 0.1
     friction-coef: 0

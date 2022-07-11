@@ -106,7 +106,7 @@ void Actor::render(){
 
 void Actor::update(Uint32 dt){
 
-    _physicsModel.update(dt);
+    _physicsModel.update((float)dt*0.001);
     _updateSprites(dt);
 
 }

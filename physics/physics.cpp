@@ -1,5 +1,7 @@
 #include "physics.hpp"
 
+#include "math.h"
+
 using namespace j0g0;
 
 BoxPhysicsModel::BoxPhysicsModel(
@@ -11,7 +13,8 @@ BoxPhysicsModel::BoxPhysicsModel(
     _mass = m;
     _frictionCoef = fc;
     _velocity = {.x = 0, .y=0};
-    _acceleration = {.x = 0, .y=0};
+    _acceleration = {.x = 0, .y=-9.8};
+    _terminalVelocity = 50;
 
     box = b;
 
@@ -22,7 +25,17 @@ BoxPhysicsModel::BoxPhysicsModel(
 }
 
 void BoxPhysicsModel::update(float dt){
-    
+
+    if (FALLING){
+
+        if ( abs(_velocity.x /2 + _velocity.y/2) < _terminalVelocity ){
+            _velocity.x += _acceleration.x * dt ;
+            _velocity.y += _acceleration.y * dt ;
+        }
+
+        box.x += dt * _velocity.x;
+        box.y += dt *_velocity.y;
+    }
 }
 
 void BoxPhysicsModel::snapToLine(

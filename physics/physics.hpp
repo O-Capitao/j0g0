@@ -37,7 +37,7 @@ namespace j0g0 {
             const FloatRect &b
         );
         
-        void update(float dt);
+        void update(float dt_inMillisec);
 
         // when collision is detected,
         // run this to set the box into the line
@@ -50,7 +50,7 @@ namespace j0g0 {
     
             float _mass;
             float _frictionCoef;
-            
+            float _terminalVelocity;
             TrajectoryType _fallingMode;
             Vec2D_Float _velocity;
             Vec2D_Float _acceleration;

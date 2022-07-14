@@ -1,6 +1,7 @@
 #pragma once
 
 #include "optional"
+#include "SDL.h"
 
 #include "graphics/gamegeometry.hpp"
 
@@ -83,7 +84,7 @@ namespace j0g0 {
         std::vector<RectPlatformPhysicsModel*> platforms;
         std::vector<BoxPhysicsModel*> objects;
 
-        void resolveModel(float dt);
+        void resolveModel(Uint32 dt_ms);
         // void free();
 
         private:

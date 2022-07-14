@@ -119,21 +119,22 @@ bool FloatLine::intersectsWith( const FloatLine& other, Vec2D_Float &intersectio
 
 
 
-
-
-
 bool FloatRect::collidesWith( const FloatRect &other ){
 
-    if (
-        x < other.x + other.w &&
-        x + w > other.x &&
-        y < other.y + other.h &&
-        y + h > other.y
-    ){
-        return true;
+    if (y >=  (other.y + other.h)){
+        return false;
+    }
+    if ((y + h) <= other.y){
+        return false;
+    }
+    if ((x + w) <= other.x){
+        return false;
+    }
+    if (x >= (other.x + other.w)){
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 

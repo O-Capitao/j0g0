@@ -130,7 +130,77 @@ actors:
         size: 5
         slice-indexes: [4,3,2,1,0]
         slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
-    # END Actors
-  
 
- 
+  - id: "evil-eye2"
+    sprite-sheet-id: "evil-eye"
+    idle-animation-id: "idle"
+    mass: 20
+    friction-coef: 0.2
+    initial-position:
+      x: 3.34
+      y: 4
+    bounding-box:
+      x: 2
+      y: 2
+      w: 28
+      h: 28
+    sprite-animations:
+      - id: "idle"
+        size: 4
+        slice-indexes: [ 4, 3, 4, 5 ]
+        slice-durations: [200,500,1000,300]
+      - id: "look-right"
+        size: 5
+        slice-indexes: [4,3,2,1,0]
+        slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
+    # END Actors
+
+  #
+  # Bad guys first
+  - id: "evil-eye"
+    sprite-sheet-id: "evil-eye"
+    idle-animation-id: "idle"
+    mass: 20
+    friction-coef: 0.2
+    initial-position:
+      x: 6
+      y: 5
+    bounding-box:
+      x: 2
+      y: 2
+      w: 28
+      h: 28
+    sprite-animations:
+      - id: "idle"
+        size: 4
+        slice-indexes: [ 4, 3, 4, 5 ]
+        slice-durations: [200,500,1000,300]
+      - id: "look-right"
+        size: 5
+        slice-indexes: [4,3,2,1,0]
+        slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
+
+
+  # - id: "evil-eye"
+  #   sprite-sheet-id: "evil-eye"
+  #   idle-animation-id: "idle"
+  #   mass: 20
+  #   friction-coef: 0.2
+  #   initial-position:
+  #     x: 8
+  #     y: 2
+  #   bounding-box:
+  #     x: 2
+  #     y: 2
+  #     w: 28
+  #     h: 28
+  #   sprite-animations:
+  #     - id: "idle"
+  #       size: 4
+  #       slice-indexes: [ 4, 3, 4, 5 ]
+  #       slice-durations: [200,500,1000,300]
+  #     - id: "look-right"
+  #       size: 5
+  #       slice-indexes: [4,3,2,1,0]
+  #       slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
+  #   # END Actors

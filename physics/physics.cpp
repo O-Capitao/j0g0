@@ -1,6 +1,7 @@
 #include "physics.hpp"
 
 #include "math.h"
+#include "iostream"
 
 using namespace j0g0;
 
@@ -105,6 +106,7 @@ RectPlatformPhysicsModel::RectPlatformPhysicsModel(
 frictionCoef(friction_coef),
 ellasticCoef(ellastic_coef)
 {
+    // UP
     // fill matrix of border lines
     borders[0] = {
         .point_a = {
@@ -117,8 +119,8 @@ ellasticCoef(ellastic_coef)
         .horizontalLength = box.w,
         .verticalLength = 0
     };
-
-     // fill matrix of border lines
+    // LEFT
+    // fill matrix of border lines
     borders[1] = {
         .point_a = {
             .x = box.x, .y = box.y
@@ -130,8 +132,8 @@ ellasticCoef(ellastic_coef)
         .horizontalLength = 0,
         .verticalLength = box.h
     };
-
-     // fill matrix of border lines
+    // DWN
+    // fill matrix of border lines
     borders[2] = {
         .point_a = {
             .x = box.x, .y = box.y
@@ -143,8 +145,8 @@ ellasticCoef(ellastic_coef)
         .horizontalLength = box.w,
         .verticalLength = 0
     };
-
-     // fill matrix of border lines
+    // RIGHT
+    // fill matrix of border lines
     borders[3] = {
         .point_a = {
             .x = (box.x + box.w), .y = box.y
@@ -161,22 +163,7 @@ ellasticCoef(ellastic_coef)
 
 
 
-// void PlatformGamePhysics::free(){
-//     for (auto ap : objects){
-//         delete ap;
-//     }
-//     objects.empty();
 
-//     for (auto pp : platforms){
-//         delete pp;
-//     }
-//     platforms.empty();
-// }
-
-// a box flies through the level
-// will it collide in the coming update?
-//  vs
-//      did it collide in the last update?
 std::optional<StraightFloatLine> PlatformGamePhysics::_findObstacle( BoxPhysicsModel* obj ){
 
     if (obj->_velocity.x == 0 && obj->_velocity.y == 0){
@@ -210,22 +197,17 @@ std::optional<StraightFloatLine> PlatformGamePhysics::_findObstacle( BoxPhysicsM
                 
                 distance_to_surface_y = obj->box.y - p->borders[0].point_a.y;
 
-                if ( distance_to_surface_y < distance_to_surface_x ){
+                if ( abs(distance_to_surface_y) < abs(distance_to_surface_x)){
                     candidate = p->borders[0];
                 }
                 
             } else {
 
                 distance_to_surface_y = p->borders[0].point_a.y - obj->box.y;
-                if ( distance_to_surface_y < distance_to_surface_x ){
+                if ( abs(distance_to_surface_y) < abs(distance_to_surface_x) ){
                     candidate = p->borders[2];
                 }
             }
-
-            obj->snapToLine(
-                candidate,
-                SnappedPointType::BOTTOM_CENTER
-            );
 
             return candidate;
 
@@ -235,6 +217,21 @@ std::optional<StraightFloatLine> PlatformGamePhysics::_findObstacle( BoxPhysicsM
     return std::nullopt;
 }
 
-void PlatformGamePhysics::resolveModel( float dt ){
-    
+
+
+void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
+
+    float dt_s = 0.001 * (float)dt_ms;
+
+    for (BoxPhysicsModel* box_p : objects){
+
+        if (auto result = _findObstacle(box_p)) {
+            
+            box_p->snapToLine(
+                result.value(),
+                SnappedPointType::BOTTOM_CENTER
+            );
+            
+        }
+    }
 }

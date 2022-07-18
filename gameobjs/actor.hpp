@@ -1,5 +1,6 @@
 #pragma once
 
+#include "string.h"
 #include "gameobj.hpp"
 #include "gameconfig.hpp"
 #include "graphics/spritesheet.hpp"
@@ -22,6 +23,7 @@ namespace j0g0 {
         void render();
         void update(Uint32 dt);
 
+        const std::string &getId(){return _properties.id;}
         BoxPhysicsModel *getPhysicsModel_Ptr();
 
         private:

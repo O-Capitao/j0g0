@@ -10,12 +10,12 @@ GameLevel::GameLevel( std::string levelPropsFile, RenderingContext* _context, Sp
 _ssm_p(ssm)
 {
 
-    _properties = _reader.buildGameLevelProperties( levelPropsFile );
+    _properties = _reader.readGameLevelProperties( levelPropsFile );
     
-    ViewPortProperties vp_conf = _reader.generateViewPortProperties( levelPropsFile );
+    ViewPortProperties vp_conf = _reader.readViewPortProperties( levelPropsFile );
     _viewport_p = new ViewPort( vp_conf, _context->canvasProperties);
 
-    std::vector<PlatformProperties> _platforms_props = _reader.generatePlatformProperties( levelPropsFile );
+    std::vector<PlatformProperties> _platforms_props = _reader.readPlatformProperties( levelPropsFile );
 
     for (auto pp : _platforms_props){
 
@@ -29,7 +29,7 @@ _ssm_p(ssm)
  
     }
 
-    std::vector<ActorProperties> _actors_in = _reader.generateActorProperties( levelPropsFile );
+    std::vector<ActorProperties> _actors_in = _reader.readActorProperties( levelPropsFile );
 
     for (auto ap: _actors_in){
         SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(ap.spriteSheetId);
@@ -44,9 +44,6 @@ _ssm_p(ssm)
 }
 
 GameLevel::~GameLevel(){
-
-    // first release all physics models
-    // _physicsModel.free();
 
     for (auto a: _platforms_p_vec){
         delete a;
@@ -87,9 +84,6 @@ void GameLevel::render(){
                     _viewport_p->canvasSize.y    
                 );
             }
-
-
-
         }
 
                     
@@ -130,12 +124,26 @@ void GameLevel::update(){
         return;
     }
 
+    // lets cleanup before doing any work:
+    for ( auto it = _actors_p_vec.begin(); it != _actors_p_vec.end(); ){
+        if ((*it)->isGone){
+
+           _physicsModel.removeObject( (*it)->getId() );
+           delete * it;
+           it = _actors_p_vec.erase(it); 
+        
+        } else{
+            ++it;
+        }
+    }
+
     Uint32 _now = SDL_GetTicks();
     Uint32 dt = _now - _lastTick;
 
     for (Actor *_a: _actors_p_vec){
         _a->update(dt);
-    }    
+        
+    }
 
     _physicsModel.resolveModel(dt);
 
@@ -145,3 +153,4 @@ void GameLevel::update(){
 void GameLevel::handleEvents( const SDL_Event& evt ){
     // player_thing_p->handleEvent( evt );
 }
+

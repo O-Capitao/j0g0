@@ -5,7 +5,7 @@
 
 using namespace j0g0;
 
-GameLevelProperties GameConfigReader::buildGameLevelProperties( std::string config_path ){
+GameLevelProperties GameConfigReader::readGameLevelProperties( std::string config_path ){
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
 
@@ -83,7 +83,7 @@ SDL_Rect GameConfigReader::_parseToSDL_Rect(YAML::Node node){
     return rect;
 }
 
-std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( std::string config_path ){
+std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::string config_path ){
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
     YAML::Node platformsYaml = levelProperties["platforms"];
@@ -94,6 +94,7 @@ std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( st
         YAML::Node curr_plat = platformsYaml[i];
 
         PlatformProperties _props = {
+            
             .positionInWorld = _parseToVec2D_Float( curr_plat["position"]),
             .sizeInTiles = _parseToVec2D_Int(curr_plat["size"]),
             .spriteSheetId = curr_plat["sprite-sheet"].as<std::string>(),
@@ -102,7 +103,7 @@ std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( st
             .sliceFlip_H = curr_plat["flip-horizontal"].as<std::vector<bool>>(),
             .sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>(),
             .ellasticCoef = curr_plat["ellastic-coef"].as<float>(),
-            .frictionCoef = curr_plat["friction-coef"].as<float>(),
+            .frictionCoef = curr_plat["friction-coef"].as<float>()
         };
 
         retVal.push_back( _props );
@@ -111,7 +112,7 @@ std::vector<PlatformProperties> GameConfigReader::generatePlatformProperties( st
     return retVal;
 }
 
-ViewPortProperties GameConfigReader::generateViewPortProperties( std::string config_path ){
+ViewPortProperties GameConfigReader::readViewPortProperties( std::string config_path ){
 
     YAML::Node lvlProps = YAML::LoadFile( config_path );
     YAML::Node vpYaml = lvlProps["viewport"];
@@ -125,7 +126,7 @@ ViewPortProperties GameConfigReader::generateViewPortProperties( std::string con
     return vp_conf;
 }
 
-std::vector<ActorProperties> GameConfigReader::generateActorProperties( std::string config_path ){
+std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string config_path ){
     
     YAML::Node lvlProps = YAML::LoadFile( config_path );
     YAML::Node actors = lvlProps["actors"];
@@ -142,16 +143,22 @@ std::vector<ActorProperties> GameConfigReader::generateActorProperties( std::str
             .idleAnimationId = currActor["idle-animation-id"].as<std::string>(),
             .mass = currActor["mass"].as<float>(),
             .frictionCoef = currActor["friction-coef"].as<float>(),
+            .initialVelocity = {.x= 0, .y = 0}
         };
 
-        actor.spriteAnimations = _generateSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );
+        actor.spriteAnimations = _readSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );
+        
+        if (auto initialVelocity = currActor["initial-velocity"]){
+            actor.initialVelocity = _parseToVec2D_Float( currActor["initial-velocity"] );
+        }
+        
         props.push_back(actor);
     }
 
     return props;
 }
 
-std::vector<SpriteAnimationProperties> GameConfigReader::_generateSpriteAnimationProperties_ForActorProperties( YAML::Node animations ){
+std::vector<SpriteAnimationProperties> GameConfigReader::_readSpriteAnimationProperties_ForActorProperties( YAML::Node animations ){
     std::vector<SpriteAnimationProperties> retval;
 
     for (YAML::Node currAnimation: animations){

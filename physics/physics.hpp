@@ -2,6 +2,7 @@
 
 #include "optional"
 #include "SDL.h"
+#include "string"
 
 #include "graphics/gamegeometry.hpp"
 
@@ -26,8 +27,8 @@ namespace j0g0 {
         
         friend struct PlatformGamePhysics;
 
+        
         FloatRect box;
-        Vec2D_Float positionInWorld;
         bool FALLING;
 
         BoxPhysicsModel(){}
@@ -35,7 +36,9 @@ namespace j0g0 {
         BoxPhysicsModel( 
             float m, float fc,
             const Vec2D_Float &p,
-            const FloatRect &b
+            const FloatRect &b,
+            const std::string& ownerId,
+            const Vec2D_Float& initialVelocity
         );
         
         void update(float dt_inMillisec);
@@ -47,8 +50,10 @@ namespace j0g0 {
             SnappedPointType snappedPoint
         );
 
+        bool checkIfInBounds();
+
         private:
-    
+            std::string _ownerId;
             float _mass;
             float _frictionCoef;
             float _terminalVelocity;
@@ -57,6 +62,7 @@ namespace j0g0 {
             Vec2D_Float _acceleration;
             StraightFloatLine *_currentGround;
             Vec2D_Float _lastDisplacement;
+
 
     };
 
@@ -77,18 +83,33 @@ namespace j0g0 {
         // defined up-left-down-right
         StraightFloatLine borders[4];
         const float frictionCoef, ellasticCoef;
+
+        private:
+            std::string _ownerId;
         
     };
 
+    struct ObjectToPlatformCollisionPair{
+        BoxPhysicsModel *box_p;
+        RectPlatformPhysicsModel *plat_p;
+        StraightFloatLine platformBoundary;
+
+    };
+
     struct PlatformGamePhysics {
+
+        // the velocity that, on collision, we will
+        // ignore values bellow -> smoother snap to lines while bouncing
+        const float VEL_THRESHOLD = 2;
         std::vector<RectPlatformPhysicsModel*> platforms;
         std::vector<BoxPhysicsModel*> objects;
 
         void resolveModel(Uint32 dt_ms);
+        void removeObject(const std::string ownerId);
         // void free();
 
         private:
             void _checkCollisions();
-            std::optional<StraightFloatLine> _findObstacle( BoxPhysicsModel* obj );
+            std::optional<ObjectToPlatformCollisionPair> _findObstacle( BoxPhysicsModel* obj );
     };
 }

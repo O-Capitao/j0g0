@@ -40,7 +40,9 @@ Actor::Actor(
         _properties.mass,
         _properties.frictionCoef,
         _properties.initialPositionInWorld,
-        _bbWorld
+        _bbWorld,
+        _properties.id,
+        _properties.initialVelocity
     );
 
 
@@ -55,6 +57,8 @@ Actor::Actor(
 }
 
 Actor::~Actor(){
+
+    printf("Killing Actor\n");
     _viewport_p = nullptr;
     _spriteSheet_p = nullptr;
     _activeAnimation_p = nullptr;
@@ -108,6 +112,7 @@ void Actor::update(Uint32 dt){
 
     _physicsModel.update((float)dt*0.001);
     _updateSprites(dt);
+    isGone = _physicsModel.checkIfInBounds();
 
 }
 

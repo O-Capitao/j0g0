@@ -19,6 +19,7 @@ namespace j0g0 {
 
     struct PlatformProperties{
 
+        std::string id;
         Vec2D_Float positionInWorld;
         Vec2D_Int sizeInTiles;
         std::string spriteSheetId;
@@ -52,6 +53,7 @@ namespace j0g0 {
         std::string spriteSheetId;
 
         Vec2D_Float initialPositionInWorld;
+        Vec2D_Float initialVelocity;
         SDL_Rect boundingBox_SliceCoordinates;
 
         std::vector<SpriteAnimationProperties> spriteAnimations;
@@ -65,7 +67,7 @@ namespace j0g0 {
     
     struct GameConfigReader {
         
-        GameLevelProperties buildGameLevelProperties( std::string config_path );
+        GameLevelProperties readGameLevelProperties( std::string config_path );
         
         void addLevelSpritesToManager( 
             std::string config_path,
@@ -73,9 +75,9 @@ namespace j0g0 {
             SpriteSheetManager *ssm
         );
 
-        std::vector<PlatformProperties> generatePlatformProperties( std::string config_path );
-        ViewPortProperties generateViewPortProperties( std::string config_path );
-        std::vector<ActorProperties> generateActorProperties( std::string config_path );
+        std::vector<PlatformProperties> readPlatformProperties( std::string config_path );
+        ViewPortProperties readViewPortProperties( std::string config_path );
+        std::vector<ActorProperties> readActorProperties( std::string config_path );
         
         private:
         
@@ -85,7 +87,7 @@ namespace j0g0 {
             SDL_Color _parseToSDL_Color(YAML::Node node);
             SDL_Rect _parseToSDL_Rect(YAML::Node node);
 
-            std::vector<SpriteAnimationProperties> _generateSpriteAnimationProperties_ForActorProperties( YAML::Node animations );
+            std::vector<SpriteAnimationProperties> _readSpriteAnimationProperties_ForActorProperties( YAML::Node animations );
 
     };
 

@@ -9,11 +9,14 @@ BoxPhysicsModel::BoxPhysicsModel(
     float m,
     float fc,
     const Vec2D_Float &p,
-    const FloatRect &b) {
-    
+    const FloatRect &b,
+    const std::string& ownerId,
+    const Vec2D_Float &v0 )
+{
+    _ownerId = ownerId;
     _mass = m;
     _frictionCoef = fc;
-    _velocity = {.x = 0, .y=0};
+    _velocity = v0;
     _acceleration = {.x = 0, .y=-9.8};
     _terminalVelocity = 50;
 
@@ -33,9 +36,8 @@ void BoxPhysicsModel::update(float dt){
             _velocity.x += _acceleration.x * dt ;
             _velocity.y += _acceleration.y * dt ;
         }
-
         box.x += dt * _velocity.x;
-        box.y += dt *_velocity.y;
+        box.y += dt *_velocity.y;   
     }
 }
 
@@ -88,10 +90,11 @@ void BoxPhysicsModel::snapToLine(
 
         }
     }
-
 }
 
-
+bool BoxPhysicsModel::checkIfInBounds(){
+    return (box.y + box.h < 0);
+}
 
 
 
@@ -164,7 +167,7 @@ ellasticCoef(ellastic_coef)
 
 
 
-std::optional<StraightFloatLine> PlatformGamePhysics::_findObstacle( BoxPhysicsModel* obj ){
+std::optional<ObjectToPlatformCollisionPair> PlatformGamePhysics::_findObstacle( BoxPhysicsModel* obj ){
 
     if (obj->_velocity.x == 0 && obj->_velocity.y == 0){
         return std::nullopt;
@@ -209,7 +212,13 @@ std::optional<StraightFloatLine> PlatformGamePhysics::_findObstacle( BoxPhysicsM
                 }
             }
 
-            return candidate;
+            ObjectToPlatformCollisionPair res = {
+                .box_p = obj,
+                .plat_p = p,
+                .platformBoundary = candidate
+            };
+
+            return res;
 
         }
     }
@@ -226,12 +235,54 @@ void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
     for (BoxPhysicsModel* box_p : objects){
 
         if (auto result = _findObstacle(box_p)) {
+
+            ObjectToPlatformCollisionPair result_value = result.value();
+
+            if (result_value.plat_p->ellasticCoef>0){
+                // there can be some bounce back
+                // vertical impact
+
+                if (result_value.platformBoundary.verticalLength == 0 && abs( box_p->_velocity.y ) > VEL_THRESHOLD){
+                
+                    box_p->box.y = result_value.platformBoundary.point_a.y;
+                    box_p->_velocity.y = -result_value.plat_p->ellasticCoef * box_p->_velocity.y;
+                
+                } else if (result_value.platformBoundary.horizontalLength == 0 && abs( box_p->_velocity.x ) > VEL_THRESHOLD){
+                
+                    box_p->_velocity.x = -result_value.plat_p->ellasticCoef * box_p->_velocity.x;
+                
+                } else {
+
+                    box_p->snapToLine(
+                        result_value.platformBoundary,
+                        SnappedPointType::BOTTOM_CENTER
+                    );
+                }
+
+            } else {
+
+                box_p->snapToLine(
+                    result_value.platformBoundary,
+                    SnappedPointType::BOTTOM_CENTER
+                );
+
+            }
             
-            box_p->snapToLine(
-                result.value(),
-                SnappedPointType::BOTTOM_CENTER
-            );
-            
+
+
+        }
+
+    }
+}
+
+void PlatformGamePhysics::removeObject( const std::string id ){
+    for ( auto it = objects.begin(); it != objects.end(); ){
+        if ((*it)->_ownerId == id){
+        //    delete * it;
+           it = objects.erase(it); 
+        } else{
+            ++it;
         }
     }
 }
+

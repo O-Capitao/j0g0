@@ -48,7 +48,8 @@ sprite-sheets:
 #
 # PLATFORMS SECTION
 platforms:
-  - sprite-sheet: "candy-cotton-floor"
+  - id: "plat_1"
+    sprite-sheet: "candy-cotton-floor"
     size:
       x: 3
       y: 2
@@ -71,9 +72,12 @@ platforms:
                      n,n,n ]
     
     z-index: 0
-    ellastic-coef: 0.1
+    ## defines the amount of velocity 
+    ## that is given back to a bouncing object
+    ellastic-coef: 0.5
     friction-coef: 0
-  - sprite-sheet: "candy-cotton-floor"
+  - id: "plat_2"
+    sprite-sheet: "candy-cotton-floor"
     size:
       x: 3
       y: 4
@@ -101,18 +105,21 @@ platforms:
                      n,n,n ]
 
     z-index: 0
-    ellastic-coef: 0.1
+    ellastic-coef: 0.9
     friction-coef: 0
+
 #
 # ACTORS
 actors:
-  #
-  # Bad guys first
-  - id: "evil-eye"
+  - id: "evil-eye-1"
     sprite-sheet-id: "evil-eye"
     idle-animation-id: "idle"
     mass: 20
     friction-coef: 0.2
+    # optional
+    initial-velocity:
+      x: 1
+      y: 0
     initial-position:
       x: 1.75
       y: 3
@@ -130,8 +137,7 @@ actors:
         size: 5
         slice-indexes: [4,3,2,1,0]
         slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
-
-  - id: "evil-eye2"
+  - id: "evil-eye-2"
     sprite-sheet-id: "evil-eye"
     idle-animation-id: "idle"
     mass: 20
@@ -152,12 +158,9 @@ actors:
       - id: "look-right"
         size: 5
         slice-indexes: [4,3,2,1,0]
-        slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
-    # END Actors
-
-  #
-  # Bad guys first
-  - id: "evil-eye"
+        # INDEFINITE DURATION : val=0 means hold frame indefinetely
+        slice-durations: [50,70,80,90,0] 
+  - id: "evil-eye-3"
     sprite-sheet-id: "evil-eye"
     idle-animation-id: "idle"
     mass: 20
@@ -179,28 +182,30 @@ actors:
         size: 5
         slice-indexes: [4,3,2,1,0]
         slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
+  - id: "evil-eye-4"
+    sprite-sheet-id: "evil-eye"
+    idle-animation-id: "idle"
+    mass: 20
+    friction-coef: 0.2
+    initial-position:
+      x: 0
+      y: 1
+    initial-velocity:
+      x: 2.7
+      y: 2
+    bounding-box:
+      x: 2
+      y: 2
+      w: 28
+      h: 28
+    sprite-animations:
+      - id: "idle"
+        size: 4
+        slice-indexes: [ 4, 3, 4, 5 ]
+        slice-durations: [200,500,1000,300]
+      - id: "look-right"
+        size: 5
+        slice-indexes: [4,3,2,1,0]
+        slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
 
-
-  # - id: "evil-eye"
-  #   sprite-sheet-id: "evil-eye"
-  #   idle-animation-id: "idle"
-  #   mass: 20
-  #   friction-coef: 0.2
-  #   initial-position:
-  #     x: 8
-  #     y: 2
-  #   bounding-box:
-  #     x: 2
-  #     y: 2
-  #     w: 28
-  #     h: 28
-  #   sprite-animations:
-  #     - id: "idle"
-  #       size: 4
-  #       slice-indexes: [ 4, 3, 4, 5 ]
-  #       slice-durations: [200,500,1000,300]
-  #     - id: "look-right"
-  #       size: 5
-  #       slice-indexes: [4,3,2,1,0]
-  #       slice-durations: [50,70,80,90,0] # 0 value means hold frame indefinetely
   #   # END Actors

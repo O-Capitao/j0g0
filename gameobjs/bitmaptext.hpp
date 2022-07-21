@@ -15,8 +15,9 @@ namespace j0g0 {
         void render();
         void update(Uint32 dt){};
 
-        void setContent(const std::string& message);
+        void setContent(const std::string &message);
         void setPositionInCanvas(const Vec2D_Int &_newPosition);
+        const Vec2D_Int &getPositionInCanvas(){ return _positionInCanvas; };
         const Vec2D_Int &getContentSize();
         
         private:

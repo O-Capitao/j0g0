@@ -137,8 +137,17 @@ void GameLevel::update(){
         }
     }
 
-    Uint32 _now = SDL_GetTicks();
-    Uint32 dt = _now - _lastTick;
+    Uint32 _now, dt;
+    if (CONSTANT_STEP_MODE){
+
+        dt = 17;
+        _now = _lastTick + dt;
+
+    }else {
+        _now = SDL_GetTicks();
+        dt = _now - _lastTick;
+    }
+
 
     for (Actor *_a: _actors_p_vec){
         _a->update(dt);

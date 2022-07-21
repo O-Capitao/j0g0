@@ -267,11 +267,7 @@ void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
                 );
 
             }
-            
-
-
         }
-
     }
 }
 

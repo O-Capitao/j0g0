@@ -35,17 +35,38 @@ GameState::~GameState(){
  */
 PauseState::PauseState(RenderingContext* cntxt, SpriteSheetManager *ssm)
 :GameState(cntxt,ssm),
-message( cntxt, ssm->getSpriteSheet("bitmap-text") )
+_headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
 {
-    background_color = {.r = 255, .g = 107, .b= 151, .a = 255 };
-    _context_p->setBackgroundColor(background_color);
+    _background_color = {.r = 255, .g = 107, .b= 151, .a = 255 };
+    _context_p->setBackgroundColor(_background_color);
 
-    message.setContent("PAUSE");
+    _headerMessage.setContent("PAUSE");
     
-    message.setPositionInCanvas({
-        .x = (_context_p->canvasProperties.size.x - message.getContentSize().x)/2,
-        .y = (_context_p->canvasProperties.size.y - message.getContentSize().y)/2,
+    _headerMessage.setPositionInCanvas({
+        // x is centered
+        .x = (_context_p->canvasProperties.size.x - _headerMessage.getContentSize().x)/2,
+        // y has an offset of 100 to the top
+        .y = (_context_p->canvasProperties.size.y - _headerMessage.getContentSize().y)/2 - 50,
     });
+    
+    int optCounter = 0;
+    _activeOptionIndex = 0;
+    // remainging options
+    for (auto optText : _optionTexts){
+        BitmapText opt( cntxt, _spriteSheetManager_p->getSpriteSheet("bitmap-text") );
+        opt.setContent(optText);
+
+        opt.setPositionInCanvas({
+            .x = (_context_p->canvasProperties.size.x - _headerMessage.getContentSize().x)/2,
+            .y = (_context_p->canvasProperties.size.y - _headerMessage.getContentSize().y)/2 + optPixelOffsert * optCounter++,
+        });
+
+        _options.push_back(opt);
+    }
+
+    printf("Built PauseState\n");
+
+
 }
 
 PauseState::~PauseState(){
@@ -54,9 +75,15 @@ PauseState::~PauseState(){
 void PauseState::render(){
 
     _context_p->beginRenderStep();
-    _context_p->setBackgroundColor(background_color);
+    _context_p->setBackgroundColor(_background_color);
     
-    message.render();
+    _headerMessage.render();
+
+    for (auto _opt : _options){
+        _opt.render();
+    }
+
+    _renderSelectionCarat();
 
     _context_p->endRenderStep();
 }
@@ -74,11 +101,44 @@ size_t PauseState::handleEvents()
 
         } else if (e.type == SDL_KEYDOWN){
 
-            switch( e.key.keysym.sym )
+            switch( _actionKeyMap( e.key.keysym.sym ) )
             {
-                case SDLK_SPACE:
-                ret_val = GameStates::STATE_PLAY;
-                break;
+                case (_PauseActionsEnum::ESCAPE):
+                    ret_val = GameStates::STATE_PLAY;
+                    break;
+                case _PauseActionsEnum::NAVIGATE_DOWN:
+                    if (_activeOptionIndex == 2){
+                        _activeOptionIndex = 0;
+                    } else {
+                        _activeOptionIndex++;
+                    }
+                    break;
+                case _PauseActionsEnum::NAVIGATE_UP:
+                    if (_activeOptionIndex == 0){
+                        _activeOptionIndex = 2;
+                    } else {
+                        _activeOptionIndex--;
+                    } 
+                    break;
+                case _PauseActionsEnum::ACCEPT:
+                    switch (_activeOptionIndex)
+                    {
+
+                        case 0:
+                            _restart();
+                            ret_val = GameStates::STATE_PLAY;
+                            break;
+                        case 1:
+                            ret_val = GameStates::STATE_EXIT;
+                            break;
+                        case 2:
+                            _resume();
+                            ret_val = GameStates::STATE_PLAY;
+                            break;
+                        default:
+                            throw std::runtime_error("Invalid Pause State Opt. Bad Progrm State.");
+                    }
+                    break;
             }
         }
     }
@@ -88,11 +148,46 @@ size_t PauseState::handleEvents()
 void PauseState::update(){
 }
 
+PauseState::_PauseActionsEnum PauseState::_actionKeyMap( SDL_Keycode key ){
+
+    if ( key == SDLK_SPACE || key == SDLK_RETURN || key == SDLK_RETURN2){
+        return _PauseActionsEnum::ACCEPT;
+    } else if ( key == SDLK_UP ){
+        return _PauseActionsEnum::NAVIGATE_UP;
+    } else if ( key == SDLK_DOWN ){
+        return _PauseActionsEnum::NAVIGATE_DOWN;
+    } else if ( key == SDLK_ESCAPE || key == SDLK_SPACE){
+        return _PauseActionsEnum::ESCAPE;
+    }
+
+    return _PauseActionsEnum::IDLE;
+}
 
 
+// one of these will be the default behavior when we switch State
+void PauseState::_restart(){
 
+}
 
+void PauseState::_resume(){
+    
+}
 
+void PauseState::_renderSelectionCarat(){
+    // do it very stupid for now
+    BitmapText &activeOpt = _options[_activeOptionIndex];
+    Vec2D_Int position = activeOpt.getPositionInCanvas();
+
+    SDL_Rect carat = {
+        .h = 6,
+        .w = 6,
+        .x = position.x - 8,
+        .y = position.y + 1
+    };
+
+    SDL_SetRenderDrawColor(_context_p->renderer, 255,255,235,SDL_ALPHA_OPAQUE);
+    SDL_RenderDrawRect( _context_p->renderer, &carat );
+}
 /*
  *  PlayState
  * 
@@ -147,7 +242,7 @@ size_t PlayState::handleEvents(){
             
             retval = GameStates::STATE_EXIT;
 
-        } else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP ){
+        } else if (e.type == SDL_KEYDOWN ){
 
             if ( e.key.keysym.sym == SDLK_ESCAPE ){
                 retval = GameStates::STATE_PAUSE;

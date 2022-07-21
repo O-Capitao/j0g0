@@ -31,7 +31,7 @@ namespace j0g0 {
     };
 
 
-
+    
 
 
 
@@ -43,10 +43,35 @@ namespace j0g0 {
         void render();
         void update();
         size_t handleEvents();
-        
+
         private:
-            SDL_Color background_color;
-            BitmapText message;
+            
+            const int optPixelOffsert = 15;
+            SDL_Color _background_color;
+            BitmapText _headerMessage;
+            std::vector<BitmapText> _options;
+            
+            const std::string _optionTexts[3] = {
+                "RESUME",
+                "RESTART",
+                "QUIT"
+            };
+
+            int _activeOptionIndex;
+
+            enum _PauseActionsEnum {
+                ACCEPT,
+                ESCAPE,
+                NAVIGATE_UP,
+                NAVIGATE_DOWN,
+                IDLE
+            };
+
+            void _restart();
+            void _resume();
+            void _quit();
+            void _renderSelectionCarat();
+            _PauseActionsEnum _actionKeyMap( SDL_Keycode key );
     };
 
 

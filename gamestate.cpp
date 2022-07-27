@@ -125,21 +125,21 @@ size_t PauseState::handleEvents()
                     {
 
                         case 0:
-                            _restart();
+                            
                             ret_val = GameStates::STATE_PLAY;
                             break;
                         case 1:
-                            ret_val = GameStates::STATE_EXIT;
+                            RESTART_FLAG = true;
+                            ret_val = GameStates::STATE_PLAY;
                             break;
                         case 2:
-                            _resume();
-                            ret_val = GameStates::STATE_PLAY;
+                            ret_val = GameStates::STATE_EXIT;
                             break;
                         default:
                             throw std::runtime_error("Invalid Pause State Opt. Bad Progrm State.");
                     }
                     break;
-            }
+            } 
         }
     }
     return ret_val;
@@ -150,27 +150,15 @@ void PauseState::update(){
 
 PauseState::_PauseActionsEnum PauseState::_actionKeyMap( SDL_Keycode key ){
 
-    if ( key == SDLK_SPACE || key == SDLK_RETURN || key == SDLK_RETURN2){
+    if ( key == SDLK_RETURN || key == SDLK_RETURN2){
         return _PauseActionsEnum::ACCEPT;
     } else if ( key == SDLK_UP ){
         return _PauseActionsEnum::NAVIGATE_UP;
     } else if ( key == SDLK_DOWN ){
         return _PauseActionsEnum::NAVIGATE_DOWN;
-    } else if ( key == SDLK_ESCAPE || key == SDLK_SPACE){
-        return _PauseActionsEnum::ESCAPE;
     }
 
     return _PauseActionsEnum::IDLE;
-}
-
-
-// one of these will be the default behavior when we switch State
-void PauseState::_restart(){
-
-}
-
-void PauseState::_resume(){
-    
 }
 
 void PauseState::_renderSelectionCarat(){
@@ -188,6 +176,11 @@ void PauseState::_renderSelectionCarat(){
     SDL_SetRenderDrawColor(_context_p->renderer, 255,255,235,SDL_ALPHA_OPAQUE);
     SDL_RenderDrawRect( _context_p->renderer, &carat );
 }
+
+
+
+
+
 /*
  *  PlayState
  * 

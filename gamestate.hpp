@@ -23,7 +23,8 @@ namespace j0g0 {
             virtual void render() = 0;
             virtual void update() = 0;
             virtual size_t handleEvents() = 0;
-
+            
+            bool RESTART_FLAG = false;
         protected:
         
             RenderingContext* _context_p;
@@ -43,6 +44,8 @@ namespace j0g0 {
         void render();
         void update();
         size_t handleEvents();
+
+        
 
         private:
             
@@ -67,9 +70,6 @@ namespace j0g0 {
                 IDLE
             };
 
-            void _restart();
-            void _resume();
-            void _quit();
             void _renderSelectionCarat();
             _PauseActionsEnum _actionKeyMap( SDL_Keycode key );
     };

@@ -8,6 +8,8 @@
 using namespace j0g0;
 
 Game::~Game(){
+    state = nullptr;
+    _playState = nullptr;
 }
 
 void Game::init(RenderingContext* _context)
@@ -24,7 +26,8 @@ void Game::init(RenderingContext* _context)
         spriteSheetManager
     );
 
-    state = NULL;
+    state = nullptr;
+    _playState = nullptr;
 
     // initial state is PauseState
     stateId = GameStates::STATE_PAUSE;
@@ -32,8 +35,9 @@ void Game::init(RenderingContext* _context)
     // no State Change scheduled until User Input
     nextState = stateId;
 
-    // Init Pause State
+    // Init States
     state = new PauseState(context,spriteSheetManager);
+    _playState = new PlayState( context,spriteSheetManager );
 }
 
 void Game::run(){
@@ -65,15 +69,25 @@ void Game::run(){
 void Game::changeState(){
     if( nextState != stateId ){
         
-        //Delete the current state
-        delete state;
-
         switch (nextState){
             case GameStates::STATE_PAUSE:
                 state = new PauseState( context,spriteSheetManager );
                 break;
             case GameStates::STATE_PLAY:
-                state = new PlayState( context,spriteSheetManager );
+            
+                // delete (current) pause state 
+                bool restartRequested = state->RESTART_FLAG;
+                delete state;
+
+                if (restartRequested){
+                    delete _playState;
+                    // _playState = NULL;
+                    _playState = new PlayState( context,spriteSheetManager );
+                    
+                }
+                
+                state = _playState;
+                
                 break;
         }
 

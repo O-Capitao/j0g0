@@ -12,6 +12,7 @@ namespace j0g0 {
         RenderingContext* context;
         SpriteSheetManager *spriteSheetManager;
         GameState* state;
+        
 
         // TODO - make this an array or Collection
         GameLevelProperties level;
@@ -23,6 +24,9 @@ namespace j0g0 {
         void changeState();
 
         private:
+            // keep a persistent ptr to a PlayState.
+            PlayState* _playState = nullptr;
+            
             void _cleanUp();
             void _initSpriteSheets();
             

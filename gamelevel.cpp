@@ -21,11 +21,21 @@ _ssm_p(ssm)
 
         SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(pp.spriteSheetId);
 
-        _platforms_p_vec.push_back( 
-            new RectPlatform( _context_p, _used_ss, _viewport_p, pp ) 
-        );
 
-        _physicsModel.platforms.push_back(  _platforms_p_vec.back()->getPhysicsModel_ptr() );
+        if (pp.isMovingPlatform){
+
+            _platforms_p_vec.push_back( 
+                new MovingRectPlatform( _context_p, _used_ss, _viewport_p, pp ) 
+            );
+
+        }else {
+            _platforms_p_vec.push_back( 
+                new RectPlatform( _context_p, _used_ss, _viewport_p, pp ) 
+            );
+
+            _physicsModel.platforms.push_back(  _platforms_p_vec.back()->getPhysicsModel_ptr() );
+        }
+
  
     }
 
@@ -57,7 +67,6 @@ GameLevel::~GameLevel(){
 }
 
 void GameLevel::render(){
-
     _context_p->setBackgroundColor(_properties.backgroundColor);
 
 
@@ -118,7 +127,7 @@ void GameLevel::render(){
 }
 
 void GameLevel::update(){
-
+    
     if (_lastTick == 0){
         _lastTick = SDL_GetTicks();
         return;
@@ -152,6 +161,10 @@ void GameLevel::update(){
     for (Actor *_a: _actors_p_vec){
         _a->update(dt);
         
+    }
+
+    for (RectPlatform* p : _platforms_p_vec){
+        p->update(dt);
     }
 
     _physicsModel.resolveModel(dt);

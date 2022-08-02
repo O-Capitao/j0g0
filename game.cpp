@@ -21,7 +21,8 @@ void Game::init(RenderingContext* _context)
     GameConfigReader _reader;
     
     _reader.addLevelSpritesToManager(
-        "config/test_level.yaml",
+        // "config/test_level.yaml",
+        "config/space_adv_l0.yaml",
         _context,
         spriteSheetManager
     );

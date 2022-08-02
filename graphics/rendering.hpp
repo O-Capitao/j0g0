@@ -6,6 +6,8 @@
 
 namespace j0g0 {
 
+    // TODO - move to configurations, 
+    // set in yaml
     struct CanvasProperties {
 
         Vec2D_Int size;

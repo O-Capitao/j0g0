@@ -17,6 +17,12 @@ namespace j0g0 {
         SDL_Color backgroundColor;
     };
 
+    struct PlatformKeyPositionProperties{
+        Vec2D_Float point;
+        float timeArrival_s;
+        float timeRest_s;
+    };
+
     struct PlatformProperties{
 
         std::string id;
@@ -24,14 +30,19 @@ namespace j0g0 {
         Vec2D_Int sizeInTiles;
         std::string spriteSheetId;
         std::vector<Uint8> tileMapSpriteSliceMatrix;
+
         // ranging from 0 - 180. For larger values use flip
         std::vector<Uint8> sliceRotations_in90Deg;
         std::vector<bool>sliceFlip_H;
         std::vector<bool>sliceFlip_V;
 
         float ellasticCoef, frictionCoef;
+        bool isMovingPlatform = false;
 
+        std::vector<PlatformKeyPositionProperties> keyPositions_vec;
     };
+
+
 
     struct ViewPortProperties{
         Vec2D_Float worldPosition;
@@ -86,6 +97,8 @@ namespace j0g0 {
             Vec2D_Int _parseToVec2D_Int(YAML::Node node);
             SDL_Color _parseToSDL_Color(YAML::Node node);
             SDL_Rect _parseToSDL_Rect(YAML::Node node);
+
+            PlatformKeyPositionProperties _parsePlatformKeyPositionProperties( YAML::Node node );
 
             std::vector<SpriteAnimationProperties> _readSpriteAnimationProperties_ForActorProperties( YAML::Node animations );
 

@@ -139,6 +139,8 @@ size_t PauseState::handleEvents()
                             throw std::runtime_error("Invalid Pause State Opt. Bad Progrm State.");
                     }
                     break;
+                default:
+                    throw std::runtime_error("Invalid Pause Act Opt. Bad Progrm State.");
             } 
         }
     }
@@ -185,9 +187,10 @@ void PauseState::_renderSelectionCarat(){
  *  PlayState
  * 
  */
+// TODO - a central config file path
 PlayState::PlayState( RenderingContext* cntxt, SpriteSheetManager *ssm )
 :GameState(cntxt,ssm ), 
-level( "config/test_level.yaml", cntxt, ssm )
+level( "config/space_adv_l0.yaml", cntxt, ssm )
 {
 
     frameCounter = 0;

@@ -26,15 +26,46 @@ namespace j0g0{
         void update(Uint32 dt){};
         RectPlatformPhysicsModel *getPhysicsModel_ptr();
         
-        private:
-            
+        protected:
             PlatformProperties _properties;
             RectPlatformPhysicsModel _model;
+
+        private:
             SpriteSheet *_spriteSheet_p;
+            
             TileMap _tileMap;;
             ViewPort *_viewport_p;
 
             std::vector<SpriteSlice> _calculateTileSetFromConfig();
 
+    };
+
+
+    struct MovingRectPlatformKeyFrame {
+        Vec2D_Float p;
+        float t_arrival_s;
+        float t_wait_s;
+        static bool compare( const MovingRectPlatformKeyFrame &o1,  const MovingRectPlatformKeyFrame &o2);
+    };
+
+    struct MovingRectPlatform: public RectPlatform {
+
+        MovingRectPlatform(
+            RenderingContext* _context, 
+            SpriteSheet* _spriteSheet,
+            ViewPort *vp,
+            PlatformProperties &properties
+        );
+
+        void update(Uint32 dt);
+
+        private:
+            std::vector<MovingRectPlatformKeyFrame> _keyFrames;
+            std::vector<MovingRectPlatformKeyFrame> _getKeyFramesFromConfig(PlatformProperties &properties);
+            Vec2D_Float _findPositionAtTime( float t_s );
+
+            float _totaCycleDuration_s;
+            float _currentCycleTime_s;
+            int _currentKeyFrame_Index;
     };
 }

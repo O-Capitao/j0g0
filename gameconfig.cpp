@@ -83,8 +83,10 @@ SDL_Rect GameConfigReader::_parseToSDL_Rect(YAML::Node node){
     return rect;
 }
 
-std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::string config_path ){
 
+
+std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::string config_path ){
+    printf("entering platform propertes\n");
     YAML::Node levelProperties = YAML::LoadFile( config_path );
     YAML::Node platformsYaml = levelProperties["platforms"];
     std::vector<PlatformProperties> retVal;
@@ -99,16 +101,50 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::s
             .sizeInTiles = _parseToVec2D_Int(curr_plat["size"]),
             .spriteSheetId = curr_plat["sprite-sheet"].as<std::string>(),
             .tileMapSpriteSliceMatrix = curr_plat["tile-map"].as<std::vector<Uint8>>(),
-            .sliceRotations_in90Deg = curr_plat["quarter-turns-ccw"].as<std::vector<Uint8>>(),
-            .sliceFlip_H = curr_plat["flip-horizontal"].as<std::vector<bool>>(),
-            .sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>(),
             .ellasticCoef = curr_plat["ellastic-coef"].as<float>(),
             .frictionCoef = curr_plat["friction-coef"].as<float>()
         };
 
+        // Optional properties
+        if (auto qt = curr_plat["quarter-turns-ccw"]){
+            _props.sliceRotations_in90Deg = curr_plat["quarter-turns-ccw"].as<std::vector<Uint8>>();
+        } else {
+            _props.sliceRotations_in90Deg = { 0 , 0 , 0 };
+        }
+
+        if (auto fh = curr_plat["flip-horizontal"]){
+            _props.sliceFlip_H = curr_plat["flip-horizontal"].as<std::vector<bool>>();
+        } else {
+            _props.sliceFlip_H = { 0 , 0 , 0 };
+        }
+
+        if (auto fv = curr_plat["flip-vertical"]){
+            _props.sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>();
+        } else {
+            _props.sliceFlip_V = { 0 , 0 , 0 };
+        }
+
+
+        // Optional - only for moving plats
+        if (auto _keyPositions = curr_plat["key-positions"]){
+            
+            _props.isMovingPlatform = true;
+           
+            for (std::size_t i=0 ; i < _keyPositions.size(); i++) {
+
+                YAML::Node curr_point = _keyPositions[i];
+
+                _props.keyPositions_vec.push_back({
+                    .point = _parseToVec2D_Float( curr_point["point"] ),
+                    .timeArrival_s = curr_point["time-arrival"].as<float>(),
+                    .timeRest_s = curr_point["time-rest"].as<float>(),
+                });
+            }
+        }
+
         retVal.push_back( _props );
     }
-
+    printf("built platform propertes\n");
     return retVal;
 }
 
@@ -148,6 +184,7 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
 
         actor.spriteAnimations = _readSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );
         
+        // Optional properties
         if (auto initialVelocity = currActor["initial-velocity"]){
             actor.initialVelocity = _parseToVec2D_Float( currActor["initial-velocity"] );
         }

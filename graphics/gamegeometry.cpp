@@ -203,3 +203,13 @@ std::vector<FloatLine*> Polygon::getLinesFacingAgainst( Vec2D_Float direction ){
     return retval;
 
 }
+
+
+
+
+
+
+void Vec2D_Float::setBothCoordsTo(const float &val){
+    x = val;
+    y = val;
+};

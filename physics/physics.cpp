@@ -109,7 +109,19 @@ RectPlatformPhysicsModel::RectPlatformPhysicsModel(
 frictionCoef(friction_coef),
 ellasticCoef(ellastic_coef)
 {
-    // UP
+    recalculateBorders();
+
+    velocity = {
+        .x = 0, .y = 0
+    };
+
+    acceleration = {
+        .x = 0, .y = 0
+    };
+}
+
+void RectPlatformPhysicsModel::recalculateBorders(){
+       // UP
     // fill matrix of border lines
     borders[0] = {
         .point_a = {
@@ -163,7 +175,6 @@ ellasticCoef(ellastic_coef)
     };
 
 }
-
 
 
 
@@ -226,11 +237,9 @@ std::optional<ObjectToPlatformCollisionPair> PlatformGamePhysics::_findObstacle(
     return std::nullopt;
 }
 
-
-
 void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
 
-    float dt_s = 0.001 * (float)dt_ms;
+    // float dt_s = 0.001 * (float)dt_ms;
 
     for (BoxPhysicsModel* box_p : objects){
 

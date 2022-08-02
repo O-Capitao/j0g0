@@ -15,6 +15,8 @@ namespace j0g0 {
     struct Vec2D_Float {
         float x, y;
         const Vec2D_Float &sumWith( const Vec2D_Float &other );
+
+        void setBothCoordsTo(const float &val);
     }; 
 
     struct FloatRect {

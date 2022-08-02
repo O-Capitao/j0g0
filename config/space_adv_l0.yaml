@@ -1,0 +1,77 @@
+---
+#
+# LEVEL SECTION
+title: "Space Adventure - Level 0"
+world-size:
+  x: 10
+  y: 10
+background-color:
+  r: 34
+  g: 35
+  b: 35
+viewport:
+  position:
+    x: 0
+    y: 0
+  width: 10
+#
+# SPRITES SECTION
+sprite-sheets:
+#
+  - id: "moving-platform"
+    path: "asset_space/movingPlat_tileset16_16.png"
+    slice-size:
+      x: 16
+      y: 16
+    scaling-factor: 1
+  - id: "bitmap-text"
+    path: "asset/text2.png"
+    slice-size:
+      x: 8
+      y: 8
+    scaling-factor: 1
+#
+# PLATFORMS SECTION
+platforms:
+  - id: "moving-plat-1"
+    sprite-sheet: "moving-platform"
+    size:
+      x: 3
+      y: 1
+    ## specificy the lower left point of the platforms base.
+    position:
+      x: 2
+      y: 1
+    ## give th4e indexes of each tile, starting
+    ## at the top left corner of the Platform
+    tile-map: [ 0, 1, 0 ]
+
+    z-index: 0
+    ## defines the amount of velocity 
+    ## that is given back to a bouncing object
+    ellastic-coef: 0.5
+    friction-coef: 0
+    # OPTIONAL
+    flip-horizontal: [ n,n,y ]
+    
+    # moving platform properties
+    # point_b:
+    #   x: 2
+    #   y: 4
+    # wait-at-edge: 5
+    # max-velocity: 2
+    # acceleration: 3
+    # to define the Platform's movement,
+    # we pass a sequence of key positions at certain times
+    key-positions:
+      - point:
+          x: 2
+          y: 4
+        time-arrival: 0
+        time-rest: 2
+      - point:
+          x: 2
+          y: 2
+        time-arrival: 4
+        time-rest: 3
+# END

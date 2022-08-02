@@ -23,8 +23,11 @@ namespace j0g0 {
         BOTTOM_CENTER
     };
 
+
     struct BoxPhysicsModel {
         
+        // make the overall physics runtime
+        // a friend of this class
         friend struct PlatformGamePhysics;
 
         
@@ -83,6 +86,12 @@ namespace j0g0 {
         // defined up-left-down-right
         StraightFloatLine borders[4];
         const float frictionCoef, ellasticCoef;
+
+        Vec2D_Float velocity;
+        Vec2D_Float acceleration;
+
+        // run this after updating the box position.
+        void recalculateBorders();
 
         private:
             std::string _ownerId;

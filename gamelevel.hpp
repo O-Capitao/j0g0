@@ -37,7 +37,7 @@ namespace j0g0 {
 
         private:
 
-            const bool CONSTANT_STEP_MODE = true;
+            const bool CONSTANT_STEP_MODE = false;
 
             RenderingContext* _context_p;
             SpriteSheetManager *_ssm_p;

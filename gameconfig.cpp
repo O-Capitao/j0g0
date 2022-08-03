@@ -105,23 +105,25 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::s
             .frictionCoef = curr_plat["friction-coef"].as<float>()
         };
 
+        int tileCount = _props.tileMapSpriteSliceMatrix.size();
+
         // Optional properties
         if (auto qt = curr_plat["quarter-turns-ccw"]){
             _props.sliceRotations_in90Deg = curr_plat["quarter-turns-ccw"].as<std::vector<Uint8>>();
         } else {
-            _props.sliceRotations_in90Deg = { 0 , 0 , 0 };
+            _props.sliceRotations_in90Deg = std::vector<Uint8>( tileCount, 0 ); //{ 0 , 0 , 0 };
         }
 
         if (auto fh = curr_plat["flip-horizontal"]){
             _props.sliceFlip_H = curr_plat["flip-horizontal"].as<std::vector<bool>>();
         } else {
-            _props.sliceFlip_H = { 0 , 0 , 0 };
+            _props.sliceFlip_H = std::vector<bool>( tileCount, false );
         }
 
         if (auto fv = curr_plat["flip-vertical"]){
             _props.sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>();
         } else {
-            _props.sliceFlip_V = { 0 , 0 , 0 };
+            _props.sliceFlip_V = std::vector<bool>( tileCount, false );
         }
 
 

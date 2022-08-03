@@ -37,7 +37,7 @@ PauseState::PauseState(RenderingContext* cntxt, SpriteSheetManager *ssm)
 :GameState(cntxt,ssm),
 _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
 {
-    _background_color = {.r = 255, .g = 107, .b= 151, .a = 255 };
+    _background_color = {.r = 240, .g = 246, .b= 240, .a = 255 };
     _context_p->setBackgroundColor(_background_color);
 
     _headerMessage.setContent("PAUSE");
@@ -175,7 +175,7 @@ void PauseState::_renderSelectionCarat(){
         .y = position.y + 1
     };
 
-    SDL_SetRenderDrawColor(_context_p->renderer, 255,255,235,SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(_context_p->renderer, 34,35,35,SDL_ALPHA_OPAQUE);
     SDL_RenderDrawRect( _context_p->renderer, &carat );
 }
 

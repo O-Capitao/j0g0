@@ -139,10 +139,10 @@ void SpriteSheet::renderBySliceIndex( const Vec2D_Int &positionInCanvas, int fra
 {
 
     SpriteSlice& slice = _slices[frame_index];
-    renderSlice(positionInCanvas, slice );
+    renderSlice(positionInCanvas, slice, false );
 }
 
-void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice )
+void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice, bool overrideHorizontalFlip )
 {
     SDL_Rect src = slice.frame;
     SDL_Rect tgt;
@@ -152,6 +152,21 @@ void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSl
 
     tgt.x = positionInCanvas.x + slice.offset_for_rotation.x;
     tgt.y = positionInCanvas.y + slice.offset_for_rotation.y;
+
+    SDL_RendererFlip effectiveHorizontalFlip = slice.flip;
+    if (overrideHorizontalFlip){
+
+        if (effectiveHorizontalFlip == SDL_FLIP_NONE){
+
+            effectiveHorizontalFlip = SDL_FLIP_HORIZONTAL;
+        
+        } else {
+        
+            effectiveHorizontalFlip = SDL_FLIP_NONE;
+        
+        }
+
+    }
     
 	SDL_RenderCopyEx( 
         _context_p->renderer, _texture_p, 
@@ -159,7 +174,7 @@ void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSl
         &tgt, 
         slice.quarter_turns_ccw * 90, 
         &slice.center_of_rotation, 
-        slice.flip
+        effectiveHorizontalFlip
     );
 }
 

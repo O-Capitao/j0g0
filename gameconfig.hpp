@@ -72,6 +72,9 @@ namespace j0g0 {
 
         float mass;
         float frictionCoef;
+
+        bool isPlayer;
+        bool isBounceable;
     };
     
     

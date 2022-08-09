@@ -55,7 +55,9 @@ namespace j0g0
 		// Renders texture at given point
 		void renderBySliceIndex( const Vec2D_Int &positionInCanvas, int frame_index );
 
-        void renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice);
+        // if overrideFlip is true -> flip will be undone if specified in Sprite Frame, 
+        // or added if false in the Sprite Frame
+        void renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice, bool overrideHorizontalFlip);
 
         void renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice);
 

@@ -33,6 +33,9 @@ namespace j0g0 {
         
         FloatRect box;
         bool FALLING;
+        // use it for Actors with
+        // precise landing - e.g: Player
+        bool isBounceable = true;
 
         BoxPhysicsModel(){}
 
@@ -41,7 +44,8 @@ namespace j0g0 {
             const Vec2D_Float &p,
             const FloatRect &b,
             const std::string& ownerId,
-            const Vec2D_Float& initialVelocity
+            const Vec2D_Float& initialVelocity,
+            bool _isBounceable
         );
         
         void update(float dt_inMillisec);
@@ -49,11 +53,25 @@ namespace j0g0 {
         // when collision is detected,
         // run this to set the box into the line
         void snapToLine( 
-            const StraightFloatLine &line,
-            SnappedPointType snappedPoint
+            StraightFloatLine* line,
+            SnappedPointType snappedPoint,
+            Vec2D_Float *platVelocity_p
         );
 
         bool checkIfInBounds();
+
+        void applyDv(const Vec2D_Float &dv);
+
+        void setWalkingVelocity(float walkingVelocity){ _velocity.x = walkingVelocity; }
+
+        const Vec2D_Float& getVelocity(){
+            return _velocity;
+        }
+
+        void releaseGround(){
+            _currentGroundLine_p = NULL;
+            _currentGroundVelocity_p = NULL;
+        }
 
         private:
             std::string _ownerId;
@@ -61,9 +79,15 @@ namespace j0g0 {
             float _frictionCoef;
             float _terminalVelocity;
             TrajectoryType _fallingMode;
+
+            // absolute velocity
             Vec2D_Float _velocity;
             Vec2D_Float _acceleration;
-            StraightFloatLine *_currentGround;
+
+            // About the current Ground
+            StraightFloatLine *_currentGroundLine_p;
+            Vec2D_Float *_currentGroundVelocity_p;
+            
             Vec2D_Float _lastDisplacement;
 
 
@@ -76,7 +100,8 @@ namespace j0g0 {
         RectPlatformPhysicsModel(
             const FloatRect &bounding_box,
             float ellastic_coef,
-            float friction_coef
+            float friction_coef,
+            const std::string &ownerId
         );
 
         friend struct PlatformGamePhysics;
@@ -84,14 +109,20 @@ namespace j0g0 {
         FloatRect box;
 
         // defined up-left-down-right
-        StraightFloatLine borders[4];
+        StraightFloatLine bordersShiftedToOrigin[4];
+        StraightFloatLine instantBorders[4];
+        
         const float frictionCoef, ellasticCoef;
 
         Vec2D_Float velocity;
         Vec2D_Float acceleration;
 
         // run this after updating the box position.
-        void recalculateBorders();
+        void initBorders();
+        void updateBorders();
+
+        void update(float dt_s);
+        void setVelocity(const Vec2D_Float &_newVelocity);
 
         private:
             std::string _ownerId;
@@ -101,7 +132,7 @@ namespace j0g0 {
     struct ObjectToPlatformCollisionPair{
         BoxPhysicsModel *box_p;
         RectPlatformPhysicsModel *plat_p;
-        StraightFloatLine platformBoundary;
+        StraightFloatLine *platformBoundary;
 
     };
 

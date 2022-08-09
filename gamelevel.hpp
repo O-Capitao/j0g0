@@ -37,7 +37,7 @@ namespace j0g0 {
 
         private:
 
-            const bool CONSTANT_STEP_MODE = false;
+            const bool CONSTANT_STEP_MODE = true;
 
             RenderingContext* _context_p;
             SpriteSheetManager *_ssm_p;
@@ -52,6 +52,7 @@ namespace j0g0 {
 
             std::vector<RectPlatform*> _platforms_p_vec;
             std::vector<Actor*> _actors_p_vec;
+            PlayerActor *_player_p;
 
             bool _DEBUG_STROKE = true;
     };

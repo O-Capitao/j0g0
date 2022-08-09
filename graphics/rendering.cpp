@@ -51,7 +51,7 @@ void RenderingContext::init(int windowWidth, int windowHeight, int _pixelRatio )
 
     // Create vsynced renderer for window
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-    assert( renderer != NULL );
+    assert( renderer != NULL ); 
 
     SDL_RendererInfo info;
 

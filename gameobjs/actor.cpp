@@ -7,17 +7,15 @@ Actor::Actor(
     SpriteSheet *ss, 
     ViewPort *vp,
     const ActorProperties &props
-):GameObj( cntxt )
+):GameObj( cntxt ),
+_properties(props),
+_viewport_p(vp),
+_spriteSheet_p(ss),
+_offsetWorld({
+    .x = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.x ),
+    .y = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.y )
+})
 {
-
-    _viewport_p = vp;
-    _spriteSheet_p = ss;
-    _properties = props;
-
-    _offsetWorld = {
-        .x = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.x ),
-        .y = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.y )
-    };
 
     Vec2D_Int sliceSize_canvas  = ss->getSliceSize();
 
@@ -42,15 +40,14 @@ Actor::Actor(
         _properties.initialPositionInWorld,
         _bbWorld,
         _properties.id,
-        _properties.initialVelocity
+        _properties.initialVelocity, 
+        false
     );
 
 
     // Sprites
     _initAnimations( props.spriteAnimations );
     _setActiveAnimation( props.idleAnimationId );
-
-    _IS_GROUNDED = false;
 
     SDL_Log("Done Constructing Actor Obj '%s'\n", props.id.c_str());
 
@@ -88,7 +85,8 @@ void Actor::render(){
         {
             .x = tgt.x, .y = tgt.y
         }, 
-        _activeAnimation_p->animation_frames[ _animationCounter ]
+        _activeAnimation_p->animation_frames[ _animationCounter ],
+        _IS_FLIPPED
     );
 
     if (_DEBUG_STROKE){
@@ -150,6 +148,11 @@ void Actor::_updateSprites(Uint32 dt){
     
     SpriteSlice& _active_frame = _activeAnimation_p->animation_frames[_animationCounter];
 
+    if (_active_frame.duration_ms == 0){
+        // hold this frame until State changes
+        return;
+    }
+
     // _timeSinceLastFrameChange += dt;
     _animationTimer += dt;
     
@@ -167,8 +170,144 @@ void Actor::_updateSprites(Uint32 dt){
 
 void Actor::_setActiveAnimation( const std::string &key ){
     // TODO - test passing wrong id
+
+    printf("Setting Active Animation %s\n", key.c_str());
     SpriteAnimation& next_animation = _animations[key];
 
     _activeAnimation_id = key;
     _activeAnimation_p = &next_animation;
+    _animationTimer = 0;
+    _animationCounter = 0;
+}
+
+
+
+
+
+void PlayerActor::update(Uint32 dt){
+    
+    
+    Actor::update(dt);
+
+    if (_activeAction == ActorMovementActions::JUMP){
+
+        if (!_physicsModel.FALLING){
+            // we landed.
+            // TODO - add roll jere
+            if (_requestedAction == ActorMovementActions::WALK_LEFT || _requestedAction == ActorMovementActions::WALK_RIGHT ){
+                _walk(_requestedAction == ActorMovementActions::WALK_LEFT);
+            } else if (_requestedAction == ActorMovementActions::JUMP){
+                _jump(_jumpDV);
+            } else {
+                _idle();
+            }
+        } else {
+            // undo input
+            _requestedAction = ActorMovementActions::NONE;
+        }
+    
+    
+    
+    } else if (_activeAction == ActorMovementActions::WALK_LEFT || _activeAction == ActorMovementActions::WALK_RIGHT ){
+
+        if (_physicsModel.FALLING){
+            // dont apply dv to this jump -> just switch states and animations
+            _jump(0);
+        } else if ( _requestedAction == ActorMovementActions::JUMP ){
+            _jump(_jumpDV);
+        } else if ( _requestedAction == ActorMovementActions::NONE ){
+            _idle();
+        } else if ( (_requestedAction == ActorMovementActions::WALK_LEFT && _activeAction == ActorMovementActions::WALK_RIGHT) 
+            || (_requestedAction == ActorMovementActions::WALK_LEFT && _activeAction == ActorMovementActions::WALK_RIGHT)
+        ){
+            _walk( _requestedAction == ActorMovementActions::WALK_LEFT );
+        }
+    
+    } else {
+
+        if (_requestedAction == ActorMovementActions::JUMP){
+            _jump(_jumpDV);
+        } else if ( _requestedAction == ActorMovementActions::WALK_LEFT || _requestedAction == ActorMovementActions::WALK_RIGHT ){
+            _walk(_requestedAction == ActorMovementActions::WALK_LEFT);
+        }
+    
+    }
+
+    // Extra stuff
+    // check if we landed
+    // if (!_physicsModel.FALLING && _physicsModel.getVelocity().x == 0 && _activeAnimation_id != "idle" && _activeAnimation_id != "walk"){
+    //     switch to IDLE
+    //     _setActiveAnimation("idle");
+    // }
+    
+    if (_physicsModel.box.y < 0){
+        printf("PlayerActor fell!\n");
+    }
+
+}
+
+// Input sets the _requestedAction
+void PlayerActor::handleInput( const SDL_KeyboardEvent &input ){
+    
+    if (input.type == SDL_KEYDOWN && input.keysym.sym == SDLK_SPACE){
+        _requestedAction = ActorMovementActions::JUMP;
+    }
+
+    else if ( (input.keysym.sym == SDLK_LEFT || input.keysym.sym == SDLK_RIGHT)){
+
+        if (input.type == SDL_KEYDOWN ){
+
+            _requestedAction = (input.keysym.sym == SDLK_LEFT) ?  
+                ActorMovementActions::WALK_LEFT : ActorMovementActions::WALK_RIGHT; 
+
+        } else if ( input.type == SDL_KEYUP ){
+            _requestedAction = ActorMovementActions::NONE;
+        }
+    }
+    else {
+        // go to idle if allowed
+        _requestedAction = ActorMovementActions::NONE;
+    }
+}
+
+void PlayerActor::_jump(float dv){
+
+    if (!_physicsModel.FALLING){
+
+        _physicsModel.applyDv({
+            .x=0, 
+            .y=dv
+        });
+
+        _physicsModel.FALLING = true;
+        _activeAction = ActorMovementActions::JUMP;
+
+        _setActiveAnimation("jump");
+
+    }
+}
+
+void PlayerActor::_walk( bool goLeft ){
+
+    if (_physicsModel.FALLING){
+        // Cant walk when im falling.
+        return;
+    }
+
+    _IS_FLIPPED = goLeft;
+
+    if ( _activeAction != ActorMovementActions::WALK_LEFT && _activeAction != ActorMovementActions::WALK_RIGHT ){
+        _physicsModel.setWalkingVelocity( goLeft ? - 1 : 1 );
+        _setActiveAnimation("walk");
+        _activeAction = _requestedAction; // which should be walk -> u dont walk without wanting to.
+    }
+    
+}
+
+void PlayerActor::_idle(){
+    if (!_physicsModel.FALLING){
+        _setActiveAnimation("idle");
+        _physicsModel.setWalkingVelocity(0);
+        _activeAction = ActorMovementActions::NONE;
+    }
 }

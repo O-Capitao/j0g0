@@ -58,10 +58,10 @@ void MovingRectPlatform::update(Uint32 dt){
         _model.box.x = _keyFrames[ _currentKeyFrame_Index ].p.x;
         _model.box.y = _keyFrames[ _currentKeyFrame_Index ].p.y;
 
-        return;
+        _model.velocity.x = 0;
+        _model.velocity.y = 0;
 
-    }
-
+    } else 
     // cycle is turned.
     if ( next.t_arrival_s == 0 && _currentCycleTime_s >=  currentFrame.t_arrival_s + currentFrame.t_wait_s + 2 ){
 
@@ -71,10 +71,10 @@ void MovingRectPlatform::update(Uint32 dt){
         _model.box.x = _keyFrames[ _currentKeyFrame_Index ].p.x;
         _model.box.y = _keyFrames[ _currentKeyFrame_Index ].p.y;
 
-        return;
+        _model.velocity.x = 0;
+        _model.velocity.y = 0;
 
-    }
-
+    } else 
     // current waiting phase is over    
     if (_currentCycleTime_s >= (currentFrame.t_arrival_s + currentFrame.t_wait_s)){
         
@@ -93,11 +93,12 @@ void MovingRectPlatform::update(Uint32 dt){
         _model.box.x = currentFrame.p.x + currentTravelTime * slope.x;
         _model.box.y = currentFrame.p.y + currentTravelTime * slope.y;
 
-        return;
+        _model.velocity.x = slope.x;
+        _model.velocity.y = slope.y;
     }
 
     // else we dont change the position
-    
+    _model.update(dt_s);
 
 }
 
@@ -131,7 +132,6 @@ RectPlatform::RectPlatform(
 )
 :GameObj(_cntxt),
 _properties(p),
-_spriteSheet_p(_ss),
 _model({
         .x = _properties.positionInWorld.x,
         .y = _properties.positionInWorld.y,
@@ -139,8 +139,10 @@ _model({
         .h = (float)(_properties.sizeInTiles.y * _ss->getSliceSize().y) / vp->pixel_per_meter
     },
     _properties.ellasticCoef,
-    _properties.frictionCoef
+    _properties.frictionCoef,
+    p.id
 ),
+_spriteSheet_p(_ss),
 _tileMap( _ss->getSliceSize(), p.sizeInTiles, _calculateTileSetFromConfig(), p.tileMapSpriteSliceMatrix ),
 _viewport_p(vp)
 {}
@@ -174,7 +176,8 @@ void RectPlatform::render(){
                     .x = positionCanvas.x + _matrix_col * slice.frame.w,
                     .y = positionCanvas.y - (_matrix_row + 1) * slice.frame.h
                 }, 
-                slice
+                slice,
+                false
             );
         }
     }

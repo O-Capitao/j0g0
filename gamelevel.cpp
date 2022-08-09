@@ -27,6 +27,8 @@ _ssm_p(ssm)
             _platforms_p_vec.push_back( 
                 new MovingRectPlatform( _context_p, _used_ss, _viewport_p, pp ) 
             );
+            
+            _physicsModel.platforms.push_back(  _platforms_p_vec.back()->getPhysicsModel_ptr() );
 
         }else {
             _platforms_p_vec.push_back( 
@@ -38,13 +40,27 @@ _ssm_p(ssm)
 
  
     }
-
+    // Init players
+    _player_p = nullptr;
     std::vector<ActorProperties> _actors_in = _reader.readActorProperties( levelPropsFile );
 
     for (auto ap: _actors_in){
         SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(ap.spriteSheetId);
-        _actors_p_vec.push_back( new Actor( _context_p, _used_ss, _viewport_p, ap ) );
-        _physicsModel.objects.push_back( _actors_p_vec.back()->getPhysicsModel_Ptr() );
+
+        if (!ap.isPlayer){
+            
+            _actors_p_vec.push_back( new Actor( _context_p, _used_ss, _viewport_p, ap ) );
+            _physicsModel.objects.push_back( _actors_p_vec.back()->getPhysicsModel_Ptr() );
+        
+        } else {
+
+            assert(_player_p == nullptr);
+        
+            // init Player only once
+            _player_p = new PlayerActor( _context_p, _used_ss, _viewport_p, ap  );
+            _physicsModel.objects.push_back( _player_p->getPhysicsModel_Ptr() );
+
+        }
     }
 
     _lastTick = 0; // no update cycle was run just yet
@@ -64,6 +80,9 @@ GameLevel::~GameLevel(){
         delete a;
     }
     _actors_p_vec.empty();
+
+    delete _player_p;
+
 }
 
 void GameLevel::render(){
@@ -124,6 +143,8 @@ void GameLevel::render(){
         _a->render();
     }
 
+    _player_p->render();
+
 }
 
 void GameLevel::update(){
@@ -137,9 +158,11 @@ void GameLevel::update(){
     for ( auto it = _actors_p_vec.begin(); it != _actors_p_vec.end(); ){
         if ((*it)->isGone){
 
-           _physicsModel.removeObject( (*it)->getId() );
-           delete * it;
-           it = _actors_p_vec.erase(it); 
+            printf("Killing Actor: %s\n", (*it)->getId().c_str());
+
+            _physicsModel.removeObject( (*it)->getId() );
+            delete * it;
+            it = _actors_p_vec.erase(it); 
         
         } else{
             ++it;
@@ -157,6 +180,9 @@ void GameLevel::update(){
         dt = _now - _lastTick;
     }
 
+    _physicsModel.resolveModel(dt);
+    
+    _player_p->update(dt);
 
     for (Actor *_a: _actors_p_vec){
         _a->update(dt);
@@ -167,12 +193,11 @@ void GameLevel::update(){
         p->update(dt);
     }
 
-    _physicsModel.resolveModel(dt);
-
     _lastTick = _now;
 }
 
 void GameLevel::handleEvents( const SDL_Event& evt ){
     // player_thing_p->handleEvent( evt );
+    _player_p->handleInput( evt.key );
 }
 

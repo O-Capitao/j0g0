@@ -36,6 +36,13 @@ sprite-sheets:
       x: 16
       y: 16
     scaling-factor: 1
+    # For the Player
+  - id: "player"
+    path: "asset_space/spaceman_master_16_16.png"
+    slice-size:
+      x: 32
+      y: 32
+    scaling-factor: 1
 #
 # PLATFORMS SECTION
 platforms:
@@ -107,4 +114,37 @@ platforms:
           y: 0
         time-arrival: 4
         time-rest: 2
+#
+# ACTORS
+actors:
+  - id: "player"
+    sprite-sheet-id: "player"
+    idle-animation-id: "idle"
+    mass: 20
+    friction-coef: 0.2
+    # optional
+    initial-velocity:
+      x: 0
+      y: 0
+    initial-position:
+      x: 0.5
+      y: 1
+    bounding-box:
+      x: 0
+      y: 0
+      w: 32
+      h: 32
+    sprite-animations:
+      - id: "idle"
+        size: 3
+        slice-indexes: [ 0, 1, 2 ]
+        slice-durations: [200,300,300]
+      - id: "jump"
+        size: 3
+        slice-indexes: [ 3,4,5 ]
+        slice-durations: [ 200,250,0 ] # 0 value means hold frame indefinetely
+      - id: "walk"
+        size: 2
+        slice-indexes: [6, 7]
+        slice-durations: [250,250]
 # END

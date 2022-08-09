@@ -96,7 +96,7 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::s
         YAML::Node curr_plat = platformsYaml[i];
 
         PlatformProperties _props = {
-            
+            .id = curr_plat["id"].as<std::string>(),
             .positionInWorld = _parseToVec2D_Float( curr_plat["position"]),
             .sizeInTiles = _parseToVec2D_Int(curr_plat["size"]),
             .spriteSheetId = curr_plat["sprite-sheet"].as<std::string>(),
@@ -181,10 +181,12 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
             .idleAnimationId = currActor["idle-animation-id"].as<std::string>(),
             .mass = currActor["mass"].as<float>(),
             .frictionCoef = currActor["friction-coef"].as<float>(),
-            .initialVelocity = {.x= 0, .y = 0}
+            .initialVelocity = {.x= 0, .y = 0},
+            .isBounceable = true
         };
 
         actor.spriteAnimations = _readSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );
+        actor.isPlayer = actor.id == "player";
         
         // Optional properties
         if (auto initialVelocity = currActor["initial-velocity"]){

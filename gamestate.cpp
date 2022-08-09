@@ -238,7 +238,7 @@ size_t PlayState::handleEvents(){
             
             retval = GameStates::STATE_EXIT;
 
-        } else if (e.type == SDL_KEYDOWN ){
+        } else if ( e.type == SDL_KEYDOWN || e.type == SDL_KEYUP ){
 
             if ( e.key.keysym.sym == SDLK_ESCAPE ){
                 retval = GameStates::STATE_PAUSE;

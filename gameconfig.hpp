@@ -73,8 +73,13 @@ namespace j0g0 {
         float mass;
         float frictionCoef;
 
+        float jumpDvY;
+        float walkSpeed;
+
         bool isPlayer;
         bool isBounceable;
+
+
     };
     
     

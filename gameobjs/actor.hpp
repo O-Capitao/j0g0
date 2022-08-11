@@ -31,7 +31,7 @@ namespace j0g0 {
         ~Actor();
 
         void render();
-        void update(Uint32 dt);
+        void update(float dt_s);
 
         const std::string &getId(){return _properties.id;}
         BoxPhysicsModel *getPhysicsModel_Ptr();
@@ -83,7 +83,7 @@ namespace j0g0 {
 
         //~PlayerActor();
 
-        void update(Uint32 dt);
+        void update(float dt_s);
 
         void handleInput( const SDL_KeyboardEvent &input );
 

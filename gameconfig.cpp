@@ -182,7 +182,9 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
             .mass = currActor["mass"].as<float>(),
             .frictionCoef = currActor["friction-coef"].as<float>(),
             .initialVelocity = {.x= 0, .y = 0},
-            .isBounceable = true
+            .isBounceable = true,
+            .jumpDvY = currActor["jump-dvy"].as<float>(),
+            .walkSpeed = currActor["walk-speed"].as<float>()
         };
 
         actor.spriteAnimations = _readSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );

@@ -48,7 +48,7 @@ namespace j0g0 {
             bool _isBounceable
         );
         
-        void update(float dt_inMillisec);
+        void update(float dt_s);
 
         // when collision is detected,
         // run this to set the box into the line
@@ -62,7 +62,7 @@ namespace j0g0 {
 
         void applyDv(const Vec2D_Float &dv);
 
-        void setWalkingVelocity(float walkingVelocity){ _velocity.x = walkingVelocity; }
+        void setWalkingVelocity(float walkingVelocity);
 
         const Vec2D_Float& getVelocity(){
             return _velocity;
@@ -83,6 +83,10 @@ namespace j0g0 {
             // absolute velocity
             Vec2D_Float _velocity;
             Vec2D_Float _acceleration;
+
+            // a velocity relative to
+            // the plat we stand on
+            Vec2D_Float _platRelativeVelocity;
 
             // About the current Ground
             StraightFloatLine *_currentGroundLine_p;
@@ -140,7 +144,7 @@ namespace j0g0 {
 
         // the velocity that, on collision, we will
         // ignore values bellow -> smoother snap to lines while bouncing
-        const float VEL_THRESHOLD = 2;
+        const float VEL_THRESHOLD = 0.2;
         std::vector<RectPlatformPhysicsModel*> platforms;
         std::vector<BoxPhysicsModel*> objects;
 

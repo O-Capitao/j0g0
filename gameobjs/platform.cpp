@@ -36,9 +36,7 @@ MovingRectPlatform::MovingRectPlatform(
 
 }
 
-void MovingRectPlatform::update(Uint32 dt){
-
-    float dt_s = ((float)dt) / 1000;
+void MovingRectPlatform::update(float dt_s){
 
     _currentCycleTime_s += dt_s;
 
@@ -101,8 +99,6 @@ void MovingRectPlatform::update(Uint32 dt){
     _model.update(dt_s);
 
 }
-
-Vec2D_Float _findPositionAtTime( float t_s );
 
 
 std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromConfig(PlatformProperties &properties){

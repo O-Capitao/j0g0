@@ -180,19 +180,21 @@ void GameLevel::update(){
         dt = _now - _lastTick;
     }
 
-    _physicsModel.resolveModel(dt);
+    float dt_s = ((float)dt)*0.001;
     
-    _player_p->update(dt);
+    _player_p->update(dt_s);
 
     for (Actor *_a: _actors_p_vec){
-        _a->update(dt);
+        _a->update(dt_s);
         
     }
 
     for (RectPlatform* p : _platforms_p_vec){
-        p->update(dt);
+        p->update(dt_s);
     }
 
+    _physicsModel.resolveModel(dt_s);
+    
     _lastTick = _now;
 }
 

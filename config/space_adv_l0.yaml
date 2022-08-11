@@ -96,13 +96,14 @@ platforms:
     z-index: 0
     ## defines the amount of velocity 
     ## that is given back to a bouncing object
-    ellastic-coef: 0.5
+    ellastic-coef: 0
     friction-coef: 0
     # OPTIONAL
     flip-horizontal: [ n,n,y ]
 
     # to define the Platform's movement,
     # we pass a sequence of key positions at certain times
+    # close the sequence with a duplicate of the initial point
     key-positions:
       - point:
           x: 3
@@ -114,6 +115,16 @@ platforms:
           y: 0
         time-arrival: 4
         time-rest: 2
+      - point:
+          x: 5
+          y: 2
+        time-arrival: 10
+        time-rest: 2
+      - point:
+          x: 3
+          y: 0
+        time-arrival: 15
+        time-rest: 0
 #
 # ACTORS
 actors:
@@ -121,6 +132,8 @@ actors:
     sprite-sheet-id: "player"
     idle-animation-id: "idle"
     mass: 20
+    jump-dvy: 5
+    walk-speed: 1.7
     friction-coef: 0.2
     # optional
     initial-velocity:

@@ -23,7 +23,8 @@ namespace j0g0{
         ~RectPlatform();
 
         void render();
-        void update(Uint32 dt){};
+        // no impl for now
+        void update(float dt_s){};
         RectPlatformPhysicsModel *getPhysicsModel_ptr();
         
         protected:
@@ -57,7 +58,7 @@ namespace j0g0{
             PlatformProperties &properties
         );
 
-        void update(Uint32 dt);
+        void update(float dt_s);
 
         private:
             std::vector<MovingRectPlatformKeyFrame> _keyFrames;

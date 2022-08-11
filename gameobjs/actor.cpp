@@ -106,10 +106,12 @@ void Actor::render(){
 
 }
 
-void Actor::update(Uint32 dt){
+void Actor::update(float dt_s){
 
-    _physicsModel.update((float)dt*0.001);
-    _updateSprites(dt);
+    _physicsModel.update(dt_s);
+
+    _updateSprites(floor(dt_s * 1000));
+    
     isGone = _physicsModel.checkIfInBounds();
 
 }
@@ -184,10 +186,10 @@ void Actor::_setActiveAnimation( const std::string &key ){
 
 
 
-void PlayerActor::update(Uint32 dt){
+void PlayerActor::update(float dt_s){
     
     
-    Actor::update(dt);
+    Actor::update(dt_s);
 
     if (_activeAction == ActorMovementActions::JUMP){
 
@@ -241,7 +243,7 @@ void PlayerActor::update(Uint32 dt){
     // }
     
     if (_physicsModel.box.y < 0){
-        printf("PlayerActor fell!\n");
+              printf("PlayerActor fell!\n");
     }
 
 }
@@ -276,13 +278,20 @@ void PlayerActor::_jump(float dv){
 
         _physicsModel.applyDv({
             .x=0, 
-            .y=dv
+            .y=_properties.jumpDvY
         });
 
         _physicsModel.FALLING = true;
+        _physicsModel.releaseGround();
+        
         _activeAction = ActorMovementActions::JUMP;
 
-        _setActiveAnimation("jump");
+        // give this to get some clear space between
+        // the jumping Player and the potentially moving platform under him
+        // and avoid firing the collision detector.
+        _physicsModel.box.y+=0.1;
+
+        _setActiveAnimation(  "jump");
 
     }
 }
@@ -297,7 +306,7 @@ void PlayerActor::_walk( bool goLeft ){
     _IS_FLIPPED = goLeft;
 
     if ( _activeAction != ActorMovementActions::WALK_LEFT && _activeAction != ActorMovementActions::WALK_RIGHT ){
-        _physicsModel.setWalkingVelocity( goLeft ? - 1 : 1 );
+        _physicsModel.setWalkingVelocity( (goLeft ? -1 : 1) * _properties.walkSpeed );
         _setActiveAnimation("walk");
         _activeAction = _requestedAction; // which should be walk -> u dont walk without wanting to.
     }

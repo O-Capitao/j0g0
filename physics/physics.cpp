@@ -18,6 +18,9 @@ BoxPhysicsModel::BoxPhysicsModel(
     _mass = m;
     _frictionCoef = fc;
     _velocity = v0;
+    
+    _platRelativeVelocity = {.x=0, .y=0};
+
     _acceleration = {.x = 0, .y=-9.8};
     _terminalVelocity = 50;
 
@@ -36,18 +39,26 @@ BoxPhysicsModel::BoxPhysicsModel(
 
 void BoxPhysicsModel::update(float dt){
 
+
     if (FALLING){
 
         if ( abs(_velocity.x /2 + _velocity.y/2) < _terminalVelocity ){
             _velocity.x += _acceleration.x * dt ;
             _velocity.y += _acceleration.y * dt ;
         }
-        box.x += dt * _velocity.x;
-        box.y += dt *_velocity.y;   
+
+        // printf("Object Updated : x=%f , y=%f \n", box.x, box.y);
     } else {
-        
-        box.x += dt * (_velocity.x + _currentGroundVelocity_p->x); 
+
+        _velocity.x = _currentGroundVelocity_p->x + _platRelativeVelocity.x;
+        _velocity.y = _currentGroundVelocity_p->y;
+    
+    
     }
+
+    box.x += dt * _velocity.x;
+    box.y += dt * _velocity.y; 
+
 }
 
 void BoxPhysicsModel::snapToLine(
@@ -82,24 +93,34 @@ void BoxPhysicsModel::snapToLine(
         
             penetration = l->point_a.y - (box.y + box.h);
 
-            // restore penetration 
+            // // restore penetration 
             box.y += penetration;
+            // box.y = l->point_a.y; - box.h;
         
         } else {
 
-            // Case for collision with Hor. Line from above
-            // possibility to land/ slide whatev. Change state
-            penetration = l->point_a.y - box.y;
+            // // Case for collision with Hor. Line from above
+            // // // possibility to land/ slide whatev. Change state
+            // penetration = l->point_a.y - box.y;
 
-            // restore penetration 
-            box.y += penetration;
+            // // // restore penetration 
+            // box.y += penetration;
 
+            printf("Snapping to Line: pA.x=%f , pa.y=%f \n", l->point_a.x, l->point_a.y );
+
+
+            box.y = l->point_a.y;
+            
             // the box has landed
             FALLING = false;
 
-            _currentGroundLine_p = l;
+            _velocity = {
+                .x = targetPlatformVelocity_p->x, .y = targetPlatformVelocity_p->y
+            };
+
+            _currentGroundLine_p = l ;
             _currentGroundVelocity_p = targetPlatformVelocity_p;
-        }
+         }
     }
 }
 
@@ -108,14 +129,15 @@ bool BoxPhysicsModel::checkIfInBounds(){
 }
 
 void BoxPhysicsModel::applyDv( const Vec2D_Float &dv ){
-    _velocity.x += dv.x;
-    _velocity.y += dv.y;
+        _velocity.x += dv.x;
+        _velocity.y += dv.y;
 }
 
-
-
-
-
+void BoxPhysicsModel::setWalkingVelocity(float walkingVelocity){
+    if (!FALLING){
+        _platRelativeVelocity.x = walkingVelocity;
+    }
+}
 
 RectPlatformPhysicsModel::RectPlatformPhysicsModel(
     const FloatRect &bounding_box,
@@ -242,7 +264,7 @@ std::optional<ObjectToPlatformCollisionPair> PlatformGamePhysics::_findObstacle(
             }
 
 
-            if (obj->_velocity.y < 0){
+            if ( (obj->_velocity.y - p->velocity.y) < 0){
                 
                 distance_to_surface_y = obj->box.y - p->instantBorders[0].point_a.y;
 
@@ -277,6 +299,10 @@ void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
     // float dt_s = 0.001 * (float)dt_ms;
 
     for (BoxPhysicsModel* box_p : objects){
+
+        // if (box_p->FALLING){
+        //     printf("Resolve Model, Moving Plat: box.x = %f, box.y=%f\n", platforms[2]->box.x,platforms[2]->box.y );
+        // }
 
         // resolve collisions
         if (auto result = _findObstacle(box_p)) {

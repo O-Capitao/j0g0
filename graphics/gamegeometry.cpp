@@ -134,7 +134,12 @@ bool FloatRect::collidesWith( const FloatRect &other ){
         return false;
     }
 
-    return true;
+    printf(
+        "Collision detected between { x:%f ; y:%f ; w:%f ; h:%f } and { x:%f ; y:%f ; w:%f ; h:%f }\n", 
+        x, y, w, h, other.x, other.y, other.w, other.h
+    );
+
+     return true;
 }
 
 

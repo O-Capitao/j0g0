@@ -13,7 +13,7 @@ namespace j0g0 {
         ~BitmapText();
 
         void render();
-        void update(Uint32 dt){};
+        void update(float dt){};
 
         void setContent(const std::string &message);
         void setPositionInCanvas(const Vec2D_Int &_newPosition);

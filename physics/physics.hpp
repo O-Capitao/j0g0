@@ -1,28 +1,11 @@
 #pragma once
 
-#include "optional"
 #include "SDL.h"
 #include "string"
 
 #include "graphics/gamegeometry.hpp"
 
 namespace j0g0 {
-
-    enum TrajectoryType {
-        PROJECTILE,
-        PROJECTILE_AND_GROUND_EFFECT,
-        PARACHUTE,
-
-    };
-
-    enum SnappedPointType {
-        BOTTOM_LEFT, 
-        BOTTOM_RIGHT, 
-        TOP_RIGHT, 
-        TOP_LEFT,
-        BOTTOM_CENTER
-    };
-
 
     struct BoxPhysicsModel {
         
@@ -50,36 +33,27 @@ namespace j0g0 {
         
         void update(float dt_s);
 
-        // when collision is detected,
+        // when collision is detected, 
         // run this to set the box into the line
-        void snapToLine( 
+        void snapToLine(
             StraightFloatLine* line,
-            SnappedPointType snappedPoint,
-            Vec2D_Float *platVelocity_p
+            Vec2D_Float *platVelocity_p,
+            const std::string &platId
         );
 
         bool checkIfInBounds();
-
-        void applyDv(const Vec2D_Float &dv);
-
+        void jump(const Vec2D_Float &dv);
         void setWalkingVelocity(float walkingVelocity);
-
-        const Vec2D_Float& getVelocity(){
-            return _velocity;
-        }
-
-        void releaseGround(){
-            _currentGroundLine_p = NULL;
-            _currentGroundVelocity_p = NULL;
-        }
+        const Vec2D_Float& getVelocity();
+        void releaseGround();
+        const std::string &getOwnerId();
 
         private:
             std::string _ownerId;
             float _mass;
             float _frictionCoef;
             float _terminalVelocity;
-            TrajectoryType _fallingMode;
-
+            
             // absolute velocity
             Vec2D_Float _velocity;
             Vec2D_Float _acceleration;
@@ -88,11 +62,17 @@ namespace j0g0 {
             // the plat we stand on
             Vec2D_Float _platRelativeVelocity;
 
+
+            /****
+             * Collision Detection:
+             *  A box can be constrained in x and y,
+             *  but each coordinate only 1 obstacle is considered
+             */
+            
             // About the current Ground
             StraightFloatLine *_currentGroundLine_p;
             Vec2D_Float *_currentGroundVelocity_p;
-            
-            Vec2D_Float _lastDisplacement;
+            std::string _currentGroundOwnerId;
 
 
     };
@@ -128,6 +108,8 @@ namespace j0g0 {
         void update(float dt_s);
         void setVelocity(const Vec2D_Float &_newVelocity);
 
+        const std::string &getOwnerId(){return _ownerId;};
+
         private:
             std::string _ownerId;
         
@@ -154,6 +136,6 @@ namespace j0g0 {
 
         private:
             void _checkCollisions();
-            std::optional<ObjectToPlatformCollisionPair> _findObstacle( BoxPhysicsModel* obj );
+            std::vector<ObjectToPlatformCollisionPair> _findObstacles( BoxPhysicsModel* obj );
     };
 }

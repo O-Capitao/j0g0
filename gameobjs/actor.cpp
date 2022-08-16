@@ -1,4 +1,5 @@
 #include "actor.hpp"
+#include "game-defines.hpp"
 
 using namespace j0g0;
 
@@ -49,7 +50,9 @@ _offsetWorld({
     _initAnimations( props.spriteAnimations );
     _setActiveAnimation( props.idleAnimationId );
 
+    #if DEBUG
     SDL_Log("Done Constructing Actor Obj '%s'\n", props.id.c_str());
+    #endif
 
 }
 
@@ -89,20 +92,20 @@ void Actor::render(){
         _IS_FLIPPED
     );
 
-    if (_DEBUG_STROKE){
+    // if (_DEBUG_STROKE){
+    #if DEBUG
+    SDL_Rect _physBB_Canvas = _viewport_p->transformRect_Viewport2Canvas(
+        _viewport_p->transformRect_World2Viewport(_physicsModel.box)
+    );
 
-        SDL_Rect _physBB_Canvas = _viewport_p->transformRect_Viewport2Canvas(
-            _viewport_p->transformRect_World2Viewport(_physicsModel.box)
-        );
+    SDL_SetRenderDrawColor(context->renderer, 18,200,100,150);
+    SDL_RenderDrawRect( context->renderer, &tgt );
 
-        SDL_SetRenderDrawColor(context->renderer, 18,200,100,150);
-        SDL_RenderDrawRect( context->renderer, &tgt );
-
-        // hit box
-        SDL_SetRenderDrawColor(context->renderer, 180,150,130,180);
-        SDL_RenderDrawRect( context->renderer, &_physBB_Canvas );
-
-    }
+    // hit box
+    SDL_SetRenderDrawColor(context->renderer, 180,150,130,180);
+    SDL_RenderDrawRect( context->renderer, &_physBB_Canvas );
+    #endif
+    // }
 
 }
 
@@ -172,8 +175,10 @@ void Actor::_updateSprites(Uint32 dt){
 
 void Actor::_setActiveAnimation( const std::string &key ){
     // TODO - test passing wrong id
-
+    #if DEBUG
     printf("Setting Active Animation %s\n", key.c_str());
+    #endif
+
     SpriteAnimation& next_animation = _animations[key];
 
     _activeAnimation_id = key;
@@ -234,18 +239,13 @@ void PlayerActor::update(float dt_s){
         }
     
     }
-
-    // Extra stuff
-    // check if we landed
-    // if (!_physicsModel.FALLING && _physicsModel.getVelocity().x == 0 && _activeAnimation_id != "idle" && _activeAnimation_id != "walk"){
-    //     switch to IDLE
-    //     _setActiveAnimation("idle");
-    // }
     
-    if (_physicsModel.box.y < 0){
-              printf("PlayerActor fell!\n");
-    }
 
+    #if DEBUG
+    if (_physicsModel.box.y < 0){
+        printf("PlayerActor fell!\n");
+    }
+    #endif
 }
 
 // Input sets the _requestedAction
@@ -276,21 +276,12 @@ void PlayerActor::_jump(float dv){
 
     if (!_physicsModel.FALLING){
 
-        _physicsModel.applyDv({
+        _physicsModel.jump({
             .x=0, 
             .y=_properties.jumpDvY
         });
-
-        _physicsModel.FALLING = true;
-        _physicsModel.releaseGround();
-        
+                
         _activeAction = ActorMovementActions::JUMP;
-
-        // give this to get some clear space between
-        // the jumping Player and the potentially moving platform under him
-        // and avoid firing the collision detector.
-        _physicsModel.box.y+=0.1;
-
         _setActiveAnimation(  "jump");
 
     }

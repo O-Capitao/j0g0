@@ -93,8 +93,6 @@ namespace j0g0 {
             void _refreshInfoMessage();
 
             // FOR DEBUG
-            bool debugEnabled = true;
-            // BitmapTextThing message;
             int frameCounter;
             int lastDisplay;
     };

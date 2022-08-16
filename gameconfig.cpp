@@ -1,5 +1,4 @@
-#include <iostream>
-
+#include "game-defines.hpp"
 #include "gameconfig.hpp"
 
 
@@ -86,7 +85,10 @@ SDL_Rect GameConfigReader::_parseToSDL_Rect(YAML::Node node){
 
 
 std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::string config_path ){
+    #if DEBUG
     printf("entering platform propertes\n");
+    #endif
+    
     YAML::Node levelProperties = YAML::LoadFile( config_path );
     YAML::Node platformsYaml = levelProperties["platforms"];
     std::vector<PlatformProperties> retVal;
@@ -146,7 +148,11 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::s
 
         retVal.push_back( _props );
     }
+
+    #if DEBUG
     printf("built platform propertes\n");
+    #endif
+    
     return retVal;
 }
 

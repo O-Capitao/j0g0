@@ -155,7 +155,7 @@ actors:
       - id: "jump"
         size: 3
         slice-indexes: [ 3,4,5 ]
-        slice-durations: [ 200,250,0 ] # 0 value means hold frame indefinetely
+        slice-durations: [ 50,50,0 ] # 0 value means hold frame indefinetely
       - id: "walk"
         size: 2
         slice-indexes: [6, 7]

@@ -65,9 +65,6 @@ namespace j0g0 {
             Uint8 _animationCounter = 0;
             Uint32 _animationTimer = 0;
 
-            bool _DEBUG_STROKE = true;
-            
-
             void _initAnimations( const std::vector<SpriteAnimationProperties> &a_vec );
             void _updateSprites( Uint32 time );
     };

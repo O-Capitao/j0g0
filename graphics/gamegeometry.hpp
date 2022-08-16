@@ -23,7 +23,7 @@ namespace j0g0 {
         float x,y,w,h;
         // static SDL_Rect toCanvasRect( const FloatRect &worldRect );
         // static FloatRect toWorldRect( const SDL_Rect &canvasRect );
-        bool collidesWith( const FloatRect &other );
+        bool overlapsWith( const FloatRect &other );
     };
 
     struct RotMatrix2D {

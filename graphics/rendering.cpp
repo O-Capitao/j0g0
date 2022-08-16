@@ -1,10 +1,10 @@
-#include <iostream>
 #include <math.h>  
 #include <exception>
 
 #include "SDL_image.h"
 
 #include "rendering.hpp"
+#include "game-defines.hpp"
 
 using namespace j0g0;
 
@@ -28,6 +28,9 @@ RenderingContext::~RenderingContext(){
 
 void RenderingContext::init(int windowWidth, int windowHeight, int _pixelRatio ){
     
+    #if DEBUG
+    printf("DEBUG in context");
+    #endif
     // assert that we are dealing with pixel-perfect dimensions.
     assert( (windowWidth%_pixelRatio == 0) && (windowWidth%_pixelRatio == 0) );
     
@@ -59,7 +62,9 @@ void RenderingContext::init(int windowWidth, int windowHeight, int _pixelRatio )
     SDL_GetRendererInfo(renderer, &info);
     int renderer_has_target_texture_support = info.flags & SDL_RENDERER_TARGETTEXTURE;
 
+    #if DEBUG
     SDL_Log("Renderer %s started.", info.name);
+    #endif
 
     assert(renderer_has_target_texture_support);
 

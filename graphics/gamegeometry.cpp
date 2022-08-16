@@ -1,4 +1,6 @@
 #include <math.h>
+
+#include "game-defines.hpp"
 #include "gamegeometry.hpp"
 
 
@@ -119,7 +121,7 @@ bool FloatLine::intersectsWith( const FloatLine& other, Vec2D_Float &intersectio
 
 
 
-bool FloatRect::collidesWith( const FloatRect &other ){
+bool FloatRect::overlapsWith( const FloatRect &other ){
 
     if (y >=  (other.y + other.h)){
         return false;
@@ -134,13 +136,16 @@ bool FloatRect::collidesWith( const FloatRect &other ){
         return false;
     }
 
+    #if DEBUG
     printf(
-        "Collision detected between { x:%f ; y:%f ; w:%f ; h:%f } and { x:%f ; y:%f ; w:%f ; h:%f }\n", 
+        "FloatRect::collidesWith : Collision detected between A { x:%f ; y:%f ; w:%f ; h:%f } and\n B { x:%f ; y:%f ; w:%f ; h:%f }\n\n", 
         x, y, w, h, other.x, other.y, other.w, other.h
     );
-
+    #endif
      return true;
 }
+
+
 
 
 
@@ -151,7 +156,6 @@ RotMatrix2D::RotMatrix2D(float angle_in_rad){
     matrix[0][1] = - sin ( angle_in_rad );
     matrix[1][0] = sin( angle_in_rad );
     matrix[1][1] = cos( angle_in_rad );
-
 }
 
 Vec2D_Float RotMatrix2D::rotateVec2D_Float( const Vec2D_Float& original ){

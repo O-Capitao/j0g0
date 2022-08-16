@@ -1,6 +1,4 @@
-#include <iostream>
-
-
+#include "game-defines.hpp"
 #include "gamelevel.hpp"
 
 using namespace j0g0;
@@ -65,8 +63,9 @@ _ssm_p(ssm)
 
     _lastTick = 0; // no update cycle was run just yet
     
+    #if DEBUG
     SDL_Log("Done Constructing GameLevel.\n");
-    
+    #endif
 }
 
 GameLevel::~GameLevel(){
@@ -93,51 +92,53 @@ void GameLevel::render(){
         _p->render();
     }
 
-    if (_DEBUG_STROKE){
+    #if DEBUG
+    // if (_DEBUG_STROKE){
 
-        SDL_SetRenderDrawColor(_context_p->renderer, 18,200,100,50);
+    SDL_SetRenderDrawColor(_context_p->renderer, 18,200,100,50);
 
-        // try plot all world coordinates between the
-        // test if start of the viewpport and the end of the vp.
-        float ppm = _viewport_p->pixel_per_meter;
+    // try plot all world coordinates between the
+    // test if start of the viewpport and the end of the vp.
+    float ppm = _viewport_p->pixel_per_meter;
 
-        for (float x = 0 ; x <= _properties.worldSize.x; x++ ){
+    for (float x = 0 ; x <= _properties.worldSize.x; x++ ){
 
-            if ( x > _viewport_p->positionInWorld.x && x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x){
-                SDL_RenderDrawLine(
-                    _context_p->renderer, 
-                    x * ppm , 
-                    0,
-                    x * ppm, 
-                    _viewport_p->canvasSize.y    
-                );
-            }
-        }
-
-                    
-        for ( float y = 0; y <= _properties.worldSize.y; y++){
-            if (y > _viewport_p->positionInWorld.y && y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y){
-
-                Vec2D_Float aux_p = {
-                    .x = 0,
-                    .y = y
-                };
-
-                Vec2D_Int aux_p_in_canvas = _viewport_p->viewPortToCanvas(
-                    _viewport_p->worldToViewPort( aux_p )
-                );
-
-                SDL_RenderDrawLine(
-                    _context_p->renderer,
-                    0,
-                    aux_p_in_canvas.y,
-                    _viewport_p->canvasSize.x,
-                    aux_p_in_canvas.y
-                );
-
-            }
+        if ( x > _viewport_p->positionInWorld.x && x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x){
+            SDL_RenderDrawLine(
+                _context_p->renderer, 
+                x * ppm , 
+                0,
+                x * ppm, 
+                _viewport_p->canvasSize.y    
+            );
         }
     }
+
+                
+    for ( float y = 0; y <= _properties.worldSize.y; y++){
+        if (y > _viewport_p->positionInWorld.y && y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y){
+
+            Vec2D_Float aux_p = {
+                .x = 0,
+                .y = y
+            };
+
+            Vec2D_Int aux_p_in_canvas = _viewport_p->viewPortToCanvas(
+                _viewport_p->worldToViewPort( aux_p )
+            );
+
+            SDL_RenderDrawLine(
+                _context_p->renderer,
+                0,
+                aux_p_in_canvas.y,
+                _viewport_p->canvasSize.x,
+                aux_p_in_canvas.y
+            );
+
+        }
+    }
+    // }
+    #endif
 
     for (Actor *_a: _actors_p_vec){
         _a->render();
@@ -158,7 +159,9 @@ void GameLevel::update(){
     for ( auto it = _actors_p_vec.begin(); it != _actors_p_vec.end(); ){
         if ((*it)->isGone){
 
+            #if DEBUG
             printf("Killing Actor: %s\n", (*it)->getId().c_str());
+            #endif
 
             _physicsModel.removeObject( (*it)->getId() );
             delete * it;

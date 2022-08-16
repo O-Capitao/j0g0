@@ -1,5 +1,4 @@
-#include <iostream>
-
+#include "game-defines.hpp"
 #include "game.hpp"
 #include "gamestate.hpp"
 #include "graphics/spritesheet.hpp"
@@ -14,6 +13,11 @@ Game::~Game(){
 
 void Game::init(RenderingContext* _context)
 {
+
+    #if DEBUG
+        printf("Debug Mode Activated.");
+    #endif
+
     context = _context;
     spriteSheetManager = new SpriteSheetManager();
 

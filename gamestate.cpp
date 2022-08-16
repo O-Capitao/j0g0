@@ -1,8 +1,6 @@
-#include <iostream>
 #include <string>
 
-#include "SDL.h"
-
+#include "game-defines.hpp"
 #include "gamestate.hpp"
 
 using namespace j0g0;
@@ -63,9 +61,9 @@ _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
 
         _options.push_back(opt);
     }
-
+    #if DEBUG
     printf("Built PauseState\n");
-
+    #endif
 
 }
 
@@ -211,21 +209,22 @@ void PlayState::update(){
 
     level.update();
 
-    if (debugEnabled){
+    #if DEBUG
 
-        int _ellapsedTimeSinceLastDisplay = SDL_GetTicks() - lastDisplay;
-        frameCounter++;
+    int _ellapsedTimeSinceLastDisplay = SDL_GetTicks() - lastDisplay;
+    frameCounter++;
 
-        if ( _ellapsedTimeSinceLastDisplay >= 1000 ){
-            
-            std::string debug_string = "Displaying at " + std::to_string( frameCounter ) + " FPS.\n";
-            SDL_Log( "%s", debug_string.c_str() );
+    if ( _ellapsedTimeSinceLastDisplay >= 1000 ){
+        
+        std::string debug_string = "Displaying at " + std::to_string( frameCounter ) + " FPS.\n";
+        SDL_Log( "%s", debug_string.c_str() );
 
-            lastDisplay += _ellapsedTimeSinceLastDisplay;
-            frameCounter = 0;
-        }
-
+        lastDisplay += _ellapsedTimeSinceLastDisplay;
+        frameCounter = 0;
     }
+
+    #endif
+    
     
 }
 

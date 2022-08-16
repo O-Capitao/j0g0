@@ -1,17 +1,22 @@
 #include "spritesheet.hpp"
 #include "assert.h"
-#include "iostream"
+#include "game-defines.hpp"
 
 using namespace j0g0;
 
 
 SpriteSheetManager::SpriteSheetManager(){
-    std::cout<<"Constructed SpriteSheetManaher\n";
+    #if DEBUG
+    printf("Constructing : SpriteSheetManager::SpriteSheetManager()\n");
+    #endif
 }
 
 SpriteSheetManager::~SpriteSheetManager(){
     
-    std::cout<<"Destroyed SpriteSheetManaher\n";
+    #if DEBUG
+    printf("Destroying : SpriteSheetManager::~SpriteSheetManager()\n");
+    #endif
+    
     for (auto sh: available_sheets){
         delete sh.second;
     }

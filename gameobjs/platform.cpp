@@ -1,4 +1,5 @@
 #include "platform.hpp"
+#include "game-defines.hpp"
 
 using namespace j0g0;
 
@@ -141,7 +142,11 @@ _model({
 _spriteSheet_p(_ss),
 _tileMap( _ss->getSliceSize(), p.sizeInTiles, _calculateTileSetFromConfig(), p.tileMapSpriteSliceMatrix ),
 _viewport_p(vp)
-{}
+{
+    #if DEBUG
+    printf("Build RectPlatform: %s\n", _properties.id.c_str());
+    #endif
+}
 
 RectPlatform::~RectPlatform(){
     _spriteSheet_p = nullptr;

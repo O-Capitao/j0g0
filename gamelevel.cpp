@@ -197,7 +197,21 @@ void GameLevel::update(){
     }
 
     _physicsModel.resolveModel(dt_s);
+
+    // Update the viewport's position
+    // for now, we leave the player always in the middle
+    if (_player_p->getPhysicsModel_Ptr()->box.x > (_viewport_p->sizeInWorld.x / 2)){
+        _viewport_p->positionInWorld.x = _player_p->getPhysicsModel_Ptr()->box.x - (_viewport_p->sizeInWorld.x / 2);
+    } else {
+        _viewport_p->positionInWorld.x = 0;
+    }
     
+    if (_player_p->getPhysicsModel_Ptr()->box.y > (_viewport_p->sizeInWorld.y / 2)){
+        _viewport_p->positionInWorld.y = _player_p->getPhysicsModel_Ptr()->box.y - (_viewport_p->sizeInWorld.y / 2);
+    } else {
+        _viewport_p->positionInWorld.y = 0;
+    }
+
     _lastTick = _now;
 }
 

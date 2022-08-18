@@ -34,11 +34,10 @@ namespace j0g0{
         private:
             SpriteSheet *_spriteSheet_p;
             
-            TileMap _tileMap;;
+            TileMap _tileMap;
             ViewPort *_viewport_p;
 
             std::vector<SpriteSlice> _calculateTileSetFromConfig();
-
     };
 
 

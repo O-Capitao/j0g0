@@ -26,6 +26,7 @@ SpriteSheetManager::~SpriteSheetManager(){
 
 SpriteSheet* SpriteSheetManager::getSpriteSheet( const std::string &spriteKey ){
     auto map_node = available_sheets.find(spriteKey);
+    assert(map_node != available_sheets.end());
     return map_node->second;
 }
 

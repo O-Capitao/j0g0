@@ -3,7 +3,7 @@
 # LEVEL SECTION
 title: "Space Adventure - Level 0"
 world-size:
-  x: 10
+  x: 20
   y: 10
 background-color:
   r: 34
@@ -125,6 +125,21 @@ platforms:
           y: 0
         time-arrival: 15
         time-rest: 0
+    
+  - id: "static-single-stone"
+    sprite-sheet: "single-stone"
+    size:
+      x: 1
+      y: 1
+    position:
+      x: 12
+      y: 2
+    tile-map: [
+      0
+    ]
+    z-index: 0 
+    ellastic-coef: 0
+    friction-coef: 0
 #
 # ACTORS
 actors:

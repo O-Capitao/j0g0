@@ -207,6 +207,82 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
     return props;
 }
 
+
+
+std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( std::string config_path ){
+
+#if DEBUG
+    printf("Entering readBackgroundProperties.\n");
+#endif
+    
+    std::vector<BackgroundProperties> retVal;
+    YAML::Node levelProperties = YAML::LoadFile( config_path );
+    
+    if (YAML::Node backgroundsYaml = levelProperties["backgrounds"]){
+
+        
+
+        for (std::size_t i=0 ; i < backgroundsYaml.size(); i++) {
+
+            YAML::Node curr_bckgrnd = backgroundsYaml[i];
+
+            BackgroundProperties _props = {
+                .id = curr_bckgrnd["id"].as<std::string>(),
+                .spriteSheetId = curr_bckgrnd["sprite-sheet"].as<std::string>(),
+                .sizeInTiles = _parseToVec2D_Int(curr_bckgrnd["size"]),
+                .tileMapSpriteSliceMatrix = curr_bckgrnd["tile-map"].as<std::vector<Uint8>>(),
+                .ratioToViewportVelocity_pixelPerSec = _parseToVec2D_Float( curr_bckgrnd["vp-velocity-ratio"] ),
+                .z_index = curr_bckgrnd["z-index"].as<int>()
+            };
+
+            int tileCount = _props.tileMapSpriteSliceMatrix.size();
+
+            // Optional properties
+            if (auto qt = curr_bckgrnd["quarter-turns-ccw"]){
+                _props.sliceRotations_in90Deg = curr_bckgrnd["quarter-turns-ccw"].as<std::vector<Uint8>>();
+            } else {
+                _props.sliceRotations_in90Deg = std::vector<Uint8>( tileCount, 0 ); //{ 0 , 0 , 0 };
+            }
+
+            if (auto fh = curr_bckgrnd["flip-horizontal"]){
+                _props.sliceFlip_H = curr_bckgrnd["flip-horizontal"].as<std::vector<bool>>();
+            } else {
+                _props.sliceFlip_H = std::vector<bool>( tileCount, false );
+            }
+
+            if (auto fv = curr_bckgrnd["flip-vertical"]){
+                _props.sliceFlip_V = curr_bckgrnd["flip-vertical"].as<std::vector<bool>>();
+            } else {
+                _props.sliceFlip_V = std::vector<bool>( tileCount, false );
+            }
+
+            if (auto vel = curr_bckgrnd["velocity"]){
+                _props.ownVelocity_pixelPerSec = _parseToVec2D_Float( curr_bckgrnd["velocity"] );
+            } else {
+                _props.ownVelocity_pixelPerSec = {0,0};
+            }
+
+            if (auto position = curr_bckgrnd["position-in-canvas"]){
+                _props.positionInCanvas = _parseToVec2D_Int( curr_bckgrnd["position-in-canvas"] );
+            }else{
+                _props.positionInCanvas = {0,0};
+            }
+
+            retVal.push_back( _props );
+        }
+
+        #if DEBUG
+        printf("Finished readBackgroundProperties\n");
+        #endif
+            
+    }
+
+    return retVal;
+
+}
+
+
+
 std::vector<SpriteAnimationProperties> GameConfigReader::_readSpriteAnimationProperties_ForActorProperties( YAML::Node animations ){
     std::vector<SpriteAnimationProperties> retval;
 

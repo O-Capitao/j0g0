@@ -3,10 +3,16 @@
 
 using namespace j0g0;
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 bool MovingRectPlatformKeyFrame::compare( const MovingRectPlatformKeyFrame &o1,  const MovingRectPlatformKeyFrame &o2){
     return o1.t_arrival_s < o2.t_arrival_s;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 MovingRectPlatform::MovingRectPlatform(    
     RenderingContext* _cntxt, 
     SpriteSheet* _ss, 
@@ -37,6 +43,9 @@ MovingRectPlatform::MovingRectPlatform(
 
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void MovingRectPlatform::update(float dt_s){
 
     _currentCycleTime_s += dt_s;
@@ -101,7 +110,8 @@ void MovingRectPlatform::update(float dt_s){
 
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromConfig(PlatformProperties &properties){
     
     std::vector<MovingRectPlatformKeyFrame> retVal;
@@ -117,10 +127,8 @@ std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromCon
     return retVal;
 }
 
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 RectPlatform::RectPlatform( 
     RenderingContext* _cntxt, 
     SpriteSheet* _ss, 
@@ -143,20 +151,37 @@ _spriteSheet_p(_ss),
 _tileMap( _ss->getSliceSize(), p.sizeInTiles, _calculateTileSetFromConfig(), p.tileMapSpriteSliceMatrix ),
 _viewport_p(vp)
 {
+
+    // If a fill direction is specified in the config.
+    if (_properties.fillDirection.x != 0 || _properties.fillDirection.y!=0){
+        _fillArea = _calculateFillArea();
+    }
+
+
     #if DEBUG
     printf("Build RectPlatform: %s\n", _properties.id.c_str());
     #endif
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 RectPlatform::~RectPlatform(){
     _spriteSheet_p = nullptr;
     _viewport_p = nullptr;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void RectPlatform::render(){
 
+    if (!_isVisible()){
+        return;
+    }
+
     Vec2D_Int positionCanvas = _viewport_p->viewPortToCanvas( 
-        _viewport_p->worldToViewPort( //_properties.positionInWorld ) 
+        _viewport_p->worldToViewPort(
             {
                 .x = _model.box.x,
                 .y = _model.box.y
@@ -182,12 +207,36 @@ void RectPlatform::render(){
             );
         }
     }
+
+    if (_fillArea.w != 0 || _fillArea.h != 0){
+        
+        SDL_Rect fill_rect = _viewport_p->transformRect_Viewport2Canvas(
+            _viewport_p->transformRect_World2Viewport(
+                _calculateFillArea()
+            )
+        );
+        
+        SDL_SetRenderDrawColor(context->renderer, 
+            _properties.fillColor.r, 
+            _properties.fillColor.g, 
+            _properties.fillColor.b, 
+            _properties.fillColor.a 
+        );
+
+        SDL_RenderFillRect(context->renderer, &fill_rect );
+    }
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 RectPlatformPhysicsModel *RectPlatform::getPhysicsModel_ptr(){
     return &_model;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
     
     assert( 
@@ -226,3 +275,88 @@ std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
     return slices;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Returns bool value used to decide if the Platform should be rendered.
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool RectPlatform::_isVisible(){
+    return (_model.box.x + _model.box.w) > _viewport_p->positionInWorld.x
+        && _model.box.x < (_viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x)
+        && (_model.box.y + _model.box.h) > _viewport_p->positionInWorld.y
+        && _model.box.y < (_viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+FloatRect RectPlatform::_calculateFillArea(){
+    
+    if (_properties.fillDirection.x > 0){
+        
+        // fill to the Right.
+
+        // Check if there is space between right edge of Viewport
+        // and right edge of Platform's BB
+        float rightEdgeOfVP_x = _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x;
+        float rightEdgeOfPlaform_x = _model.box.x + _model.box.w;
+
+        if (
+            rightEdgeOfVP_x > rightEdgeOfPlaform_x 
+            && rightEdgeOfPlaform_x > _viewport_p->positionInWorld.x
+        ){
+            return {
+                .w = rightEdgeOfVP_x - rightEdgeOfPlaform_x,
+                .h = _model.box.h,
+                .x = rightEdgeOfPlaform_x,
+                .y = _model.box.y
+            };
+        }
+
+    } else if (_properties.fillDirection.x < 0){
+        // Fill to the Left
+        if (
+            _model.box.x > _viewport_p->positionInWorld.x 
+            && _model.box.x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x
+        ){
+            return {
+                .w = _model.box.x - _viewport_p->positionInWorld.x,
+                .h= _model.box.h,
+                .x = 0,
+                .y = _model.box.y
+            };
+        }
+
+
+    } else if (_properties.fillDirection.y > 0){
+        // Fill up
+        float topEdgeVP_y = _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y;
+        float topEdgeOfPlatform_y = _model.box.y + _model.box.h;
+
+        if (
+            topEdgeOfPlatform_y < topEdgeVP_y
+            && topEdgeOfPlatform_y > _viewport_p->positionInWorld.y
+        ){
+            return {
+                .w = _model.box.w,
+                .h = topEdgeVP_y - topEdgeOfPlatform_y,
+                .x = _model.box.x,
+                .y = topEdgeOfPlatform_y
+            };
+        }
+
+    }else if (_properties.fillDirection.y < 0){
+        // Fill down
+        if ( 
+            _model.box.y > _viewport_p->positionInWorld.y
+            && _model.box.y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y
+        ){
+            return {
+                .w = _model.box.w,
+                .h = _model.box.y - _viewport_p->positionInWorld.y,
+                .x = _model.box.x,
+                .y = 0
+            };
+        }
+
+    }
+
+    return {0,0,0,0};
+}

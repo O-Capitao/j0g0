@@ -19,7 +19,7 @@ namespace j0g0 {
         
         ~Game();
 
-        void init(RenderingContext* _context);
+        void init(RenderingContext* _context, std::string path_to_config);
         void run();
         void changeState();
 

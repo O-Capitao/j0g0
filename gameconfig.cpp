@@ -4,44 +4,54 @@
 
 using namespace j0g0;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 GameLevelProperties GameConfigReader::readGameLevelProperties( std::string config_path ){
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
 
-    auto title = levelProperties["title"].as<std::string>();
+    // auto title = levelProperties["title"].as<std::string>();
     auto worldSize = _parseToVec2D_Float(levelProperties["world-size"]);
     auto color = _parseToSDL_Color(levelProperties["background-color"]);
 
     return {
-        .title = title,
+        // .title = title,
         .backgroundColor = color,
         .worldSize = worldSize
     };
 }   
 
-void GameConfigReader::addLevelSpritesToManager( 
-    std::string config_path,
-    RenderingContext *context,
-    SpriteSheetManager *ssm
-){
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<SpriteSheetConfig> GameConfigReader::readSpriteSheetConfig( std::string config_path ){
 
-    YAML::Node levelProperties = YAML::LoadFile( config_path );
-    YAML::Node spriteSheets = levelProperties["sprite-sheets"];
+    YAML::Node config = YAML::LoadFile( config_path );
+    YAML::Node spriteSheets = config["sprite-sheets"];
 
-    for (std::size_t i=0 ;i<spriteSheets.size();i++) {
+    std::vector<SpriteSheetConfig> retval;
 
-        YAML::Node _spriteConfig = spriteSheets[i];
+    if (auto spriteSheets = config["sprite-sheets"]){
 
-        auto id = _spriteConfig["id"].as<std::string>();
-        auto path = _spriteConfig["path"].as<std::string>();
-        auto scalingFactor = _spriteConfig["scaling-factor"].as<int>();
-        auto spriteSliceSize =  _parseToVec2D_Int(_spriteConfig["slice-size"]);
+        for (std::size_t i=0 ;i<spriteSheets.size();i++) {
 
-        ssm->insertSpriteSheet(id, context, path, spriteSliceSize, scalingFactor );
+            YAML::Node _spriteConfig = spriteSheets[i];
+
+            retval.push_back({
+                .id = _spriteConfig["id"].as<std::string>(),
+                .path = _spriteConfig["path"].as<std::string>(),
+                .scaleFactor = _spriteConfig["scaling-factor"].as<int>(),
+                .sliceSize =  _parseToVec2D_Int(_spriteConfig["slice-size"])
+            });
+
+        }
 
     }
+
+    return retval;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 Vec2D_Float GameConfigReader::_parseToVec2D_Float(YAML::Node node){
 
     Vec2D_Float out;
@@ -52,6 +62,8 @@ Vec2D_Float GameConfigReader::_parseToVec2D_Float(YAML::Node node){
     return out;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 Vec2D_Int GameConfigReader::_parseToVec2D_Int(YAML::Node node){
     return {
         .x = node["x"].as<int>(),
@@ -59,6 +71,8 @@ Vec2D_Int GameConfigReader::_parseToVec2D_Int(YAML::Node node){
     };
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 SDL_Color GameConfigReader::_parseToSDL_Color(YAML::Node node){
 
     SDL_Color color = {
@@ -71,6 +85,8 @@ SDL_Color GameConfigReader::_parseToSDL_Color(YAML::Node node){
     return color;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 SDL_Rect GameConfigReader::_parseToSDL_Rect(YAML::Node node){
     SDL_Rect rect = {
         .x = node["x"].as<int>(),
@@ -82,9 +98,36 @@ SDL_Rect GameConfigReader::_parseToSDL_Rect(YAML::Node node){
     return rect;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+GameWindowConfig GameConfigReader::readGameWindowConfig( std::string config_path ){
 
+    YAML::Node props = YAML::LoadFile( config_path );
 
-std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::string config_path ){
+    if (auto winConfig = props["window"] ){
+        GameWindowConfig c = {
+            .canvasSize = _parseToVec2D_Int( winConfig["canvas-size"] ),
+            .pixel_ratio = winConfig["pixel-ratio"].as<int>(),
+            .backgroundColor = _parseToSDL_Color(winConfig["background-color"]),
+            .windowTitle = winConfig["title"].as<std::string>()
+        };
+
+        c.windowSize = {
+            .x = c.canvasSize.x * c.pixel_ratio,
+            .y = c.canvasSize.y * c.pixel_ratio
+        };
+
+        return c;
+    } else {
+        throw std::runtime_error("'window' config is reqired.");
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( 
+    std::string config_path 
+){
     #if DEBUG
     printf("entering platform propertes\n");
     #endif
@@ -123,10 +166,32 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::s
         }
 
         if (auto fv = curr_plat["flip-vertical"]){
-            _props.sliceFlip_V = curr_plat["flip-vertical"].as<std::vector<bool>>();
+            _props.sliceFlip_V = fv.as<std::vector<bool>>();
         } else {
             _props.sliceFlip_V = std::vector<bool>( tileCount, false );
         }
+
+        if (auto fillD = curr_plat["fill-direction"]){
+            _props.fillDirection = _parseToVec2D_Int(fillD);
+            
+            if (auto fillC = curr_plat["fill-color"]){
+
+                _props.fillColor = _parseToSDL_Color( fillC );
+
+            } else {
+                
+                printf("Error Parsing Platform Properties for %s. A fill-color must also be specified in the config file.\n", _props.id.c_str());
+
+                throw std::runtime_error(
+                    "Parse Error"    
+                );
+
+            }
+        }else{
+            _props.fillDirection = {0,0};
+        }
+
+        
 
 
         // Optional - only for moving plats
@@ -156,6 +221,8 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( std::s
     return retVal;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 ViewPortProperties GameConfigReader::readViewPortProperties( std::string config_path ){
 
     YAML::Node lvlProps = YAML::LoadFile( config_path );
@@ -170,6 +237,8 @@ ViewPortProperties GameConfigReader::readViewPortProperties( std::string config_
     return vp_conf;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string config_path ){
     
     YAML::Node lvlProps = YAML::LoadFile( config_path );
@@ -207,8 +276,8 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
     return props;
 }
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( std::string config_path ){
 
 #if DEBUG
@@ -281,8 +350,8 @@ std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( st
 
 }
 
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 std::vector<SpriteAnimationProperties> GameConfigReader::_readSpriteAnimationProperties_ForActorProperties( YAML::Node animations ){
     std::vector<SpriteAnimationProperties> retval;
 

@@ -11,7 +11,7 @@ _ssm_p(ssm)
     _properties = _reader.readGameLevelProperties( levelPropsFile );
     
     ViewPortProperties vp_conf = _reader.readViewPortProperties( levelPropsFile );
-    _viewport_p = new ViewPort( vp_conf, _context->canvasProperties);
+    _viewport_p = new ViewPort( vp_conf, _context->config);
 
     std::vector<PlatformProperties> _platforms_props = _reader.readPlatformProperties( levelPropsFile );
 

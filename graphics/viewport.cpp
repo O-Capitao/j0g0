@@ -4,11 +4,11 @@
 
 using namespace j0g0;
 
-ViewPort::ViewPort( const ViewPortProperties &vp_conf, const CanvasProperties& CanvasProperties ){
+ViewPort::ViewPort( const ViewPortProperties &vp_conf, const GameWindowConfig& gwc ){
     
     positionInWorld = vp_conf.worldPosition;
     
-    canvasSize = CanvasProperties.size;
+    canvasSize = gwc.canvasSize;
 
     float _canvasAspectRatio = (float)canvasSize.x / (float)canvasSize.y;
 

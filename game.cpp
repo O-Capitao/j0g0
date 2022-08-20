@@ -11,7 +11,7 @@ Game::~Game(){
     _playState = nullptr;
 }
 
-void Game::init(RenderingContext* _context)
+void Game::init(RenderingContext* _context, std::string path_to_config)
 {
 
     #if DEBUG
@@ -24,12 +24,17 @@ void Game::init(RenderingContext* _context)
 
     GameConfigReader _reader;
     
-    _reader.addLevelSpritesToManager(
-        // "config/test_level.yaml",
-        "config/space_adv_l0.yaml",
-        _context,
-        spriteSheetManager
-    );
+    std::vector<SpriteSheetConfig> ssc = _reader.readSpriteSheetConfig( path_to_config );
+
+    for (auto ssc_entry : ssc){
+        spriteSheetManager->insertSpriteSheet(
+            ssc_entry.id,
+            context,
+            ssc_entry.path,
+            ssc_entry.sliceSize,
+            ssc_entry.scaleFactor
+        );
+    }
 
     state = nullptr;
     _playState = nullptr;

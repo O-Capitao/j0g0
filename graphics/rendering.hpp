@@ -3,31 +3,23 @@
 #include "SDL.h"
 
 #include "gamegeometry.hpp"
+#include "gameconfig.hpp"
 
 namespace j0g0 {
-
-    // TODO - move to configurations, 
-    // set in yaml
-    struct CanvasProperties {
-
-        Vec2D_Int size;
-        int pixelRatio = 4;
-        SDL_Color backgroundColor;
-
-    };
 
     struct RenderingContext {
 
         RenderingContext(){};
         ~RenderingContext();
 
-        void init( int windowWidth, int windowHeight, int _pixelRatio );
+        void init( std::string pathToConfigFile );
 
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Texture* canvas;
 
-        CanvasProperties canvasProperties;
+        // CanvasProperties canvasProperties;
+        GameWindowConfig config;
 
         // sets target to canvas, clears buffer
         void beginRenderStep();

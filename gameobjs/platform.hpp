@@ -38,6 +38,13 @@ namespace j0g0{
             ViewPort *_viewport_p;
 
             std::vector<SpriteSlice> _calculateTileSetFromConfig();
+
+            bool _isVisible();
+
+            // Fill Area -> Represented by FloatRect in world coords
+            // it can move. 
+            FloatRect _fillArea;
+            FloatRect _calculateFillArea();
     };
 
 

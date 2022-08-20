@@ -26,28 +26,26 @@ RenderingContext::~RenderingContext(){
 	SDL_Quit();
 }
 
-void RenderingContext::init(int windowWidth, int windowHeight, int _pixelRatio ){
+void RenderingContext::init( std::string path_to_config_file ){
     
     #if DEBUG
     printf("DEBUG in context");
     #endif
-    // assert that we are dealing with pixel-perfect dimensions.
-    assert( (windowWidth%_pixelRatio == 0) && (windowWidth%_pixelRatio == 0) );
-    
-    canvasProperties.pixelRatio = 4;
-    canvasProperties.size.x = windowWidth / 4;
-    canvasProperties.size.y = windowHeight / 4;
+
+    // Aquire config from input file.
+    GameConfigReader reader;
+    config = reader.readGameWindowConfig( path_to_config_file );
 
     int sdlIsInitted = SDL_Init( SDL_INIT_VIDEO );
 
     assert(sdlIsInitted >= 0);
 
     window = SDL_CreateWindow( 
-        "SDL Tutorial", 
+        config.windowTitle.c_str(), 
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED,
-        windowWidth, 
-        windowHeight, 
+        config.windowSize.x, 
+        config.windowSize.y, 
         SDL_WINDOW_SHOWN
     );
     assert( window != NULL );
@@ -81,8 +79,8 @@ void RenderingContext::init(int windowWidth, int windowHeight, int _pixelRatio )
         renderer, 
         SDL_PIXELFORMAT_ARGB8888, 
         SDL_TEXTUREACCESS_TARGET, 
-        canvasProperties.size.x, 
-        canvasProperties.size.y
+        config.canvasSize.x, 
+        config.canvasSize.y
     );
 	
     assert(canvas != NULL );
@@ -98,12 +96,12 @@ void RenderingContext::beginRenderStep(){
     // Render calls
     SDL_SetRenderTarget( renderer, canvas );
 
-    /* It's always a good idea to clear the whole thing first. */
+    // /* It's always a good idea to clear the whole thing first. */
     SDL_SetRenderDrawColor( renderer, 
-        canvasProperties.backgroundColor.r, 
-        canvasProperties.backgroundColor.g,
-        canvasProperties.backgroundColor.b, 
-        canvasProperties.backgroundColor.a );
+        config.backgroundColor.r, 
+        config.backgroundColor.g,
+        config.backgroundColor.b, 
+        config.backgroundColor.a );
 
     SDL_RenderClear( renderer );
 }
@@ -116,13 +114,13 @@ void RenderingContext::endRenderStep(){
     SDL_Rect src, tgt;
     src.x = 0;
     src.y = 0;
-    src.w = canvasProperties.size.x;
-    src.h = canvasProperties.size.y;
+    src.w = config.canvasSize.x,
+    src.h = config.canvasSize.y;
 
     tgt.y = 0;
     tgt.x = 0;
-    tgt.w = canvasProperties.pixelRatio * canvasProperties.size.x;
-    tgt.h = canvasProperties.pixelRatio * canvasProperties.size.y;
+    tgt.w = config.windowSize.x;
+    tgt.h = config.windowSize.y;
 
     SDL_RenderCopy(renderer, canvas, &src, &tgt);
     
@@ -131,8 +129,8 @@ void RenderingContext::endRenderStep(){
 }
 
 void RenderingContext::setBackgroundColor(const SDL_Color& _color){
-    canvasProperties.backgroundColor.r = _color.r;
-    canvasProperties.backgroundColor.g = _color.g;
-    canvasProperties.backgroundColor.b = _color.b;
-    canvasProperties.backgroundColor.a = _color.a;
+    config.backgroundColor.r = _color.r;
+    config.backgroundColor.g = _color.g;
+    config.backgroundColor.b = _color.b;
+    config.backgroundColor.a = _color.a;
 }

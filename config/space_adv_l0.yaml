@@ -1,7 +1,16 @@
 ---
 #
 # LEVEL SECTION
-title: "Space Adventure - Level 0"
+window:
+  title: "Space Adventure WIP"
+  canvas-size:
+    x: 320
+    y: 180
+  pixel-ratio: 4
+  background-color:
+    r: 34
+    g: 35
+    b: 35
 world-size:
   x: 20
   y: 10

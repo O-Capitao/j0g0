@@ -42,9 +42,9 @@ _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
     
     _headerMessage.setPositionInCanvas({
         // x is centered
-        .x = (_context_p->canvasProperties.size.x - _headerMessage.getContentSize().x)/2,
+        .x = (_context_p->config.canvasSize.x - _headerMessage.getContentSize().x)/2,
         // y has an offset of 100 to the top
-        .y = (_context_p->canvasProperties.size.y - _headerMessage.getContentSize().y)/2 - 50,
+        .y = (_context_p->config.canvasSize.y - _headerMessage.getContentSize().y)/2 - 50,
     });
     
     int optCounter = 0;
@@ -55,8 +55,8 @@ _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
         opt.setContent(optText);
 
         opt.setPositionInCanvas({
-            .x = (_context_p->canvasProperties.size.x - _headerMessage.getContentSize().x)/2,
-            .y = (_context_p->canvasProperties.size.y - _headerMessage.getContentSize().y)/2 + optPixelOffsert * optCounter++,
+            .x = (_context_p->config.canvasSize.x - _headerMessage.getContentSize().x)/2,
+            .y = (_context_p->config.canvasSize.y - _headerMessage.getContentSize().y)/2 + optPixelOffsert * optCounter++,
         });
 
         _options.push_back(opt);

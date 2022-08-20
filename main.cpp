@@ -4,12 +4,15 @@
 
 int main(int argc, char *argv[])
 {
+
+    std::string config_file_name = "config/space_adv_l0.yaml";
+
     j0g0::Game game;
     j0g0::RenderingContext context;
 
     // TODO - move to config file...
-    context.init(320*4, 180*4, 4);
+    context.init(config_file_name);
 
-    game.init( &context );
+    game.init( &context, config_file_name );
     game.run();
 }

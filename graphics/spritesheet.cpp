@@ -41,7 +41,7 @@ void SpriteSheet::_initSpriteSheet()
     for (int i = 0; i < _n_rows; i++){
         for (int j = 0; j < _n_columns; j++){
 
-            SpriteSlice _frame;
+            SpriteAnimationSlice _frame;
 
             // _frame.index = _counter;
 
@@ -138,11 +138,11 @@ void SpriteSheet::setAlpha( Uint8 alpha )
 void SpriteSheet::renderBySliceIndex( const Vec2D_Int &positionInCanvas, int frame_index )
 {
 
-    SpriteSlice& slice = _slices[frame_index];
+    SpriteAnimationSlice& slice = _slices[frame_index];
     renderSlice(positionInCanvas, slice, false );
 }
 
-void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice, bool overrideHorizontalFlip )
+void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteAnimationSlice &slice, bool overrideHorizontalFlip )
 {
     SDL_Rect src = slice.frame;
     SDL_Rect tgt;
@@ -178,7 +178,7 @@ void SpriteSheet::renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSl
     );
 }
 
-void SpriteSheet::renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice )
+void SpriteSheet::renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteAnimationSlice &slice )
 {
     SDL_Rect src = slice.frame;
     SDL_Rect tgt;
@@ -195,7 +195,7 @@ void SpriteSheet::renderSlice_Simple( const Vec2D_Int &positionInCanvas, const S
     );
 }
 
-SpriteSlice SpriteSheet::getFrameAt(int index){
+SpriteAnimationSlice SpriteSheet::getFrameAt(int index){
     return _slices[index];
 }
 

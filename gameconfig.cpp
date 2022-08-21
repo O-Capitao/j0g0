@@ -10,16 +10,12 @@ GameLevelProperties GameConfigReader::readGameLevelProperties( std::string confi
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
 
-    // auto title = levelProperties["title"].as<std::string>();
     auto worldSize = _parseToVec2D_Float(levelProperties["world-size"]);
-    auto color = _parseToSDL_Color(levelProperties["background-color"]);
 
     return {
-        // .title = title,
-        .backgroundColor = color,
         .worldSize = worldSize
     };
-}   
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,6 +183,16 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties(
                 );
 
             }
+
+            if (auto offsetMin = curr_plat["offset-minus"]){
+                _props.offsetMinus = offsetMin.as<int>();
+            }
+
+            if (auto offsetPlu = curr_plat["offset-plus"]){
+                _props.offsetPlus = offsetPlu.as<int>();
+            }
+
+
         }else{
             _props.fillDirection = {0,0};
         }
@@ -361,7 +367,18 @@ std::vector<SpriteAnimationProperties> GameConfigReader::_readSpriteAnimationPro
             .size = currAnimation["size"].as<Uint8>(),
             .sliceIndexes = currAnimation["slice-indexes"].as<std::vector<Uint8>>(),
             .sliceDurations_ms = currAnimation["slice-durations"].as<std::vector<Uint16>>(),
+            .isTransient = false
         };
+
+        if (auto transientFromNode = currAnimation["transient-from"]){
+            spriteAnimation.isTransient = true;
+            spriteAnimation.transientFrom = transientFromNode.as<std::string>();
+        }
+
+        if (auto transientToNode = currAnimation["transient-to"]){
+            spriteAnimation.isTransient = true;
+            spriteAnimation.transientTo = transientToNode.as<std::string>();
+        }
 
         retval.push_back(spriteAnimation);
     }

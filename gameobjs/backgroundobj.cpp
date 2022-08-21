@@ -35,7 +35,7 @@ void BackgroundObj::render(){
 
         for (int _matrix_col = 0; _matrix_col < blockSize.x; _matrix_col++){
 
-            SpriteSlice slice = _tileMap.getTileAt(blockSize.y - _matrix_row - 1, _matrix_col);
+            SpriteAnimationSlice slice = _tileMap.getTileAt(blockSize.y - _matrix_row - 1, _matrix_col);
 
             _spriteSheet_p->renderSlice(
                 {
@@ -59,14 +59,14 @@ void BackgroundObj::update(float dt_s){
 // TODO: Fix: Duplicate of the method with same name in Platform
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<SpriteSlice> BackgroundObj::_calculateTileSetFromConfig(){
+std::vector<SpriteAnimationSlice> BackgroundObj::_calculateTileSetFromConfig(){
     assert( 
         _properties.tileMapSpriteSliceMatrix.size() == _properties.sliceRotations_in90Deg.size() 
         && _properties.sliceRotations_in90Deg.size() == _properties.sliceFlip_H.size()
         && _properties.sliceFlip_H.size() == (_properties.sizeInTiles.x * _properties.sizeInTiles.y)
     );
 
-    std::vector<SpriteSlice> slices;
+    std::vector<SpriteAnimationSlice> slices;
 
     for (int i = 0; i < (_properties.sizeInTiles.x * _properties.sizeInTiles.y); i++){
 
@@ -77,7 +77,7 @@ std::vector<SpriteSlice> BackgroundObj::_calculateTileSetFromConfig(){
         }
 
         // TODO - rotation stuff
-        SpriteSlice i_slice = {
+        SpriteAnimationSlice i_slice = {
             .duration_ms = 0,
             .quarter_turns_ccw = (short)_properties.sliceRotations_in90Deg[i],
             .flip = i_flip,

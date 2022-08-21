@@ -26,7 +26,7 @@ namespace j0g0 {
     struct GameLevelProperties {
         // std::string title;
         Vec2D_Float worldSize;
-        SDL_Color backgroundColor;
+        // SDL_Color backgroundColor;
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +59,9 @@ namespace j0g0 {
 
         Vec2D_Int fillDirection;
         SDL_Color fillColor;
+
+        int offsetMinus = 0;
+        int offsetPlus = 0;
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +89,10 @@ namespace j0g0 {
         std::vector<Uint8> sliceIndexes;
         std::vector<Uint16> sliceDurations_ms;
         Uint16 uniformSliceDuration_ms = 100;
+        
+        bool isTransient;
+        std::string transientFrom;
+        std::string transientTo;
     };
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////

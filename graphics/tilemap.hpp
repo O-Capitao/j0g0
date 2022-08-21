@@ -13,14 +13,14 @@ namespace j0g0{
         TileMap( 
             const Vec2D_Int &tileSize,
             const Vec2D_Int &blockSize,
-            std::vector<SpriteSlice> tileSet,
+            std::vector<SpriteAnimationSlice> tileSet,
             std::vector<Uint8> sliceMap
         );
 
         ~TileMap();
 
         void setTileAt(int row, int col, int frameIndex);
-        const SpriteSlice& getTileAt(int row, int col);
+        const SpriteAnimationSlice& getTileAt(int row, int col);
         void setAllTiles(int frameIndex);
         void setRowOfTiles(int row, int frameIndex);
         void setColumnOfTiles(int col, int frameIndex);
@@ -36,7 +36,7 @@ namespace j0g0{
             // ao Vector _tileSet
             int** _blockMap_Matrix;
 
-            std::vector<SpriteSlice> _tileSet;
+            std::vector<SpriteAnimationSlice> _tileSet;
 
     };
 

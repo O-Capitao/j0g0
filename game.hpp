@@ -29,6 +29,8 @@ namespace j0g0 {
             
             void _cleanUp();
             void _initSpriteSheets();
+
+            std::string _pathToConfig;
             
     };
 

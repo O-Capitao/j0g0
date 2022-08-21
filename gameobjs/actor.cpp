@@ -48,6 +48,7 @@ _offsetWorld({
 
     // Sprites
     _initAnimations( props.spriteAnimations );
+    _linkAnimations();
     _setActiveAnimation( props.idleAnimationId );
 
     #if DEBUG
@@ -126,14 +127,18 @@ BoxPhysicsModel *Actor::getPhysicsModel_Ptr(){
 void Actor::_initAnimations( const std::vector<SpriteAnimationProperties> &a_vec ){
 
     for (SpriteAnimationProperties item : a_vec){
-        SpriteAnimation animation;
 
-        animation.id = item.id;
+        SpriteAnimation animation = {
+            .id = item.id,
+            .isTransient = item.isTransient,
+            .toId = item.transientTo,
+            .to = nullptr
+        };
 
         // fill out animation frames
         for (int i = 0; i < item.size; i++ ){
 
-            SpriteSlice slice = _spriteSheet_p->getFrameAt( item.sliceIndexes[i] );
+            SpriteAnimationSlice slice = _spriteSheet_p->getFrameAt( item.sliceIndexes[i] );
             slice.duration_ms = item.sliceDurations_ms[i];
             slice.center_of_rotation = {.x = 0, .y = 0};
             slice.flip = SDL_FLIP_NONE;
@@ -149,9 +154,22 @@ void Actor::_initAnimations( const std::vector<SpriteAnimationProperties> &a_vec
 
 }
 
+void Actor::_linkAnimations(){
+    for (auto animation : _animations){
+        SpriteAnimation a = animation.second;
+
+        if (a.isTransient){
+            
+            assert(_animations.find(a.toId) != _animations.end());
+            a.to = &_animations[ animation.second.toId ];
+        
+        }
+    }
+}
+
 void Actor::_updateSprites(Uint32 dt){
     
-    SpriteSlice& _active_frame = _activeAnimation_p->animation_frames[_animationCounter];
+    SpriteAnimationSlice& _active_frame = _activeAnimation_p->animation_frames[_animationCounter];
 
     if (_active_frame.duration_ms == 0){
         // hold this frame until State changes
@@ -164,7 +182,14 @@ void Actor::_updateSprites(Uint32 dt){
     if ( _animationTimer >= _active_frame.duration_ms){
         
         if (_animationCounter == _activeAnimation_p->animation_frames.size() - 1){
-            _animationCounter = 0;
+            
+            if (_activeAnimation_p->isTransient){
+                _setActiveAnimation(_activeAnimation_p->toId);
+            } else {
+                _animationCounter = 0;
+            }
+            
+        
         } else {
             _animationCounter++;
         }
@@ -196,6 +221,15 @@ void PlayerActor::update(float dt_s){
     
     Actor::update(dt_s);
 
+    // some exceptions to my other rules...
+    if (_physicsModel.FALLING && _physicsModel.getVelocity().y < 0 && _activeAnimation_id != "jump-down"){
+        _setActiveAnimation("jump-down");
+    }
+
+    if (!_physicsModel.FALLING && _activeAnimation_id == "jump-down"){
+        _land();
+    }
+    
     if (_activeAction == ActorMovementActions::JUMP){
 
         if (!_physicsModel.FALLING){
@@ -206,11 +240,17 @@ void PlayerActor::update(float dt_s){
             } else if (_requestedAction == ActorMovementActions::JUMP){
                 _jump(_jumpDV);
             } else {
-                _idle();
+                _land();
             }
         } else {
+            // nudge L / R while we fall
+            if (_requestedAction == ActorMovementActions::WALK_LEFT || _requestedAction == ActorMovementActions::WALK_RIGHT ){ 
+                _physicsModel.box.x += ((_requestedAction == ActorMovementActions::WALK_LEFT) ? - 0.05 : 0.05);
+            }
             // undo input
             _requestedAction = ActorMovementActions::NONE;
+
+            
         }
     
     
@@ -237,7 +277,6 @@ void PlayerActor::update(float dt_s){
         } else if ( _requestedAction == ActorMovementActions::WALK_LEFT || _requestedAction == ActorMovementActions::WALK_RIGHT ){
             _walk(_requestedAction == ActorMovementActions::WALK_LEFT);
         }
-    
     }
     
 
@@ -282,7 +321,7 @@ void PlayerActor::_jump(float dv){
         });
                 
         _activeAction = ActorMovementActions::JUMP;
-        _setActiveAnimation(  "jump");
+        _setActiveAnimation("jump-up");
 
     }
 }
@@ -307,6 +346,14 @@ void PlayerActor::_walk( bool goLeft ){
 void PlayerActor::_idle(){
     if (!_physicsModel.FALLING){
         _setActiveAnimation("idle");
+        _physicsModel.setWalkingVelocity(0);
+        _activeAction = ActorMovementActions::NONE;
+    }
+}
+
+void PlayerActor::_land(){
+    if (!_physicsModel.FALLING){
+        _setActiveAnimation("land");
         _physicsModel.setWalkingVelocity(0);
         _activeAction = ActorMovementActions::NONE;
     }

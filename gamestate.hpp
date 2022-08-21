@@ -80,7 +80,11 @@ namespace j0g0 {
 
     struct PlayState: public GameState {
 
-        PlayState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
+        PlayState(
+            RenderingContext* context, 
+            SpriteSheetManager *spriteSheetManager,
+            const std::string &configFilePath
+        );
         ~PlayState();
         
         void render();

@@ -186,9 +186,9 @@ void PauseState::_renderSelectionCarat(){
  * 
  */
 // TODO - a central config file path
-PlayState::PlayState( RenderingContext* cntxt, SpriteSheetManager *ssm )
+PlayState::PlayState( RenderingContext* cntxt, SpriteSheetManager *ssm, const std::string &configFilePath )
 :GameState(cntxt,ssm ), 
-level( "config/space_adv_l0.yaml", cntxt, ssm )
+level( configFilePath, cntxt, ssm )
 {
 
     frameCounter = 0;

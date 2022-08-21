@@ -37,14 +37,24 @@ namespace j0g0{
             TileMap _tileMap;
             ViewPort *_viewport_p;
 
-            std::vector<SpriteSlice> _calculateTileSetFromConfig();
+            std::vector<SpriteAnimationSlice> _calculateTileSetFromConfig();
 
             bool _isVisible();
 
             // Fill Area -> Represented by FloatRect in world coords
             // it can move. 
             FloatRect _fillArea;
-            FloatRect _calculateFillArea();
+
+            // calculate the filled area present in the
+            // current ViewPort - called in each render call
+            FloatRect _calculate_RenderedFillArea();
+
+            // calculate the filled area in the "physical" world
+            // called once AFTTER physcs model init -> affects "box" dimensions
+            FloatRect _calculate_WorldTotalArea();
+
+            // Applies the pixel offset to platorms
+            void _applyOffsetsToFillArea(SDL_Rect& rect);
     };
 
 

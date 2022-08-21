@@ -154,7 +154,8 @@ _viewport_p(vp)
 
     // If a fill direction is specified in the config.
     if (_properties.fillDirection.x != 0 || _properties.fillDirection.y!=0){
-        _fillArea = _calculateFillArea();
+        // Alter the bounding box to include the filled area
+        _model.box = _calculate_WorldTotalArea();
     }
 
 
@@ -180,14 +181,50 @@ void RectPlatform::render(){
         return;
     }
 
-    Vec2D_Int positionCanvas = _viewport_p->viewPortToCanvas( 
-        _viewport_p->worldToViewPort(
-            {
-                .x = _model.box.x,
-                .y = _model.box.y
-            }
-        )
-    );
+    // render entire color fill before even if larger than
+    // viewport - the naive approach - SDL will optimize
+    if ( _properties.fillDirection.y < 0 ){
+
+        SDL_Rect fill_rect = _viewport_p->transformRect_Viewport2Canvas(
+            _viewport_p->transformRect_World2Viewport(
+                _model.box
+        ));
+        
+        _applyOffsetsToFillArea(fill_rect);
+
+        SDL_SetRenderDrawColor(context->renderer, 
+            _properties.fillColor.r, 
+            _properties.fillColor.g, 
+            _properties.fillColor.b, 
+            _properties.fillColor.a 
+        );
+
+        SDL_RenderFillRect(context->renderer, &fill_rect );
+    }
+
+    // the position of the Tiled Portion
+    // that needs to be rendered from the SpriteSheet
+    Vec2D_Int positionCanvas;
+    
+    if (_properties.fillDirection.y < 0){
+        
+        positionCanvas = _viewport_p->viewPortToCanvas( 
+            _viewport_p->worldToViewPort( _properties.positionInWorld )
+        );
+
+    } else {
+
+        positionCanvas = _viewport_p->viewPortToCanvas( 
+            _viewport_p->worldToViewPort(
+                {
+                    .x = _model.box.x,
+                    .y = _model.box.y
+                }
+            )
+        );
+    
+    }
+
 
     const Vec2D_Int& platformSize = _tileMap.getSizeInTiles();
 
@@ -195,7 +232,7 @@ void RectPlatform::render(){
 
         for (int _matrix_col = 0; _matrix_col < platformSize.x; _matrix_col++){
 
-            SpriteSlice slice = _tileMap.getTileAt(platformSize.y - _matrix_row - 1, _matrix_col);
+            SpriteAnimationSlice slice = _tileMap.getTileAt(platformSize.y - _matrix_row - 1, _matrix_col);
 
             _spriteSheet_p->renderSlice(
                 {
@@ -207,24 +244,7 @@ void RectPlatform::render(){
             );
         }
     }
-
-    if (_fillArea.w != 0 || _fillArea.h != 0){
-        
-        SDL_Rect fill_rect = _viewport_p->transformRect_Viewport2Canvas(
-            _viewport_p->transformRect_World2Viewport(
-                _calculateFillArea()
-            )
-        );
-        
-        SDL_SetRenderDrawColor(context->renderer, 
-            _properties.fillColor.r, 
-            _properties.fillColor.g, 
-            _properties.fillColor.b, 
-            _properties.fillColor.a 
-        );
-
-        SDL_RenderFillRect(context->renderer, &fill_rect );
-    }
+    
 }
 
 
@@ -234,10 +254,17 @@ RectPlatformPhysicsModel *RectPlatform::getPhysicsModel_ptr(){
     return &_model;
 }
 
+void RectPlatform::_applyOffsetsToFillArea(SDL_Rect &rect){
+    // onky downward case for now
+    if (_properties.fillDirection.y<0){
+        rect.w -= (_properties.offsetMinus + _properties.offsetPlus);
+        rect.x += (_properties.offsetMinus);
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
+std::vector<SpriteAnimationSlice> RectPlatform::_calculateTileSetFromConfig(){
     
     assert( 
         _properties.tileMapSpriteSliceMatrix.size() == _properties.sliceRotations_in90Deg.size() 
@@ -245,7 +272,7 @@ std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
         && _properties.sliceFlip_H.size() == (_properties.sizeInTiles.x * _properties.sizeInTiles.y)
     );
 
-    std::vector<SpriteSlice> slices;
+    std::vector<SpriteAnimationSlice> slices;
 
     for (int i = 0; i < (_properties.sizeInTiles.x * _properties.sizeInTiles.y); i++){
 
@@ -256,7 +283,7 @@ std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
         }
 
         // TODO - rotation stuff
-        SpriteSlice i_slice = {
+        SpriteAnimationSlice i_slice = {
             .duration_ms = 0,
             .quarter_turns_ccw = (short)_properties.sliceRotations_in90Deg[i],
             .flip = i_flip,
@@ -279,83 +306,65 @@ std::vector<SpriteSlice> RectPlatform::_calculateTileSetFromConfig(){
 // Returns bool value used to decide if the Platform should be rendered.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool RectPlatform::_isVisible(){
+    return true;
+    // For platforms with filled adjacent area the visibility detection 
+    // must include the fill area
     return (_model.box.x + _model.box.w) > _viewport_p->positionInWorld.x
         && _model.box.x < (_viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x)
         && (_model.box.y + _model.box.h) > _viewport_p->positionInWorld.y
         && _model.box.y < (_viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-FloatRect RectPlatform::_calculateFillArea(){
-    
+FloatRect RectPlatform::_calculate_WorldTotalArea(){
+
+    assert( !_properties.isMovingPlatform );
+
+    // TODO - only fill bellow is considered - include other cases
+    if ( _properties.fillDirection.y < 0 ){
+        return {
+            .x = _model.box.x,
+            .y = 0,
+            .w = _model.box.w,
+            .h = _model.box.y + _model.box.h
+        };
+
+    } else {
+        throw std::runtime_error("Only 'Fill Bellow' is implented...");
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+FloatRect RectPlatform::_calculate_RenderedFillArea(){
+
+    // // Moving Platforms cannot have the "Fill" property set.
+    assert(!_properties.isMovingPlatform);
+
     if (_properties.fillDirection.x > 0){
         
-        // fill to the Right.
 
-        // Check if there is space between right edge of Viewport
-        // and right edge of Platform's BB
-        float rightEdgeOfVP_x = _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x;
-        float rightEdgeOfPlaform_x = _model.box.x + _model.box.w;
+        if (_properties.fillDirection.y < 0){
 
-        if (
-            rightEdgeOfVP_x > rightEdgeOfPlaform_x 
-            && rightEdgeOfPlaform_x > _viewport_p->positionInWorld.x
-        ){
-            return {
-                .w = rightEdgeOfVP_x - rightEdgeOfPlaform_x,
-                .h = _model.box.h,
-                .x = rightEdgeOfPlaform_x,
-                .y = _model.box.y
-            };
+            // // Fill down
+            // if ( 
+            //     _model.box.y > _viewport_p->positionInWorld.y
+            //     && _model.box.y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y
+            // ){
+            //     return {
+            //         .w = _model.box.w,
+            //         .h = _model.box.y - _viewport_p->positionInWorld.y,
+            //         .x = _model.box.x,
+            //         .y = _viewport_p->positionInWorld.y
+            //     };
+            // }
+
+            // naive approach - just pass on the full rectangle
+
         }
-
-    } else if (_properties.fillDirection.x < 0){
-        // Fill to the Left
-        if (
-            _model.box.x > _viewport_p->positionInWorld.x 
-            && _model.box.x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x
-        ){
-            return {
-                .w = _model.box.x - _viewport_p->positionInWorld.x,
-                .h= _model.box.h,
-                .x = 0,
-                .y = _model.box.y
-            };
-        }
-
-
-    } else if (_properties.fillDirection.y > 0){
-        // Fill up
-        float topEdgeVP_y = _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y;
-        float topEdgeOfPlatform_y = _model.box.y + _model.box.h;
-
-        if (
-            topEdgeOfPlatform_y < topEdgeVP_y
-            && topEdgeOfPlatform_y > _viewport_p->positionInWorld.y
-        ){
-            return {
-                .w = _model.box.w,
-                .h = topEdgeVP_y - topEdgeOfPlatform_y,
-                .x = _model.box.x,
-                .y = topEdgeOfPlatform_y
-            };
-        }
-
-    }else if (_properties.fillDirection.y < 0){
-        // Fill down
-        if ( 
-            _model.box.y > _viewport_p->positionInWorld.y
-            && _model.box.y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y
-        ){
-            return {
-                .w = _model.box.w,
-                .h = _model.box.y - _viewport_p->positionInWorld.y,
-                .x = _model.box.x,
-                .y = 0
-            };
-        }
-
     }
 
     return {0,0,0,0};

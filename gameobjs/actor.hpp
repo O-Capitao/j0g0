@@ -52,7 +52,7 @@ namespace j0g0 {
             void _setActiveAnimation( const std::string &key );
 
             SDL_Rect _getSliceBB_InCanvas();
-        
+            
         private:
             
             ViewPort *_viewport_p;
@@ -66,6 +66,7 @@ namespace j0g0 {
             Uint32 _animationTimer = 0;
 
             void _initAnimations( const std::vector<SpriteAnimationProperties> &a_vec );
+            void _linkAnimations();
             void _updateSprites( Uint32 time );
     };
 
@@ -93,6 +94,8 @@ namespace j0g0 {
             void _walk(bool headLeft);
 
             void _idle();
+
+            void _land();
 
             const float _jumpDV = 4;
     };

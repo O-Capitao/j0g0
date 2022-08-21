@@ -5,7 +5,7 @@
 int main(int argc, char *argv[])
 {
 
-    std::string config_file_name = "config/space_adv_l0.yaml";
+    std::string config_file_name = "config/roboboy_1.yaml";
 
     j0g0::Game game;
     j0g0::RenderingContext context;

@@ -85,8 +85,7 @@ GameLevel::~GameLevel(){
 }
 
 void GameLevel::render(){
-    _context_p->setBackgroundColor(_properties.backgroundColor);
-
+    // _context_p->setBackgroundColor(_properties.backgroundColor);
 
     for (RectPlatform *_p: _platforms_p_vec){
         _p->render();
@@ -144,7 +143,10 @@ void GameLevel::render(){
         _a->render();
     }
 
+    // if (_player_p != nullptr){
     _player_p->render();
+    // }
+    
 
 }
 
@@ -185,7 +187,9 @@ void GameLevel::update(){
 
     float dt_s = ((float)dt)*0.001;
     
+    // if (_player_p != nullptr){
     _player_p->update(dt_s);
+    // }
 
     for (Actor *_a: _actors_p_vec){
         _a->update(dt_s);

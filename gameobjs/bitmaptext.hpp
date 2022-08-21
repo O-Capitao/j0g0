@@ -25,7 +25,7 @@ namespace j0g0 {
             const std::string _characterMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890?!,.:";
             
             std::string _content;
-            std::vector<SpriteSlice> _slices;
+            std::vector<SpriteAnimationSlice> _slices;
             Vec2D_Int _positionInCanvas;
             Vec2D_Int _charSize;
 

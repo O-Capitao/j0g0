@@ -20,7 +20,7 @@ void Game::init(RenderingContext* _context, std::string path_to_config)
 
     context = _context;
     spriteSheetManager = new SpriteSheetManager();
-
+    _pathToConfig = path_to_config;
 
     GameConfigReader _reader;
     
@@ -47,7 +47,7 @@ void Game::init(RenderingContext* _context, std::string path_to_config)
 
     // Init States
     state = new PauseState(context,spriteSheetManager);
-    _playState = new PlayState( context,spriteSheetManager );
+    _playState = new PlayState( context,spriteSheetManager, path_to_config );
 }
 
 void Game::run(){
@@ -92,7 +92,7 @@ void Game::changeState(){
                 if (restartRequested){
                     delete _playState;
                     // _playState = NULL;
-                    _playState = new PlayState( context,spriteSheetManager );
+                    _playState = new PlayState( context,spriteSheetManager, _pathToConfig );
                     
                 }
                 

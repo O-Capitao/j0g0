@@ -8,7 +8,7 @@ using namespace j0g0;
 TileMap::TileMap( 
     const Vec2D_Int &tileSize,
     const Vec2D_Int &blockSize,
-    std::vector<SpriteSlice> tileSet,
+    std::vector<SpriteAnimationSlice> tileSet,
     std::vector<Uint8> sliceMap
 ){
     assert( tileSet.size() > 0 );
@@ -52,7 +52,7 @@ void TileMap::setTileAt(int row, int col, int frameIndex ){
     _blockMap_Matrix[row][col] = frameIndex;
 }
 
-const SpriteSlice& TileMap::getTileAt(int row, int col){
+const SpriteAnimationSlice& TileMap::getTileAt(int row, int col){
     assert( row < _blockSize_inTiles.y && col < _blockSize_inTiles.x );
 
     int sprite_index = _blockMap_Matrix[row][col];

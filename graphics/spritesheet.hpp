@@ -12,7 +12,7 @@
 namespace j0g0
 {
 
-    struct SpriteSlice {
+    struct SpriteAnimationSlice {
         
         float duration_ms;
         short quarter_turns_ccw = 0;
@@ -21,11 +21,18 @@ namespace j0g0
         Vec2D_Int offset_for_rotation;
         SDL_Point center_of_rotation;
         SDL_Rect frame;
-    };
+
+
+    };  
 
     struct SpriteAnimation {
         std::string id;
-        std::vector<SpriteSlice> animation_frames;
+        std::vector<SpriteAnimationSlice> animation_frames;
+
+        bool isTransient;
+        
+        SpriteAnimation *to;
+        std::string toId;
     };
 
     /*
@@ -57,11 +64,11 @@ namespace j0g0
 
         // if overrideFlip is true -> flip will be undone if specified in Sprite Frame, 
         // or added if false in the Sprite Frame
-        void renderSlice( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice, bool overrideHorizontalFlip);
+        void renderSlice( const Vec2D_Int &positionInCanvas, const SpriteAnimationSlice &slice, bool overrideHorizontalFlip);
 
-        void renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteSlice &slice);
+        void renderSlice_Simple( const Vec2D_Int &positionInCanvas, const SpriteAnimationSlice &slice);
 
-        SpriteSlice getFrameAt(int index);
+        SpriteAnimationSlice getFrameAt(int index);
 
         SpriteAnimation createAnimation( std::vector<int> slice_ids);
 
@@ -77,7 +84,7 @@ namespace j0g0
             // int step_x, step_y;
 
             std::string _ori_path;
-            std::vector<SpriteSlice> _slices; // all slices from image -> no rotation or flip
+            std::vector<SpriteAnimationSlice> _slices; // all slices from image -> no rotation or flip
             
             SDL_Texture* _texture_p;
             RenderingContext* _context_p;

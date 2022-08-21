@@ -1,0 +1,153 @@
+---
+#
+# LEVEL SECTION
+window:
+  title: "Robo Boy Adventure WIP"
+  canvas-size:
+    x: 320
+    y: 180
+  pixel-ratio: 4
+  background-color:
+    r: 39
+    g: 39
+    b: 54
+world-size:
+  x: 20
+  y: 20
+viewport:
+  position:
+    x: 0
+    y: 15
+  width: 10
+#
+# SPRITES SECTION
+sprite-sheets:
+#
+  - id: "mountains"
+    path: "assets/mountains_alt_background_320_180.png"
+    slice-size:
+      x: 320
+      y: 180
+    scaling-factor: 1
+  - id: "bitmap-text"
+    path: "assets/fontSmall-Sheet.png"
+    slice-size:
+      x: 5
+      y: 8
+    scaling-factor: 1
+  - id: "floor"
+    path: "assets/some_platforms16_16.png"
+    slice-size:
+      x: 16
+      y: 16
+    scaling-factor: 1
+    # For the Player
+  - id: "player"
+    path: "assets/roboyboy_master_sprite.png"
+    slice-size:
+      x: 32
+      y: 32
+    scaling-factor: 1
+#
+# PLATFORMS SECTION
+platforms:
+  - id: "static-plat-1"
+    sprite-sheet: "floor"
+    fill-direction:  
+      x: 0
+      y: -1
+    fill-color: 
+      r: 39
+      g: 39
+      b: 54
+    offset-minus: 1
+    offset-plus: 1
+    size:
+      x: 8
+      y: 1
+    position:
+      x: 0
+      y: 16
+    tile-map: [
+      1,2,2,2,2,2,2,3
+    ]
+    z-index: 0 
+    ellastic-coef: 0.5
+    friction-coef: 0
+  - id: "static-plat-2"
+    sprite-sheet: "floor"
+    fill-direction:  
+      x: 0
+      y: -1
+    fill-color: 
+      r: 39
+      g: 39
+      b: 54
+    offset-minus: 1
+    offset-plus: 1
+    size:
+      x: 16
+      y: 1
+    position:
+      x: 4
+      y: 1
+    tile-map: [
+      1,2,2,2,
+      2,2,2,2,
+      2,2,2,2,
+      2,2,2,3
+    ]
+    z-index: 0 
+    ellastic-coef: 0.5
+    friction-coef: 0
+  
+#
+# ACTORS
+actors:
+  - id: "player"
+    sprite-sheet-id: "player"
+    idle-animation-id: "idle"
+    mass: 20
+    jump-dvy: 5
+    walk-speed: 1.7
+    friction-coef: 0.2
+    # optional
+    initial-velocity:
+      x: 0
+      y: 0
+    initial-position:
+      x: 0.5
+      y: 17
+    bounding-box:
+      x: 8
+      y: 0
+      w: 16
+      h: 30
+    sprite-animations:
+      - id: "idle"
+        size: 5
+        slice-indexes: [ 0, 1, 2, 3, 4 ]
+        slice-durations: [250,350,300, 100, 200]
+      - id: "walk"
+        size: 8
+        slice-indexes: [5,6,7,8,9,10,11,12]
+        slice-durations: [120,120,120,120,120,120,120,120]
+      - id: "jump-up"
+        size: 2
+        slice-indexes: [13,14]
+        slice-durations: [150,0]
+      - id: "jump-down"
+        size: 2
+        slice-indexes: [15]
+        slice-durations: [0]
+      - id: "land"
+        size: 2
+        slice-indexes: [16,17]
+        slice-durations: [150,300]
+        transient-to: "idle"
+      - id: "run"
+        size: 4
+        slice-indexes: [19,20,21,22]
+        slice-durations: [100,80,100,80]
+      
+# END

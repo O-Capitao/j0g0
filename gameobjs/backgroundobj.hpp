@@ -40,6 +40,6 @@ namespace j0g0{
 
             // Note - this is a duplicate of the
             // Plaform function of same name. TODO: Get it in a single place.
-            std::vector<SpriteSlice> _calculateTileSetFromConfig();
+            std::vector<SpriteAnimationSlice> _calculateTileSetFromConfig();
     };
 }

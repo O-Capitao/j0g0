@@ -22,7 +22,7 @@ BitmapText::~BitmapText(){
 void BitmapText:: render()
 {   
     int index = 0;
-    for (const SpriteSlice &_slice_ref : _slices ){
+    for (const SpriteAnimationSlice &_slice_ref : _slices ){
         _spriteSheet_p->renderSlice_Simple( {
                 .x = _positionInCanvas.x + (index++) * _charSize.x,
                 .y = _positionInCanvas.y

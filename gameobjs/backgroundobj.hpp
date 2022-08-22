@@ -37,9 +37,11 @@ namespace j0g0{
             ViewPort *_viewport_p;
             
             Vec2D_Int _positionInCanvas;
+            Vec2D_Float _previousVP_position_World;
 
             // Note - this is a duplicate of the
             // Plaform function of same name. TODO: Get it in a single place.
             std::vector<SpriteAnimationSlice> _calculateTileSetFromConfig();
+            void _renderSingleBackground(const Vec2D_Int& background_top_left_corner);
     };
 }

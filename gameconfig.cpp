@@ -342,6 +342,12 @@ std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( st
             }else{
                 _props.positionInCanvas = {0,0};
             }
+            if (auto repeat_x = curr_bckgrnd["repeat-x"]){
+                _props.repeatX = repeat_x.as<bool>();
+            }
+            if (auto repeat_y = curr_bckgrnd["repeat-y"]){
+                _props.repeatY = repeat_y.as<bool>();
+            }
 
             retVal.push_back( _props );
         }

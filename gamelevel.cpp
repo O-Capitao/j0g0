@@ -3,6 +3,8 @@
 
 using namespace j0g0;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 GameLevel::GameLevel( std::string levelPropsFile, RenderingContext* _context, SpriteSheetManager *ssm)
 :_context_p(_context),
 _ssm_p(ssm)
@@ -61,6 +63,13 @@ _ssm_p(ssm)
         }
     }
 
+    std::vector<BackgroundProperties> _background_props = _reader.readBackgroundProperties( levelPropsFile );
+
+    for (auto bp : _background_props){
+        SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(bp.spriteSheetId);
+        _backgrounds_p_vec.push_back( new BackgroundObj(_context_p, _used_ss, _viewport_p, bp) );
+    }
+
     _lastTick = 0; // no update cycle was run just yet
     
     #if DEBUG
@@ -68,12 +77,19 @@ _ssm_p(ssm)
     #endif
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 GameLevel::~GameLevel(){
 
     for (auto a: _platforms_p_vec){
         delete a;
     }
     _platforms_p_vec.empty();
+
+    for (auto b: _backgrounds_p_vec){
+        delete b;
+    }
+    _backgrounds_p_vec.empty();
 
     for (auto a: _actors_p_vec){
         delete a;
@@ -84,8 +100,14 @@ GameLevel::~GameLevel(){
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void GameLevel::render(){
     // _context_p->setBackgroundColor(_properties.backgroundColor);
+
+    for (BackgroundObj *bo_p: _backgrounds_p_vec){
+        bo_p->render();
+    }
 
     for (RectPlatform *_p: _platforms_p_vec){
         _p->render();
@@ -150,6 +172,8 @@ void GameLevel::render(){
 
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void GameLevel::update(){
     
     if (_lastTick == 0){
@@ -200,6 +224,10 @@ void GameLevel::update(){
         p->update(dt_s);
     }
 
+    for (BackgroundObj *bo: _backgrounds_p_vec){
+        bo->update(dt_s);
+    }
+
     _physicsModel.resolveModel(dt_s);
 
     // Update the viewport's position
@@ -219,6 +247,8 @@ void GameLevel::update(){
     _lastTick = _now;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void GameLevel::handleEvents( const SDL_Event& evt ){
     // player_thing_p->handleEvent( evt );
     _player_p->handleInput( evt.key );

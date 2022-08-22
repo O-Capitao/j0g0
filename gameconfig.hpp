@@ -127,7 +127,6 @@ namespace j0g0 {
         bool isTiled;
 
         // in file:
-
         std::string id;
         std::string spriteSheetId;
 
@@ -153,8 +152,8 @@ namespace j0g0 {
         std::vector<bool>sliceFlip_V;
         
         // for some infinite scrolling
-        bool repeatX;
-        bool repeatY;
+        bool repeatX = false;
+        bool repeatY = false;
 
     };
     
@@ -163,20 +162,12 @@ namespace j0g0 {
     struct GameConfigReader {
         
         GameLevelProperties readGameLevelProperties( std::string config_path );
-        
-        // void addLevelSpritesToManager( 
-        //     std::string config_path,
-        //     RenderingContext *context,
-        //     SpriteSheetManager *ssm
-        // );
-
         GameWindowConfig readGameWindowConfig( std::string config_path );
         std::vector<SpriteSheetConfig> readSpriteSheetConfig( std::string config_path );
         std::vector<PlatformProperties> readPlatformProperties( std::string config_path );
         ViewPortProperties readViewPortProperties( std::string config_path );
         std::vector<ActorProperties> readActorProperties( std::string config_path );
         std::vector<BackgroundProperties> readBackgroundProperties( std::string config_path );
-
 
         private:
         

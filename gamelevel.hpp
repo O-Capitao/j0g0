@@ -7,6 +7,7 @@
 #include "graphics/spritesheet.hpp"
 #include "physics/physics.hpp"
 #include "gameobjs/platform.hpp"
+#include "gameobjs/backgroundobj.hpp"
 #include "gameobjs/actor.hpp"
 #include "gameconfig.hpp"
 
@@ -41,8 +42,10 @@ namespace j0g0 {
 
             PlatformGamePhysics _physicsModel;
 
+            std::vector<BackgroundObj*> _backgrounds_p_vec;
             std::vector<RectPlatform*> _platforms_p_vec;
             std::vector<Actor*> _actors_p_vec;
+
             PlayerActor *_player_p;
     };
 }

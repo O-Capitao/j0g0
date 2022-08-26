@@ -17,7 +17,7 @@ MovingRectPlatform::MovingRectPlatform(
     RenderingContext* _cntxt, 
     SpriteSheet* _ss, 
     ViewPort* vp,
-    PlatformProperties &p)
+    PlatformConfig &p)
 :RectPlatform(_cntxt, _ss, vp, p ){
 
     assert(p.keyPositions_vec.size() > 0);
@@ -112,7 +112,7 @@ void MovingRectPlatform::update(float dt_s){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromConfig(PlatformProperties &properties){
+std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromConfig(PlatformConfig &properties){
     
     std::vector<MovingRectPlatformKeyFrame> retVal;
 
@@ -133,7 +133,7 @@ RectPlatform::RectPlatform(
     RenderingContext* _cntxt, 
     SpriteSheet* _ss, 
     ViewPort* vp,
-    PlatformProperties &p
+    PlatformConfig &p
 )
 :GameObj(_cntxt),
 _properties(p),
@@ -163,15 +163,6 @@ _viewport_p(vp)
     printf("Build RectPlatform: %s\n", _properties.id.c_str());
     #endif
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-RectPlatform::~RectPlatform(){
-    _spriteSheet_p = nullptr;
-    _viewport_p = nullptr;
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////

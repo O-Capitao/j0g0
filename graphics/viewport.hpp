@@ -8,7 +8,7 @@ namespace j0g0 {
 
     struct ViewPort {
         
-        ViewPort( const ViewPortProperties &vp_conf, const GameWindowConfig& windowConfig );
+        ViewPort( const ViewPortConfig &vp_conf, const GameWindowConfig& windowConfig );
 
         Vec2D_Float positionInWorld;
         Vec2D_Float sizeInWorld;

@@ -7,7 +7,7 @@ Actor::Actor(
     RenderingContext *cntxt, 
     SpriteSheet *ss, 
     ViewPort *vp,
-    const ActorProperties &props
+    const ActorConfig &props
 ):GameObj( cntxt ),
 _properties(props),
 _viewport_p(vp),
@@ -55,14 +55,6 @@ _offsetWorld({
     SDL_Log("Done Constructing Actor Obj '%s'\n", props.id.c_str());
     #endif
 
-}
-
-Actor::~Actor(){
-
-    printf("Killing Actor\n");
-    _viewport_p = nullptr;
-    _spriteSheet_p = nullptr;
-    _activeAnimation_p = nullptr;
 }
 
 SDL_Rect Actor::_getSliceBB_InCanvas(){
@@ -124,9 +116,9 @@ BoxPhysicsModel *Actor::getPhysicsModel_Ptr(){
     return &_physicsModel;
 }
 
-void Actor::_initAnimations( const std::vector<SpriteAnimationProperties> &a_vec ){
+void Actor::_initAnimations( const std::vector<SpriteAnimationConfig> &a_vec ){
 
-    for (SpriteAnimationProperties item : a_vec){
+    for (SpriteAnimationConfig item : a_vec){
 
         SpriteAnimation animation = {
             .id = item.id,

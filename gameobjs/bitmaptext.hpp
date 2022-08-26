@@ -10,8 +10,6 @@ namespace j0g0 {
             RenderingContext* _context, SpriteSheet* _spriteSheet
         );
 
-        ~BitmapText();
-
         void render();
         void update(float dt){};
 

@@ -4,7 +4,7 @@
 
 using namespace j0g0;
 
-ViewPort::ViewPort( const ViewPortProperties &vp_conf, const GameWindowConfig& gwc ){
+ViewPort::ViewPort( const ViewPortConfig &vp_conf, const GameWindowConfig& gwc ){
     
     positionInWorld = vp_conf.worldPosition;
     

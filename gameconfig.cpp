@@ -6,7 +6,7 @@ using namespace j0g0;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-GameLevelProperties GameConfigReader::readGameLevelProperties( std::string config_path ){
+GameWorldConfig GameConfigReader::readGameLevelConfig( std::string config_path ){
 
     YAML::Node levelProperties = YAML::LoadFile( config_path );
 
@@ -35,7 +35,6 @@ std::vector<SpriteSheetConfig> GameConfigReader::readSpriteSheetConfig( std::str
             retval.push_back({
                 .id = _spriteConfig["id"].as<std::string>(),
                 .path = _spriteConfig["path"].as<std::string>(),
-                .scaleFactor = _spriteConfig["scaling-factor"].as<int>(),
                 .sliceSize =  _parseToVec2D_Int(_spriteConfig["slice-size"])
             });
 
@@ -121,7 +120,7 @@ GameWindowConfig GameConfigReader::readGameWindowConfig( std::string config_path
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<PlatformProperties> GameConfigReader::readPlatformProperties( 
+std::vector<PlatformConfig> GameConfigReader::readPlatformConfig( 
     std::string config_path 
 ){
     #if DEBUG
@@ -130,21 +129,27 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties(
     
     YAML::Node levelProperties = YAML::LoadFile( config_path );
     YAML::Node platformsYaml = levelProperties["platforms"];
-    std::vector<PlatformProperties> retVal;
+    std::vector<PlatformConfig> retVal;
 
     for (std::size_t i=0 ; i < platformsYaml.size(); i++) {
 
         YAML::Node curr_plat = platformsYaml[i];
 
-        PlatformProperties _props = {
+        PlatformConfig _props = {
             .id = curr_plat["id"].as<std::string>(),
             .positionInWorld = _parseToVec2D_Float( curr_plat["position"]),
             .sizeInTiles = _parseToVec2D_Int(curr_plat["size"]),
             .spriteSheetId = curr_plat["sprite-sheet"].as<std::string>(),
-            .tileMapSpriteSliceMatrix = curr_plat["tile-map"].as<std::vector<Uint8>>(),
-            .ellasticCoef = curr_plat["ellastic-coef"].as<float>(),
-            .frictionCoef = curr_plat["friction-coef"].as<float>()
+            .tileMapSpriteSliceMatrix = curr_plat["tile-map"].as<std::vector<Uint8>>()
         };
+
+        if (auto elCoefNode = curr_plat["ellastic-coef"]){
+            _props.ellasticCoef = elCoefNode.as<float>();
+        }
+
+        if (auto frCoefNode = curr_plat["friction-coef"]){
+            _props.frictionCoef = frCoefNode.as<float>();
+        }
 
         int tileCount = _props.tileMapSpriteSliceMatrix.size();
 
@@ -229,12 +234,12 @@ std::vector<PlatformProperties> GameConfigReader::readPlatformProperties(
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-ViewPortProperties GameConfigReader::readViewPortProperties( std::string config_path ){
+ViewPortConfig GameConfigReader::readViewPortConfig( std::string config_path ){
 
     YAML::Node lvlProps = YAML::LoadFile( config_path );
     YAML::Node vpYaml = lvlProps["viewport"];
 
-    ViewPortProperties vp_conf = 
+    ViewPortConfig vp_conf = 
     {
         .width = vpYaml["width"].as<float>(),
         .worldPosition = _parseToVec2D_Float( vpYaml["position"] )
@@ -245,16 +250,16 @@ ViewPortProperties GameConfigReader::readViewPortProperties( std::string config_
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string config_path ){
+std::vector<ActorConfig> GameConfigReader::readActorConfig( std::string config_path ){
     
     YAML::Node lvlProps = YAML::LoadFile( config_path );
     YAML::Node actors = lvlProps["actors"];
-    std::vector<ActorProperties> props;
+    std::vector<ActorConfig> props;
 
     // for (std::size_t i = 0; i < actors.size(); i++) {
     for (auto currActor : actors){
         
-        ActorProperties actor = {
+        ActorConfig actor = {
             .id = currActor["id"].as<std::string>(),
             .spriteSheetId = currActor["sprite-sheet-id"].as<std::string>(),
             .initialPositionInWorld = _parseToVec2D_Float( currActor["initial-position"] ),
@@ -268,7 +273,7 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
             .walkSpeed = currActor["walk-speed"].as<float>()
         };
 
-        actor.spriteAnimations = _readSpriteAnimationProperties_ForActorProperties( currActor["sprite-animations"] );
+        actor.spriteAnimations = _readSpriteAnimationConfig_ForActorConfig( currActor["sprite-animations"] );
         actor.isPlayer = actor.id == "player";
         
         // Optional properties
@@ -284,13 +289,13 @@ std::vector<ActorProperties> GameConfigReader::readActorProperties( std::string 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( std::string config_path ){
+std::vector<BackgroundConfig> GameConfigReader::readBackgroundConfig( std::string config_path ){
 
 #if DEBUG
-    printf("Entering readBackgroundProperties.\n");
+    printf("Entering readBackgroundConfig.\n");
 #endif
     
-    std::vector<BackgroundProperties> retVal;
+    std::vector<BackgroundConfig> retVal;
     YAML::Node levelProperties = YAML::LoadFile( config_path );
     
     if (YAML::Node backgroundsYaml = levelProperties["backgrounds"]){
@@ -301,7 +306,7 @@ std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( st
 
             YAML::Node curr_bckgrnd = backgroundsYaml[i];
 
-            BackgroundProperties _props = {
+            BackgroundConfig _props = {
                 .id = curr_bckgrnd["id"].as<std::string>(),
                 .spriteSheetId = curr_bckgrnd["sprite-sheet"].as<std::string>(),
                 .sizeInTiles = _parseToVec2D_Int(curr_bckgrnd["size"]),
@@ -353,7 +358,7 @@ std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( st
         }
 
         #if DEBUG
-        printf("Finished readBackgroundProperties\n");
+        printf("Finished readBackgroundConfig\n");
         #endif
             
     }
@@ -364,11 +369,43 @@ std::vector<BackgroundProperties> GameConfigReader::readBackgroundProperties( st
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<SpriteAnimationProperties> GameConfigReader::_readSpriteAnimationProperties_ForActorProperties( YAML::Node animations ){
-    std::vector<SpriteAnimationProperties> retval;
+std::vector<PropConfig> GameConfigReader::readPropConfig( std::string config_path ){
+    
+    YAML::Node lvlProps = YAML::LoadFile( config_path );
+    YAML::Node propNodes = lvlProps["props"];
+    std::vector<PropConfig> props;
+
+    // for (std::size_t i = 0; i < actors.size(); i++) {
+    for (auto p : propNodes){
+
+        PropConfig pc = {
+            .id = p["id"].as<std::string>(),
+            .spriteSheetId = p["sprite-sheet-id"].as<std::string>(),
+            .positionInWorld = _parseToVec2D_Float( p["position"] ),
+            .prop_type = p["type"].as<std::string>()
+        };
+
+        assert( pc.prop_type == "static" || pc.prop_type == "animated" );
+
+        assert(pc.prop_type == "static");
+
+        if (auto sliceIdNode = p["slice-index"]){
+            pc.spriteSliceIndex = sliceIdNode.as<int>();
+        }
+        
+        props.push_back(pc);
+    }
+
+    return props;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<SpriteAnimationConfig> GameConfigReader::_readSpriteAnimationConfig_ForActorConfig( YAML::Node animations ){
+    std::vector<SpriteAnimationConfig> retval;
 
     for (YAML::Node currAnimation: animations){
-        SpriteAnimationProperties spriteAnimation = {
+        SpriteAnimationConfig spriteAnimation = {
             .id = currAnimation["id"].as<std::string>(),
             .size = currAnimation["size"].as<Uint8>(),
             .sliceIndexes = currAnimation["slice-indexes"].as<std::vector<Uint8>>(),

@@ -15,10 +15,6 @@ BitmapText::BitmapText(RenderingContext* _context,  SpriteSheet* _spriteSheet )
     _charSize = _spriteSheet_p->getSliceSize();
 }
 
-BitmapText::~BitmapText(){
-        
-}
-
 void BitmapText:: render()
 {   
     int index = 0;

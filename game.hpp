@@ -15,7 +15,7 @@ namespace j0g0 {
         
 
         // TODO - make this an array or Collection
-        GameLevelProperties level;
+        GameWorldConfig level;
         
         ~Game();
 

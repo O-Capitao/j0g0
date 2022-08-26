@@ -9,6 +9,7 @@
 #include "gameobjs/platform.hpp"
 #include "gameobjs/backgroundobj.hpp"
 #include "gameobjs/actor.hpp"
+#include "gameobjs/prop.hpp"
 #include "gameconfig.hpp"
 
 
@@ -34,7 +35,7 @@ namespace j0g0 {
 
             RenderingContext* _context_p;
             SpriteSheetManager *_ssm_p;
-            GameLevelProperties _properties;
+            GameWorldConfig _properties;
             ViewPort *_viewport_p;
             GameConfigReader _reader;
 
@@ -45,6 +46,7 @@ namespace j0g0 {
             std::vector<BackgroundObj*> _backgrounds_p_vec;
             std::vector<RectPlatform*> _platforms_p_vec;
             std::vector<Actor*> _actors_p_vec;
+            std::vector<Prop*> _props_p_vec;
 
             PlayerActor *_player_p;
     };

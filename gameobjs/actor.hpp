@@ -25,10 +25,8 @@ namespace j0g0 {
             RenderingContext *cntxt, 
             SpriteSheet *ss, 
             ViewPort *vp,
-            const ActorProperties &props
+            const ActorConfig &props
         );
-
-        ~Actor();
 
         void render();
         void update(float dt_s);
@@ -38,7 +36,7 @@ namespace j0g0 {
 
         protected:
 
-            ActorProperties _properties;
+            ActorConfig _properties;
             BoxPhysicsModel _physicsModel;
 
             std::unordered_map<std::string,SpriteAnimation> _animations;
@@ -65,7 +63,7 @@ namespace j0g0 {
             Uint8 _animationCounter = 0;
             Uint32 _animationTimer = 0;
 
-            void _initAnimations( const std::vector<SpriteAnimationProperties> &a_vec );
+            void _initAnimations( const std::vector<SpriteAnimationConfig> &a_vec );
             void _linkAnimations();
             void _updateSprites( Uint32 time );
     };
@@ -76,10 +74,8 @@ namespace j0g0 {
             RenderingContext *cntxt, 
             SpriteSheet *ss, 
             ViewPort *vp,
-            const ActorProperties &props
+            const ActorConfig &props
         ):Actor(cntxt, ss, vp, props){};
-
-        //~PlayerActor();
 
         void update(float dt_s);
 

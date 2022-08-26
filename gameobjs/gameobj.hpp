@@ -9,7 +9,7 @@ namespace j0g0 {
             RenderingContext* _context
         ):context(_context){};
 
-        virtual ~GameObj(){ context = NULL; }
+        virtual ~GameObj(){}
 
         virtual void render() = 0;
         virtual void update( float dt_s ) = 0;

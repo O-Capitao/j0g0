@@ -22,16 +22,14 @@ namespace j0g0{
             RenderingContext* _context,
             SpriteSheet* _spriteSheet,
             ViewPort *vp,
-            BackgroundProperties &properties
+            BackgroundConfig &properties
         );
-
-        ~BackgroundObj();
 
         void render();
         void update(float dt_s);
 
         private:
-            BackgroundProperties _properties;
+            BackgroundConfig _properties;
             SpriteSheet *_spriteSheet_p;
             TileMap _tileMap;
             ViewPort *_viewport_p;

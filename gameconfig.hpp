@@ -23,7 +23,7 @@ namespace j0g0 {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    struct GameLevelProperties {
+    struct GameWorldConfig {
         // std::string title;
         Vec2D_Float worldSize;
         // SDL_Color backgroundColor;
@@ -32,7 +32,7 @@ namespace j0g0 {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    struct PlatformKeyPositionProperties{
+    struct PlatformKeyPositionConfig{
         Vec2D_Float point;
         float timeArrival_s;
         float timeRest_s;
@@ -40,7 +40,7 @@ namespace j0g0 {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    struct PlatformProperties{
+    struct PlatformConfig{
         std::string id;
         Vec2D_Float positionInWorld;
         Vec2D_Int sizeInTiles;
@@ -52,21 +52,20 @@ namespace j0g0 {
         std::vector<bool>sliceFlip_H;
         std::vector<bool>sliceFlip_V;
         
-        std::vector<PlatformKeyPositionProperties> keyPositions_vec;
+        std::vector<PlatformKeyPositionConfig> keyPositions_vec;
         
-        float ellasticCoef, frictionCoef;
+        float ellasticCoef = 0, frictionCoef = 0;
         bool isMovingPlatform = false;
 
         Vec2D_Int fillDirection;
         SDL_Color fillColor;
 
-        int offsetMinus = 0;
-        int offsetPlus = 0;
+        int offsetMinus = 0, offsetPlus = 0;
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    struct ViewPortProperties{
+    struct ViewPortConfig{
         Vec2D_Float worldPosition;
         float width;
     };
@@ -76,13 +75,13 @@ namespace j0g0 {
     struct SpriteSheetConfig {
         std::string id;
         std::string path;
-        int scaleFactor;
+        int scaleFactor = 1;
         Vec2D_Int sliceSize;
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    struct SpriteAnimationProperties {
+    struct SpriteAnimationConfig {
         std::string id;
         std::string spriteSheetId;
         Uint8 size;
@@ -97,7 +96,7 @@ namespace j0g0 {
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    struct ActorProperties {
+    struct ActorConfig {
 
         std::string id;
         std::string spriteSheetId;
@@ -106,7 +105,7 @@ namespace j0g0 {
         Vec2D_Float initialVelocity;
         SDL_Rect boundingBox_SliceCoordinates;
 
-        std::vector<SpriteAnimationProperties> spriteAnimations;
+        std::vector<SpriteAnimationConfig> spriteAnimations;
         std::string idleAnimationId;
 
         float mass;
@@ -123,7 +122,7 @@ namespace j0g0 {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    struct BackgroundProperties{
+    struct BackgroundConfig{
         bool isTiled;
 
         // in file:
@@ -159,15 +158,35 @@ namespace j0g0 {
     
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////    
+    struct PropConfig {
+
+        std::string id;
+        std::string spriteSheetId;
+        
+        // "static", "animated" or "tiled"
+        std::string prop_type = "static";
+        Vec2D_Float positionInWorld;
+
+        int spriteSliceIndex = 0;
+        SpriteAnimationConfig animation;
+
+        bool destroyable = false;
+        int hp = 0;
+
+        int z_index = 1;
+    };
+    
+    
     struct GameConfigReader {
         
-        GameLevelProperties readGameLevelProperties( std::string config_path );
+        GameWorldConfig readGameLevelConfig( std::string config_path );
         GameWindowConfig readGameWindowConfig( std::string config_path );
         std::vector<SpriteSheetConfig> readSpriteSheetConfig( std::string config_path );
-        std::vector<PlatformProperties> readPlatformProperties( std::string config_path );
-        ViewPortProperties readViewPortProperties( std::string config_path );
-        std::vector<ActorProperties> readActorProperties( std::string config_path );
-        std::vector<BackgroundProperties> readBackgroundProperties( std::string config_path );
+        std::vector<PlatformConfig> readPlatformConfig( std::string config_path );
+        ViewPortConfig readViewPortConfig( std::string config_path );
+        std::vector<ActorConfig> readActorConfig( std::string config_path );
+        std::vector<BackgroundConfig> readBackgroundConfig( std::string config_path );
+        std::vector<PropConfig> readPropConfig( std::string config_path );
 
         private:
         
@@ -176,8 +195,8 @@ namespace j0g0 {
             Vec2D_Int _parseToVec2D_Int(YAML::Node node);
             SDL_Color _parseToSDL_Color(YAML::Node node);
             SDL_Rect _parseToSDL_Rect(YAML::Node node);
-            PlatformKeyPositionProperties _parsePlatformKeyPositionProperties( YAML::Node node );
-            std::vector<SpriteAnimationProperties> _readSpriteAnimationProperties_ForActorProperties( YAML::Node animations );
+            PlatformKeyPositionConfig _parsePlatformKeyPositionConfig( YAML::Node node );
+            std::vector<SpriteAnimationConfig> _readSpriteAnimationConfig_ForActorConfig( YAML::Node animations );
 
     };
 

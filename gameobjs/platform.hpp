@@ -17,18 +17,16 @@ namespace j0g0{
             RenderingContext* _context, 
             SpriteSheet* _spriteSheet,
             ViewPort *vp,
-            PlatformProperties &properties
+            PlatformConfig &properties
         );
         
-        ~RectPlatform();
-
         void render();
         // no impl for now
         void update(float dt_s){};
         RectPlatformPhysicsModel *getPhysicsModel_ptr();
         
         protected:
-            PlatformProperties _properties;
+            PlatformConfig _properties;
             RectPlatformPhysicsModel _model;
 
         private:
@@ -40,10 +38,6 @@ namespace j0g0{
             std::vector<SpriteAnimationSlice> _calculateTileSetFromConfig();
 
             bool _isVisible();
-
-            // Fill Area -> Represented by FloatRect in world coords
-            // it can move. 
-            FloatRect _fillArea;
 
             // calculate the filled area present in the
             // current ViewPort - called in each render call
@@ -71,14 +65,14 @@ namespace j0g0{
             RenderingContext* _context, 
             SpriteSheet* _spriteSheet,
             ViewPort *vp,
-            PlatformProperties &properties
+            PlatformConfig &properties
         );
 
         void update(float dt_s);
 
         private:
             std::vector<MovingRectPlatformKeyFrame> _keyFrames;
-            std::vector<MovingRectPlatformKeyFrame> _getKeyFramesFromConfig(PlatformProperties &properties);
+            std::vector<MovingRectPlatformKeyFrame> _getKeyFramesFromConfig(PlatformConfig &properties);
             Vec2D_Float _findPositionAtTime( float t_s );
 
             float _totaCycleDuration_s;

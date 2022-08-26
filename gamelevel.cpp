@@ -10,12 +10,12 @@ GameLevel::GameLevel( std::string levelPropsFile, RenderingContext* _context, Sp
 _ssm_p(ssm)
 {
 
-    _properties = _reader.readGameLevelProperties( levelPropsFile );
+    _properties = _reader.readGameLevelConfig( levelPropsFile );
     
-    ViewPortProperties vp_conf = _reader.readViewPortProperties( levelPropsFile );
+    ViewPortConfig vp_conf = _reader.readViewPortConfig( levelPropsFile );
     _viewport_p = new ViewPort( vp_conf, _context->config);
 
-    std::vector<PlatformProperties> _platforms_props = _reader.readPlatformProperties( levelPropsFile );
+    std::vector<PlatformConfig> _platforms_props = _reader.readPlatformConfig( levelPropsFile );
 
     for (auto pp : _platforms_props){
 
@@ -42,7 +42,7 @@ _ssm_p(ssm)
     }
     // Init players
     _player_p = nullptr;
-    std::vector<ActorProperties> _actors_in = _reader.readActorProperties( levelPropsFile );
+    std::vector<ActorConfig> _actors_in = _reader.readActorConfig( levelPropsFile );
 
     for (auto ap: _actors_in){
         SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(ap.spriteSheetId);
@@ -63,11 +63,18 @@ _ssm_p(ssm)
         }
     }
 
-    std::vector<BackgroundProperties> _background_props = _reader.readBackgroundProperties( levelPropsFile );
+    std::vector<BackgroundConfig> _background_props = _reader.readBackgroundConfig( levelPropsFile );
 
     for (auto bp : _background_props){
         SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(bp.spriteSheetId);
         _backgrounds_p_vec.push_back( new BackgroundObj(_context_p, _used_ss, _viewport_p, bp) );
+    }
+
+    std::vector<PropConfig> _propConfigs = _reader.readPropConfig( levelPropsFile );
+
+    for (auto pc: _propConfigs){
+        SpriteSheet *_used_ss = _ssm_p->getSpriteSheet(pc.spriteSheetId);
+        _props_p_vec.push_back( new Prop( _context_p, _used_ss, _viewport_p, pc ) );
     }
 
     _lastTick = 0; // no update cycle was run just yet
@@ -96,6 +103,11 @@ GameLevel::~GameLevel(){
     }
     _actors_p_vec.empty();
 
+    for (auto a:_props_p_vec){
+        delete a;
+    }
+    _props_p_vec.empty();
+
     delete _player_p;
 
 }
@@ -113,8 +125,7 @@ void GameLevel::render(){
         _p->render();
     }
 
-    #if DEBUG
-    // if (_DEBUG_STROKE){
+#if DEBUG
 
     SDL_SetRenderDrawColor(_context_p->renderer, 18,200,100,50);
 
@@ -158,16 +169,18 @@ void GameLevel::render(){
 
         }
     }
-    // }
-    #endif
+
+#endif
+
+    for (Prop *pr: _props_p_vec){
+        pr -> render();
+    }
 
     for (Actor *_a: _actors_p_vec){
         _a->render();
     }
 
-    // if (_player_p != nullptr){
     _player_p->render();
-    // }
     
 
 }

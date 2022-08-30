@@ -35,6 +35,10 @@ BoxPhysicsModel::BoxPhysicsModel(
     FALLING = true;
 
     isBounceable = _isBounceable;
+
+    _impactAbsortionCoef = 0.5;
+
+    _PENETRATION_TOLERANCE = box.w / 2;
 }
 
 void BoxPhysicsModel::update(float dt){
@@ -85,7 +89,12 @@ void BoxPhysicsModel::snapToLine(
     float penetration;
 
     // we can't land on Vertical Line
-    if (l->horizontalLength == 0){
+    // include also the case of trying to snap to a line which is over the box's feet
+    //      in this case treat like vertical wall
+    if (l->horizontalLength == 0 
+        || ( l->verticalLength == 0 && _velocity.y < 0 && l->point_a.y > (box.y + _PENETRATION_TOLERANCE) )
+    )
+    {
 
         if ( (_velocity.x - targetPlatformVelocity_p->x) > 0){
 
@@ -109,14 +118,16 @@ void BoxPhysicsModel::snapToLine(
             penetration = l->point_a.y - (box.y + box.h);
 
             // // restore penetration 
-            box.y += penetration;
+            box.y += 2 * penetration;
+            _velocity.y = (1 - _impactAbsortionCoef) * -_velocity.y;
+
             // box.y = l->point_a.y; - box.h;
         
         } else {
 
             // // Case for collision with Hor. Line from above
             // // // possibility to land/ slide whatev. Change state
-            penetration = l->point_a.y - box.y;
+            penetration =  l->point_a.y - box.y;
 
             // // restore penetration 
             box.y += penetration;
@@ -272,58 +283,14 @@ std::vector<ObjectToPlatformCollisionPair> PlatformGamePhysics::_findObstacles( 
             // that the box is not falling
             // and the collision that was detected is the ground
             // the box stands on.
-        }
-        else if (
+        
+        }else if (
             (p->box).overlapsWith( obj->box )    
         ){
-            // what line did we breach
-            StraightFloatLine *candidate;
-
-            Vec2D_Float relVel  = {
-                .x = obj->_velocity.x - p->velocity.x,
-                .y = obj->_velocity.y - p->velocity.y
-            };
-
-            // if both are moving at the same velocity
-            // but somehow colllided -> can this be? maybe in a transient
-            // assert(!(relVel.x == 0 && relVel.y == 0));
-
-            float distance_to_surface_x, distance_to_surface_y;
-
-            // check for vert surface
-            if (relVel.x < 0){
-
-                candidate = &(p->instantBorders[3]);
-                distance_to_surface_x = obj->box.x - candidate->point_a.x;
-            
-            } else {
-            
-                candidate = &(p->instantBorders[1]);
-                distance_to_surface_x = candidate->point_a.x - (obj->box.x + obj->box.w);
-            
-            }
-
-
-            if ( relVel.y < 0){
-                
-                distance_to_surface_y = obj->box.y - p->instantBorders[0].point_a.y;
-
-                if ( abs(distance_to_surface_y) < abs(distance_to_surface_x)){
-                    candidate = &(p->instantBorders[0]);
-                }
-                
-            } else {
-
-                distance_to_surface_y = p->instantBorders[0].point_a.y - obj->box.y;
-                if ( abs(distance_to_surface_y) < abs(distance_to_surface_x) ){
-                    candidate = &(p->instantBorders[2]);
-                }
-            }
-
             ObjectToPlatformCollisionPair res = {
                 .box_p = obj,
                 .plat_p = p,
-                .platformBoundary = candidate
+                .platformBoundary = _getHitFace( obj, p )
             };
 
             retval.push_back( res );
@@ -333,6 +300,8 @@ std::vector<ObjectToPlatformCollisionPair> PlatformGamePhysics::_findObstacles( 
 
     return retval;
 }
+
+
 
 void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
 
@@ -348,7 +317,6 @@ void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
                 bool nonNegligibleXVelocity = abs( box_p->_velocity.x - collisionPair.plat_p->velocity.x ) > VEL_THRESHOLD;
 
                 if (box_p->FALLING){
-
 
                     if (collisionPair.plat_p->ellasticCoef>0 && box_p->isBounceable && (nonNegligibleYVelocity || nonNegligibleXVelocity)){
                         // there can be some bounce back
@@ -420,3 +388,49 @@ void PlatformGamePhysics::removeObject( const std::string id ){
     }
 }
 
+const float TOLERANCE = 1e-3;
+
+ StraightFloatLine* PlatformGamePhysics::_getHitFace( BoxPhysicsModel* b, RectPlatformPhysicsModel* p ){
+
+    int borderIndex = 4; // a bad result...
+
+    Vec2D_Float relVel  = {
+        .x = b->_velocity.x - p->velocity.x,
+        .y = b->_velocity.y - p->velocity.y
+    };
+
+    if (abs(relVel.x) < TOLERANCE){
+        borderIndex = relVel.y > 0  ? 2 : 0;
+    } else if (abs(relVel.y) < TOLERANCE){
+        borderIndex = relVel.x > 0 ? 1 : 3;
+    } else {
+
+        // oblique collision via dot product
+        // init counters for index 0 = TOP.
+        // SPECIAL CASE . we will only detect a TOP hit
+        // if the box's feet are located over the TOP of the ºplatform (plus tolerance
+        float winnerProjection = 0;
+        if ( b->_velocity.y < 0 && p->instantBorders[0].point_a.y < (b->box.y + b->_PENETRATION_TOLERANCE )){
+            winnerProjection = relVel.calcScalarProductWith( p->instantBorders[0].normal );
+        }
+        
+        int winnerIndex = 0;
+        float candidate = 0;
+        
+        // not clear which one..
+        for (int i = 1; i < 4; i++){
+            
+            candidate = relVel.calcScalarProductWith( p->instantBorders[i].normal );
+            if (candidate < winnerProjection){
+                winnerProjection = candidate;
+                winnerIndex = i;
+            }
+        }
+
+        borderIndex =  winnerIndex;
+    }
+
+    assert(borderIndex != 4);
+
+    return &(p->instantBorders[borderIndex]);
+ }

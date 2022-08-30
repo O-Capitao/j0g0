@@ -13,9 +13,16 @@ namespace j0g0 {
     };
 
     struct Vec2D_Float {
+        
         float x, y;
-        const Vec2D_Float &sumWith( const Vec2D_Float &other );
 
+        Vec2D_Float sumWith( const Vec2D_Float &other );
+        Vec2D_Float calcNormalized();
+        
+        float calcLength();
+        float calcScalarProductWith(const Vec2D_Float &other);
+        bool isParalelTo(const Vec2D_Float &other);
+        bool equals(const Vec2D_Float &other);
         void setBothCoordsTo(const float &val);
     }; 
 

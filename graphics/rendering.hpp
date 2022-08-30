@@ -28,5 +28,6 @@ namespace j0g0 {
         void endRenderStep();
 
         void setBackgroundColor(const SDL_Color& _color);
+
     };
 }

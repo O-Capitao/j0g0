@@ -136,13 +136,19 @@ void GameLevel::render(){
     for (float x = 0 ; x <= _properties.worldSize.x; x++ ){
 
         if ( x > _viewport_p->positionInWorld.x && x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x){
+
+            Vec2D_Int x_inCanvas = _viewport_p->viewPortToCanvas(
+                _viewport_p->worldToViewPort({x,0})
+            );
+
             SDL_RenderDrawLine(
                 _context_p->renderer, 
-                x * ppm , 
+                x_inCanvas.x, 
                 0,
-                x * ppm, 
+                x_inCanvas.x, 
                 _viewport_p->canvasSize.y    
             );
+
         }
     }
 

@@ -52,6 +52,8 @@ namespace j0g0 {
             std::string _ownerId;
             float _mass;
             float _frictionCoef;
+            float _impactAbsortionCoef;
+            
             float _terminalVelocity;
             
             // absolute velocity
@@ -73,6 +75,8 @@ namespace j0g0 {
             StraightFloatLine *_currentGroundLine_p;
             Vec2D_Float *_currentGroundVelocity_p;
             std::string _currentGroundOwnerId;
+
+            float _PENETRATION_TOLERANCE = 0;
 
 
     };
@@ -119,6 +123,7 @@ namespace j0g0 {
         BoxPhysicsModel *box_p;
         RectPlatformPhysicsModel *plat_p;
         StraightFloatLine *platformBoundary;
+        float resultingImpactAbsortion;
 
     };
 
@@ -136,6 +141,7 @@ namespace j0g0 {
 
         private:
             void _checkCollisions();
+            StraightFloatLine* _getHitFace( BoxPhysicsModel* box, RectPlatformPhysicsModel* platform );
             std::vector<ObjectToPlatformCollisionPair> _findObstacles( BoxPhysicsModel* obj );
     };
 }

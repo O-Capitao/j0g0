@@ -193,16 +193,16 @@ void GameLevel::render(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void GameLevel::update(){
+LevelState GameLevel::update(){
     
     if (_lastTick == 0){
         _lastTick = SDL_GetTicks();
-        return;
+        return LevelState::CONTINUE;;
     }
 
     // lets cleanup before doing any work:
     for ( auto it = _actors_p_vec.begin(); it != _actors_p_vec.end(); ){
-        if ((*it)->isGone){
+        if ((*it)->isExpired){
 
             #if DEBUG
             printf("Killing Actor: %s\n", (*it)->getId().c_str());
@@ -264,12 +264,21 @@ void GameLevel::update(){
     }
 
     _lastTick = _now;
+
+
+    if (_player_p->isExpired){
+        return LevelState::GAME_OVER;
+    }
+
+    // return value informs caller (State Machine)
+    // if state should change
+    return LevelState::CONTINUE;
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void GameLevel::handleEvents( const SDL_Event& evt ){
-    // player_thing_p->handleEvent( evt );
     _player_p->handleInput( evt.key );
 }
 

@@ -7,7 +7,8 @@ using namespace j0g0;
 
 
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 /*
  *  GameState - Helper Methods Implementation 
  */
@@ -17,6 +18,8 @@ _spriteSheetManager_p(ssm){
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 GameState::~GameState(){
     _context_p = NULL;
     _spriteSheetManager_p = NULL;
@@ -24,13 +27,12 @@ GameState::~GameState(){
 
 
 
-
-
-
 /*
  *  PauseState 
  * 
  */
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 PauseState::PauseState(RenderingContext* cntxt, SpriteSheetManager *ssm)
 :GameState(cntxt,ssm),
 _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
@@ -67,9 +69,15 @@ _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
 
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 PauseState::~PauseState(){
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PauseState::render(){
 
     _context_p->beginRenderStep();
@@ -86,23 +94,26 @@ void PauseState::render(){
     _context_p->endRenderStep();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 size_t PauseState::handleEvents()
 {
     SDL_Event e;
-    size_t ret_val = GameStates::STATE_PAUSE; 
+    size_t ret_val = GameStateEnum::STATE_PAUSE; 
 
     while( SDL_PollEvent( &e ) != 0 )
     {
         if (e.type == SDL_QUIT) {
             
-            ret_val = GameStates::STATE_EXIT;
+            ret_val = GameStateEnum::STATE_EXIT;
 
         } else if (e.type == SDL_KEYDOWN){
 
             switch( _actionKeyMap( e.key.keysym.sym ) )
             {
                 case (_PauseActionsEnum::ESCAPE):
-                    ret_val = GameStates::STATE_PLAY;
+                    ret_val = GameStateEnum::STATE_PLAY;
                     break;
                 case _PauseActionsEnum::NAVIGATE_DOWN:
                     if (_activeOptionIndex == 2){
@@ -124,14 +135,14 @@ size_t PauseState::handleEvents()
 
                         case 0:
                             
-                            ret_val = GameStates::STATE_PLAY;
+                            ret_val = GameStateEnum::STATE_PLAY;
                             break;
                         case 1:
                             RESTART_FLAG = true;
-                            ret_val = GameStates::STATE_PLAY;
+                            ret_val = GameStateEnum::STATE_PLAY;
                             break;
                         case 2:
-                            ret_val = GameStates::STATE_EXIT;
+                            ret_val = GameStateEnum::STATE_EXIT;
                             break;
                         default:
                             throw std::runtime_error("Invalid Pause State Opt. Bad Progrm State.");
@@ -145,9 +156,15 @@ size_t PauseState::handleEvents()
     return ret_val;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PauseState::update(){
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 PauseState::_PauseActionsEnum PauseState::_actionKeyMap( SDL_Keycode key ){
 
     if ( key == SDLK_RETURN || key == SDLK_RETURN2){
@@ -161,6 +178,9 @@ PauseState::_PauseActionsEnum PauseState::_actionKeyMap( SDL_Keycode key ){
     return _PauseActionsEnum::IDLE;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PauseState::_renderSelectionCarat(){
     // do it very stupid for now
     BitmapText &activeOpt = _options[_activeOptionIndex];
@@ -185,6 +205,8 @@ void PauseState::_renderSelectionCarat(){
  *  PlayState
  * 
  */
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO - a central config file path
 PlayState::PlayState( RenderingContext* cntxt, SpriteSheetManager *ssm, const std::string &configFilePath )
 :GameState(cntxt,ssm ), 
@@ -196,18 +218,31 @@ level( configFilePath, cntxt, ssm )
 
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 PlayState::~PlayState(){
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayState::render(){
     _context_p->beginRenderStep();
     level.render();
     _context_p->endRenderStep();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayState::update(){
 
-    level.update();
+    LevelState levelState = level.update();
+
+    if (levelState == LevelState::GAME_OVER){
+        _endStateRequested = true;
+    }
 
     #if DEBUG
 
@@ -228,19 +263,22 @@ void PlayState::update(){
     
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 size_t PlayState::handleEvents(){
-    size_t retval = GameStates::STATE_PLAY;
+    size_t retval = GameStateEnum::STATE_PLAY;
     SDL_Event e;
     while( SDL_PollEvent( &e ) != 0 )
     {
         if (e.type == SDL_QUIT) {
             
-            retval = GameStates::STATE_EXIT;
+            retval = GameStateEnum::STATE_EXIT;
 
         } else if ( e.type == SDL_KEYDOWN || e.type == SDL_KEYUP ){
 
             if ( e.key.keysym.sym == SDLK_ESCAPE ){
-                retval = GameStates::STATE_PAUSE;
+                retval = GameStateEnum::STATE_PAUSE;
             } else {
                 level.handleEvents(e);
             }

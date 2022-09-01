@@ -19,20 +19,22 @@ namespace j0g0 {
         JUMP
     };
 
-    struct Actor: public GameObj {
+    class Actor: public GameObj {
 
-        Actor( 
-            RenderingContext *cntxt, 
-            SpriteSheet *ss, 
-            ViewPort *vp,
-            const ActorConfig &props
-        );
+        public:
 
-        void render();
-        void update(float dt_s);
+            Actor( 
+                RenderingContext *cntxt, 
+                SpriteSheet *ss, 
+                ViewPort *vp,
+                const ActorConfig &props
+            );
 
-        const std::string &getId(){return _properties.id;}
-        BoxPhysicsModel *getPhysicsModel_Ptr();
+            void render();
+            void update(float dt_s);
+
+            const std::string &getId(){return _properties.id;}
+            BoxPhysicsModel *getPhysicsModel_Ptr();
 
         protected:
 
@@ -68,18 +70,20 @@ namespace j0g0 {
             void _updateSprites( Uint32 time );
     };
 
-    struct PlayerActor : public Actor {
+    class PlayerActor : public Actor {
         
-        PlayerActor( 
-            RenderingContext *cntxt, 
-            SpriteSheet *ss, 
-            ViewPort *vp,
-            const ActorConfig &props
-        ):Actor(cntxt, ss, vp, props){};
+        public:
 
-        void update(float dt_s);
+            PlayerActor( 
+                RenderingContext *cntxt, 
+                SpriteSheet *ss, 
+                ViewPort *vp,
+                const ActorConfig &props
+            ):Actor(cntxt, ss, vp, props){};
 
-        void handleInput( const SDL_KeyboardEvent &input );
+            void update(float dt_s);
+
+            void handleInput( const SDL_KeyboardEvent &input );
 
         private:
             // give the player a upward velocity component
@@ -94,5 +98,6 @@ namespace j0g0 {
             void _land();
 
             const float _jumpDV = 4;
+
     };
 }

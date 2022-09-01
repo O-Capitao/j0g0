@@ -14,21 +14,28 @@
 
 
 namespace j0g0 {
-    struct GameLevel {
 
-        GameLevel( 
-            std::string levelPropsFile, 
-            RenderingContext* _context,
-            SpriteSheetManager *ssm
-        );
+    enum LevelState {
+        CONTINUE,
+        PAUSE,
+        GAME_OVER
+    };
 
-        ~GameLevel();
+    class GameLevel {
+        public:
 
-        void render();
-        void update();
+            GameLevel( 
+                std::string levelPropsFile, 
+                RenderingContext* _context,
+                SpriteSheetManager *ssm
+            );
 
-        void handleEvents( const SDL_Event& event );
+            ~GameLevel();
 
+            void render();
+            LevelState update();
+
+            void handleEvents( const SDL_Event& event );
         private:
 
             const bool CONSTANT_STEP_MODE = true;

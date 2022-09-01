@@ -14,7 +14,9 @@ namespace j0g0 {
         virtual void render() = 0;
         virtual void update( float dt_s ) = 0;
 
-        bool isGone = false;
+        // can be queried by anyone to make decisions
+        bool isExpired = false;
+
         protected:
     
             RenderingContext* context;

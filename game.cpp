@@ -40,7 +40,7 @@ void Game::init(RenderingContext* _context, std::string path_to_config)
     _playState = nullptr;
 
     // initial state is PauseState
-    stateId = GameStates::STATE_PAUSE;
+    stateId = GameStateEnum::STATE_PAUSE;
 
     // no State Change scheduled until User Input
     nextState = stateId;
@@ -56,7 +56,7 @@ void Game::run(){
     Uint32 _start_cycle, _end_cycle, _sleep_time;
     Uint32 _fixed_cycle_duration = 1000 / 60;
 
-    while ( stateId != GameStates::STATE_EXIT )
+    while ( stateId != GameStateEnum::STATE_EXIT )
     {   
         _start_cycle = SDL_GetTicks();
         
@@ -77,13 +77,18 @@ void Game::run(){
 }
 
 void Game::changeState(){
+
+    if (state != nullptr && state->getEndStateRequested()){
+        nextState = GameStateEnum::STATE_PAUSE;
+    } 
+
     if( nextState != stateId ){
         
         switch (nextState){
-            case GameStates::STATE_PAUSE:
+            case GameStateEnum::STATE_PAUSE:
                 state = new PauseState( context,spriteSheetManager );
                 break;
-            case GameStates::STATE_PLAY:
+            case GameStateEnum::STATE_PLAY:
             
                 // delete (current) pause state 
                 bool restartRequested = state->RESTART_FLAG;

@@ -11,10 +11,7 @@
 namespace j0g0 {
 
 
-
-
-
-    struct GameState {
+    class GameState {
 
         public:
             GameState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
@@ -23,27 +20,33 @@ namespace j0g0 {
             virtual void render() = 0;
             virtual void update() = 0;
             virtual size_t handleEvents() = 0;
-            
+
+            bool getEndStateRequested(){ return _endStateRequested; }
             bool RESTART_FLAG = false;
+
         protected:
         
             RenderingContext* _context_p;
             SpriteSheetManager* _spriteSheetManager_p;
+
+            // Allows for EXIT command coming
+            // from the inner context - e.g.: Player Dies in PlayState, 
+            // Continue timer ends...
+            // etc.
+            bool _endStateRequested = false;
     };
 
 
-    
+    class PauseState: public GameState {
 
+        public:
 
+            PauseState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
+            ~PauseState();
 
-    struct PauseState: public GameState {
-
-        PauseState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
-        ~PauseState();
-
-        void render();
-        void update();
-        size_t handleEvents();
+            void render();
+            void update();
+            size_t handleEvents();
 
         
 
@@ -75,33 +78,36 @@ namespace j0g0 {
     };
 
 
+    class PlayState: public GameState {
 
-    
+        public:
 
-    struct PlayState: public GameState {
-
-        PlayState(
-            RenderingContext* context, 
-            SpriteSheetManager *spriteSheetManager,
-            const std::string &configFilePath
-        );
-        ~PlayState();
-        
-        void render();
-        void update();
-        size_t handleEvents();
+            PlayState(
+                RenderingContext* context, 
+                SpriteSheetManager *spriteSheetManager,
+                const std::string &configFilePath
+            );
+            ~PlayState();
+            
+            void render();
+            void update();
+            
+            size_t handleEvents();
 
         private:
             
             GameLevel level;
+            
             void _refreshInfoMessage();
 
             // FOR DEBUG
             int frameCounter;
             int lastDisplay;
+            
+
     };
 
-    enum GameStates{
+    enum GameStateEnum{
         STATE_NULL,
         STATE_PAUSE,
         STATE_PLAY,

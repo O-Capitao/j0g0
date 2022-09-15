@@ -8,14 +8,14 @@ using namespace j0g0;
 * Text Sprite Thing
 *
 */
-BitmapText::BitmapText(RenderingContext* _context,  SpriteSheet* _spriteSheet )
+BitmapTextLine::BitmapTextLine(RenderingContext* _context,  SpriteSheet* _spriteSheet )
 :GameObj(_context )
 {
     _spriteSheet_p = _spriteSheet;
     _charSize = _spriteSheet_p->getSliceSize();
 }
 
-void BitmapText:: render()
+void BitmapTextLine:: render()
 {   
     int index = 0;
     for (const SpriteAnimationSlice &_slice_ref : _slices ){
@@ -28,7 +28,7 @@ void BitmapText:: render()
     }
 }
 
-void BitmapText::setContent(const std::string& input){
+void BitmapTextLine::setContent(const std::string& input){
 
     int input_length = input.length();
 
@@ -46,12 +46,12 @@ void BitmapText::setContent(const std::string& input){
     }
 }
 
-void BitmapText::setPositionInCanvas(const Vec2D_Int &_newPosition){
+void BitmapTextLine::setPositionInCanvas(const Vec2D_Int &_newPosition){
     _positionInCanvas.x = _newPosition.x;
     _positionInCanvas.y = _newPosition.y;
 }
 
-const Vec2D_Int &BitmapText::getContentSize(){
+const Vec2D_Int &BitmapTextLine::getContentSize(){
     return _contentSize_InCanvas;
 }
 

@@ -23,11 +23,11 @@ namespace j0g0{
         void render();
         // no impl for now
         void update(float dt_s){};
-        RectPlatformPhysicsModel *getPhysicsModel_ptr();
+        PlatformModel *getPhysicsModel_ptr();
         
         protected:
             PlatformConfig _properties;
-            RectPlatformPhysicsModel _model;
+            PlatformModel _model;
 
         private:
             SpriteSheet *_spriteSheet_p;
@@ -41,11 +41,11 @@ namespace j0g0{
 
             // calculate the filled area present in the
             // current ViewPort - called in each render call
-            FloatRect _calculate_RenderedFillArea();
+            SDL_FRect _calculate_RenderedFillArea();
 
             // calculate the filled area in the "physical" world
             // called once AFTTER physcs model init -> affects "box" dimensions
-            FloatRect _calculate_WorldTotalArea();
+            SDL_FRect _calculate_WorldTotalArea();
 
             // Applies the pixel offset to platorms
             void _applyOffsetsToFillArea(SDL_Rect& rect);

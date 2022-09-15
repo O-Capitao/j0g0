@@ -4,9 +4,9 @@
 #include "graphics/spritesheet.hpp"
 
 namespace j0g0 {
-    struct BitmapText : public GameObj {
+    struct BitmapTextLine : public GameObj {
 
-        BitmapText(
+        BitmapTextLine(
             RenderingContext* _context, SpriteSheet* _spriteSheet
         );
 

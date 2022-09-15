@@ -50,7 +50,7 @@ _ssm_p(ssm)
         if (!ap.isPlayer){
             
             _actors_p_vec.push_back( new Actor( _context_p, _used_ss, _viewport_p, ap ) );
-            _physicsModel.objects.push_back( _actors_p_vec.back()->getPhysicsModel_Ptr() );
+            _physicsModel.actors.push_back( _actors_p_vec.back()->getPhysicsModel_Ptr() );
         
         } else {
 
@@ -58,7 +58,7 @@ _ssm_p(ssm)
         
             // init Player only once
             _player_p = new PlayerActor( _context_p, _used_ss, _viewport_p, ap  );
-            _physicsModel.objects.push_back( _player_p->getPhysicsModel_Ptr() );
+            _physicsModel.actors.push_back( _player_p->getPhysicsModel_Ptr() );
 
         }
     }
@@ -131,8 +131,6 @@ void GameLevel::render(){
 
     // try plot all world coordinates between the
     // test if start of the viewpport and the end of the vp.
-    float ppm = _viewport_p->pixel_per_meter;
-
     for (float x = 0 ; x <= _properties.worldSize.x; x++ ){
 
         if ( x > _viewport_p->positionInWorld.x && x < _viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x){
@@ -191,6 +189,7 @@ void GameLevel::render(){
 
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 LevelState GameLevel::update(){
@@ -230,6 +229,7 @@ LevelState GameLevel::update(){
 
     float dt_s = ((float)dt)*0.001;
     
+    _physicsModel.solveStep(dt_s);
     // if (_player_p != nullptr){
     _player_p->update(dt_s);
     // }
@@ -247,18 +247,19 @@ LevelState GameLevel::update(){
         bo->update(dt_s);
     }
 
-    _physicsModel.resolveModel(dt_s);
 
+
+    const SDL_FRect& playerBBox = _player_p->getPhysicsModel_Ptr()->getBoundingBox();
     // Update the viewport's position
     // for now, we leave the player always in the middle
-    if (_player_p->getPhysicsModel_Ptr()->box.x > (_viewport_p->sizeInWorld.x / 2)){
-        _viewport_p->positionInWorld.x = _player_p->getPhysicsModel_Ptr()->box.x - (_viewport_p->sizeInWorld.x / 2);
+    if (playerBBox.x > (_viewport_p->sizeInWorld.x / 2)){
+        _viewport_p->positionInWorld.x = playerBBox.x - (_viewport_p->sizeInWorld.x / 2);
     } else {
         _viewport_p->positionInWorld.x = 0;
     }
     
-    if (_player_p->getPhysicsModel_Ptr()->box.y > (_viewport_p->sizeInWorld.y / 2)){
-        _viewport_p->positionInWorld.y = _player_p->getPhysicsModel_Ptr()->box.y - (_viewport_p->sizeInWorld.y / 2);
+    if (playerBBox.y > (_viewport_p->sizeInWorld.y / 2)){
+        _viewport_p->positionInWorld.y = playerBBox.y - (_viewport_p->sizeInWorld.y / 2);
     } else {
         _viewport_p->positionInWorld.y = 0;
     }

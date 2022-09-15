@@ -34,8 +34,8 @@ namespace j0g0 {
 
             void render();
             LevelState update();
-
             void handleEvents( const SDL_Event& event );
+
         private:
 
             const bool CONSTANT_STEP_MODE = true;
@@ -48,7 +48,7 @@ namespace j0g0 {
 
             Uint32 _lastTick;
 
-            PlatformGamePhysics _physicsModel;
+            WorldModel _physicsModel;
 
             std::vector<BackgroundObj*> _backgrounds_p_vec;
             std::vector<RectPlatform*> _platforms_p_vec;

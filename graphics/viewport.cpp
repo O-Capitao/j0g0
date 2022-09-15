@@ -75,7 +75,7 @@ Vec2D_Float ViewPort::viewPortToWorld( const Vec2D_Float& viewportPosition ){
 /***
  *  BOX TRANSFORMS
  */
-FloatRect ViewPort::transformRect_Canvas2Viewport( const SDL_Rect& boxInCanvas ){
+SDL_FRect ViewPort::transformRect_Canvas2Viewport( const SDL_Rect& boxInCanvas ){
     return {
         .w = (float)boxInCanvas.w / pixel_per_meter,
         .h = (float)boxInCanvas.h / pixel_per_meter,
@@ -84,7 +84,7 @@ FloatRect ViewPort::transformRect_Canvas2Viewport( const SDL_Rect& boxInCanvas )
     };
 }
 
-FloatRect ViewPort::transformRect_ViewPort2World( const FloatRect& boxInViewport ){
+SDL_FRect ViewPort::transformRect_ViewPort2World( const SDL_FRect& boxInViewport ){
     return {
         .w = boxInViewport.w,
         .h = boxInViewport.h,
@@ -93,7 +93,7 @@ FloatRect ViewPort::transformRect_ViewPort2World( const FloatRect& boxInViewport
     };
 }
 
-FloatRect ViewPort::transformRect_World2Viewport( const FloatRect& boxInWorld ){
+SDL_FRect ViewPort::transformRect_World2Viewport( const SDL_FRect& boxInWorld ){
     return {
         .w = boxInWorld.w,
         .h = boxInWorld.h,
@@ -102,7 +102,7 @@ FloatRect ViewPort::transformRect_World2Viewport( const FloatRect& boxInWorld ){
     };
 }
 
-SDL_Rect ViewPort::transformRect_Viewport2Canvas( const FloatRect& boxInViewport ){
+SDL_Rect ViewPort::transformRect_Viewport2Canvas( const SDL_FRect& boxInViewport ){
     return{
         .w = (int)floor( boxInViewport.w * this->pixel_per_meter ),
         .h = (int)floor( boxInViewport.h * this->pixel_per_meter ),
@@ -111,13 +111,13 @@ SDL_Rect ViewPort::transformRect_Viewport2Canvas( const FloatRect& boxInViewport
     };
 }
 
-FloatRect ViewPort::transformRect_canvasToWorld( const SDL_Rect& boxInCanvas ){
+SDL_FRect ViewPort::transformRect_canvasToWorld( const SDL_Rect& boxInCanvas ){
     return transformRect_ViewPort2World(
         transformRect_Canvas2Viewport( boxInCanvas )
     );
 }
 
-SDL_Rect ViewPort::transformRect_WorldToCanvas( const FloatRect& boxInWorld ){
+SDL_Rect ViewPort::transformRect_WorldToCanvas( const SDL_FRect& boxInWorld ){
     return transformRect_Viewport2Canvas(
         transformRect_World2Viewport( boxInWorld )
     );

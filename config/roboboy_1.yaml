@@ -54,6 +54,11 @@ sprite-sheets:
     slice-size:
       x: 32
       y: 64
+  - id: "melted-plats"
+    path: "assets/meltedPlats_32_16.png"
+    slice-size:
+      x: 32
+      y: 16
   
 #
 ## BACKGROUMDS
@@ -151,6 +156,31 @@ platforms:
       n,n,n,n,n,n,
       y,y,y,y,y,y
     ]
+  - id: "melted-1"
+    sprite-sheet: "melted-plats"
+    size:
+      x: 3
+      y: 2
+    position:
+      x: 16
+      y: 0
+    tile-map: [
+      3,0,0,
+      10,9,9
+    ]
+  - id: "melted-2"
+    sprite-sheet: "melted-plats"
+    size:
+      x: 5
+      y: 3
+    position:
+      x: 19
+      y: 0
+    tile-map: [
+      4,0,1,1,0,
+      5,7,9,8,9,
+      14,15,15,14,14
+    ]
   
 #
 # ACTORS
@@ -167,7 +197,7 @@ actors:
       x: 0
       y: 0
     initial-position:
-      x: 0.5
+      x: 8
       y: 17
     bounding-box:
       x: 8

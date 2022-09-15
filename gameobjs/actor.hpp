@@ -34,12 +34,12 @@ namespace j0g0 {
             void update(float dt_s);
 
             const std::string &getId(){return _properties.id;}
-            BoxPhysicsModel *getPhysicsModel_Ptr();
+            ActorModel *getPhysicsModel_Ptr();
 
         protected:
 
             ActorConfig _properties;
-            BoxPhysicsModel _physicsModel;
+            ActorModel _physicsModel;
 
             std::unordered_map<std::string,SpriteAnimation> _animations;
             std::string _activeAnimation_id;

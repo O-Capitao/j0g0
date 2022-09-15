@@ -10,18 +10,25 @@
 
 namespace j0g0 {
 
+    enum GameStateEnum{
+        STATE_NULL,
+        STATE_PAUSE,
+        STATE_PLAY,
+        STATE_EXIT,
+        STATE_GAME_OVER_SCREEN
+    };
 
     class GameState {
 
         public:
             GameState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
             virtual ~GameState();
-
+            
             virtual void render() = 0;
             virtual void update() = 0;
             virtual size_t handleEvents() = 0;
 
-            bool getEndStateRequested(){ return _endStateRequested; }
+            // bool getEndStateRequested(){ return _endStateRequested; }
             bool RESTART_FLAG = false;
 
         protected:
@@ -41,7 +48,10 @@ namespace j0g0 {
 
         public:
 
-            PauseState(RenderingContext* context, SpriteSheetManager *spriteSheetManager);
+            PauseState(
+                RenderingContext* context, 
+                SpriteSheetManager *spriteSheetManager
+            );
             ~PauseState();
 
             void render();
@@ -54,8 +64,8 @@ namespace j0g0 {
             
             const int optPixelOffsert = 15;
             SDL_Color _background_color;
-            BitmapText _headerMessage;
-            std::vector<BitmapText> _options;
+            BitmapTextLine _headerMessage;
+            std::vector<BitmapTextLine> _options;
             
             const std::string _optionTexts[3] = {
                 "RESUME",
@@ -87,7 +97,7 @@ namespace j0g0 {
                 SpriteSheetManager *spriteSheetManager,
                 const std::string &configFilePath
             );
-            ~PlayState();
+            ~PlayState(){};
             
             void render();
             void update();
@@ -107,11 +117,26 @@ namespace j0g0 {
 
     };
 
-    enum GameStateEnum{
-        STATE_NULL,
-        STATE_PAUSE,
-        STATE_PLAY,
-        STATE_EXIT
+    class TimedMessageState: public GameState {
+        public:
+            TimedMessageState(
+                RenderingContext* context, 
+                SpriteSheetManager *spriteSheetManager,
+                std::string &message,
+                int durationMs
+            );
+
+            void render();
+            void update();
+            size_t handleEvents();
+
+        private:
+
+            SDL_Color _background_color;
+            std::string _message;
+            BitmapTextLine _line;
+            int _durationMs;
+            Uint32 _start_click;
     };
 
 }

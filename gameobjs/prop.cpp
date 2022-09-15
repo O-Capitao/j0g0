@@ -43,10 +43,12 @@ void Prop::render(){
 }
 
 bool Prop::_isInViewPort(){
-    return _box.overlapsWith({
+    SDL_FRect vp = {
         .x= _viewPort_p->positionInWorld.x,
         .y= _viewPort_p->positionInWorld.y,
         .w = _viewPort_p->sizeInWorld.x,
         .h = _viewPort_p->sizeInWorld.y
-    });
+    };
+
+    return SDL_HasIntersectionF(&_box, &vp);
 }

@@ -17,7 +17,18 @@ _spriteSheet_p(ss),
 _offsetWorld({
     .x = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.x ),
     .y = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.y )
-})
+}),
+_physicsModel(
+    _properties.initialPositionInWorld,
+    {   
+        // bounding box in the world 
+        .x = vp->scaleToWorld( _properties.boundingBox_SliceCoordinates.w ),
+        .y = vp->scaleToWorld( _properties.boundingBox_SliceCoordinates.h )
+    },
+    _properties.initialVelocity,
+    {0,-9.8},
+    _properties.id  
+)
 {
 
     Vec2D_Int sliceSize_canvas  = ss->getSliceSize();
@@ -27,35 +38,14 @@ _offsetWorld({
         .y = _viewport_p->scaleToWorld( sliceSize_canvas.y )
     };
 
-    // init Physics:
-
-    // take into account the deltas in props.boundingBox_SliceCoordinates
-    FloatRect _bbWorld = {
-        .x = _properties.initialPositionInWorld.x,
-        .y = _properties.initialPositionInWorld.y,
-        .w = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.w ),
-        .h = _viewport_p->scaleToWorld( _properties.boundingBox_SliceCoordinates.h )
-    };
-
-    _physicsModel = BoxPhysicsModel(
-        _properties.mass,
-        _properties.frictionCoef,
-        _properties.initialPositionInWorld,
-        _bbWorld,
-        _properties.id,
-        _properties.initialVelocity, 
-        false
-    );
-
-
     // Sprites
     _initAnimations( props.spriteAnimations );
     _linkAnimations();
     _setActiveAnimation( props.idleAnimationId );
 
-    #if DEBUG
+#if DEBUG
     SDL_Log("Done Constructing Actor Obj '%s'\n", props.id.c_str());
-    #endif
+#endif
 
 }
 
@@ -63,12 +53,13 @@ _offsetWorld({
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 SDL_Rect Actor::_getSliceBB_InCanvas(){
+    SDL_FRect worldBB = _physicsModel.getBoundingBox();
 
     SDL_Rect bb_in_canvas = _viewport_p->transformRect_Viewport2Canvas(
         _viewport_p->transformRect_World2Viewport(
             {
-                .x = _physicsModel.box.x - _offsetWorld.x,
-                .y = _physicsModel.box.y - _offsetWorld.y,
+                .x = worldBB.x - _offsetWorld.x,
+                .y = worldBB.y - _offsetWorld.y,
                 .w = _spriteSliceSize_world.x,
                 .h = _spriteSliceSize_world.y
             }
@@ -79,7 +70,7 @@ SDL_Rect Actor::_getSliceBB_InCanvas(){
 }
 
 void Actor::render(){
-
+    SDL_FRect worldBB = _physicsModel.getBoundingBox();
     SDL_Rect tgt = _getSliceBB_InCanvas();
 
     _spriteSheet_p->renderSlice( 
@@ -93,7 +84,7 @@ void Actor::render(){
     // if (_DEBUG_STROKE){
     #if DEBUG
     SDL_Rect _physBB_Canvas = _viewport_p->transformRect_Viewport2Canvas(
-        _viewport_p->transformRect_World2Viewport(_physicsModel.box)
+        _viewport_p->transformRect_World2Viewport(worldBB)
     );
 
     SDL_SetRenderDrawColor(context->renderer, 18,200,100,150);
@@ -116,14 +107,14 @@ void Actor::update(float dt_s){
 
     _updateSprites(floor(dt_s * 1000));
     
-    isExpired = _physicsModel.checkIfInBounds();
+    isExpired = !_physicsModel.checkIfInBounds();
 
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-BoxPhysicsModel *Actor::getPhysicsModel_Ptr(){
+ActorModel *Actor::getPhysicsModel_Ptr(){
     return &_physicsModel;
 }
 
@@ -227,9 +218,9 @@ void Actor::_setActiveAnimation( const std::string &key ){
     _animationCounter = 0;
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+// PLAYER ACTOR
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerActor::update(float dt_s){
@@ -238,17 +229,19 @@ void PlayerActor::update(float dt_s){
     Actor::update(dt_s);
 
     // some exceptions to my other rules...
-    if (_physicsModel.FALLING && _physicsModel.getVelocity().y < 0 && _activeAnimation_id != "jump-down"){
+    if (!_physicsModel.isItOnGround() && _physicsModel.getVelocity().y < 0 && _activeAnimation_id != "jump-down"){
         _setActiveAnimation("jump-down");
     }
 
-    if (!_physicsModel.FALLING && _activeAnimation_id == "jump-down"){
+    if (_physicsModel.isItOnGround() && _activeAnimation_id == "jump-down"){
         _land();
     }
+
+    SDL_FRect bb = _physicsModel.getBoundingBox();
     
     if (_activeAction == ActorMovementActions::JUMP){
 
-        if (!_physicsModel.FALLING){
+        if (_physicsModel.isItOnGround()){
             // we landed.
             // TODO - add roll jere
             if (_requestedAction == ActorMovementActions::WALK_LEFT || _requestedAction == ActorMovementActions::WALK_RIGHT ){
@@ -261,7 +254,7 @@ void PlayerActor::update(float dt_s){
         } else {
             // nudge L / R while we fall
             if (_requestedAction == ActorMovementActions::WALK_LEFT || _requestedAction == ActorMovementActions::WALK_RIGHT ){ 
-                _physicsModel.box.x += ((_requestedAction == ActorMovementActions::WALK_LEFT) ? - 0.05 : 0.05);
+                bb.x += ((_requestedAction == ActorMovementActions::WALK_LEFT) ? - 0.05 : 0.05);
             }
             // undo input
             _requestedAction = ActorMovementActions::NONE;
@@ -273,7 +266,7 @@ void PlayerActor::update(float dt_s){
     
     } else if (_activeAction == ActorMovementActions::WALK_LEFT || _activeAction == ActorMovementActions::WALK_RIGHT ){
 
-        if (_physicsModel.FALLING){
+        if (!_physicsModel.isItOnGround()){
             // dont apply dv to this jump -> just switch states and animations
             _jump(0);
         } else if ( _requestedAction == ActorMovementActions::JUMP ){
@@ -295,7 +288,7 @@ void PlayerActor::update(float dt_s){
         }
     }
     
-    if (_physicsModel.box.y < 0){
+    if (bb.y < 0){
         isExpired = true;
     #if DEBUG
         printf("PlayerActor fell!\n");
@@ -336,7 +329,7 @@ void PlayerActor::handleInput( const SDL_KeyboardEvent &input ){
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerActor::_jump(float dv){
 
-    if (!_physicsModel.FALLING){
+    if (_physicsModel.isItOnGround()){
 
         _physicsModel.jump({
             .x=0, 
@@ -354,7 +347,7 @@ void PlayerActor::_jump(float dv){
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerActor::_walk( bool goLeft ){
 
-    if (_physicsModel.FALLING){
+    if (!_physicsModel.isItOnGround()){
         // Cant walk when im falling.
         return;
     }
@@ -373,7 +366,7 @@ void PlayerActor::_walk( bool goLeft ){
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerActor::_idle(){
-    if (!_physicsModel.FALLING){
+    if (_physicsModel.isItOnGround()){
         _setActiveAnimation("idle");
         _physicsModel.setWalkingVelocity(0);
         _activeAction = ActorMovementActions::NONE;
@@ -384,7 +377,7 @@ void PlayerActor::_idle(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayerActor::_land(){
-    if (!_physicsModel.FALLING){
+    if (_physicsModel.isItOnGround()){
         _setActiveAnimation("land");
         _physicsModel.setWalkingVelocity(0);
         _activeAction = ActorMovementActions::NONE;

@@ -26,13 +26,6 @@ namespace j0g0 {
         void setBothCoordsTo(const float &val);
     }; 
 
-    struct FloatRect {
-        float x,y,w,h;
-        // static SDL_Rect toCanvasRect( const FloatRect &worldRect );
-        // static FloatRect toWorldRect( const SDL_Rect &canvasRect );
-        bool overlapsWith( const FloatRect &other );
-    };
-
     struct RotMatrix2D {
         
         float matrix[2][2] = {

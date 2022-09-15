@@ -123,31 +123,6 @@ bool FloatLine::intersectsWith( const FloatLine& other, Vec2D_Float &intersectio
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-bool FloatRect::overlapsWith( const FloatRect &other ){
-
-    if (y >=  (other.y + other.h)){
-        return false;
-    }
-    if ((y + h) <= other.y){
-        return false;
-    }
-    if ((x + w) <= other.x){
-        return false;
-    }
-    if (x >= (other.x + other.w)){
-        return false;
-    }
-
-    #if DEBUG
-    printf(
-        "FloatRect::collidesWith : Collision detected between A { x:%f ; y:%f ; w:%f ; h:%f } and\n B { x:%f ; y:%f ; w:%f ; h:%f }\n\n", 
-        x, y, w, h, other.x, other.y, other.w, other.h
-    );
-    #endif
-     return true;
-}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

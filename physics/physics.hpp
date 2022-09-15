@@ -7,141 +7,180 @@
 
 namespace j0g0 {
 
-    struct BoxPhysicsModel {
-        
-        // make the overall physics runtime
-        // a friend of this class
-        friend struct PlatformGamePhysics;
-
-        
-        FloatRect box;
-        bool FALLING;
-        // use it for Actors with
-        // precise landing - e.g: Player
-        bool isBounceable = true;
-
-        BoxPhysicsModel(){}
-
-        BoxPhysicsModel( 
-            float m, float fc,
-            const Vec2D_Float &p,
-            const FloatRect &b,
-            const std::string& ownerId,
-            const Vec2D_Float& initialVelocity,
-            bool _isBounceable
-        );
-        
-        void update(float dt_s);
-
-        // when collision is detected, 
-        // run this to set the box into the line
-        void snapToLine(
-            StraightFloatLine* line,
-            Vec2D_Float *platVelocity_p,
-            const std::string &platId
-        );
-
-        bool checkIfInBounds();
-        void jump(const Vec2D_Float &dv);
-        void setWalkingVelocity(float walkingVelocity);
-        const Vec2D_Float& getVelocity();
-        void releaseGround();
-        const std::string &getOwnerId();
-
-        private:
-            std::string _ownerId;
-            float _mass;
-            float _frictionCoef;
-            float _impactAbsortionCoef;
-            
-            float _terminalVelocity;
-            
-            // absolute velocity
+    /***
+     *  Objects used in in-game physics calculations
+     *  --------------------
+     *  
+     *  based on Axis Aligned Bounding Boxes.
+     */
+    enum RectangeFace{
+        LEFT, BOTTOM, RIGHT, UP
+    };
+    
+    // Base class for GameObject physics model.
+    // Must be xtended - updated() is virtual
+    class GameObjectModel {
+        friend class WorldModel;
+        protected:
+            SDL_FRect _boundingBox;
+            Vec2D_Float _lastPosition;
             Vec2D_Float _velocity;
             Vec2D_Float _acceleration;
 
-            // a velocity relative to
-            // the plat we stand on
-            Vec2D_Float _platRelativeVelocity;
-
-
-            /****
-             * Collision Detection:
-             *  A box can be constrained in x and y,
-             *  but each coordinate only 1 obstacle is considered
-             */
-            
-            // About the current Ground
-            StraightFloatLine *_currentGroundLine_p;
-            Vec2D_Float *_currentGroundVelocity_p;
-            std::string _currentGroundOwnerId;
-
-            float _PENETRATION_TOLERANCE = 0;
-
-
-    };
-
-    struct RectPlatformPhysicsModel{
-        
-        friend struct PlatformGamePhysics;
-
-        RectPlatformPhysicsModel(
-            const FloatRect &bounding_box,
-            float ellastic_coef,
-            float friction_coef,
-            const std::string &ownerId
-        );
-
-        friend struct PlatformGamePhysics;
-
-        FloatRect box;
-
-        // defined up-left-down-right
-        StraightFloatLine bordersShiftedToOrigin[4];
-        StraightFloatLine instantBorders[4];
-        
-        const float frictionCoef, ellasticCoef;
-
-        Vec2D_Float velocity;
-        Vec2D_Float acceleration;
-
-        // run this after updating the box position.
-        void initBorders();
-        void updateBorders();
-
-        void update(float dt_s);
-        void setVelocity(const Vec2D_Float &_newVelocity);
-
-        const std::string &getOwnerId(){return _ownerId;};
-
-        private:
             std::string _ownerId;
+
+            // is it on top of a Platform?
+            bool _isOnGround;
+            // can it move?
+            bool _isStatic;
+            // when one of the objcts in a collision
+            // is massive, then it will not move in result of said collision
+            // e.g.: an Ator collides with a Platform
+            bool _isMassive;
+
+            bool _eligibleForUpdate = false;
+
+        public:
+
+            GameObjectModel(
+                const Vec2D_Float &_initialPosition,
+                const Vec2D_Float &_size,
+                const Vec2D_Float &_initialVelocity,
+                const Vec2D_Float &_initialAcceleration,
+                const std::string &_ownerObjectId,
+                bool _isItStatic,
+                bool _isMassive
+            );
+
+            ~GameObjectModel();
+
+            // Getters and Setters
+            const Vec2D_Float& getVelocity(){ return this->_velocity; }
+            const std::string& getOwnerId(){ return this->_ownerId; }
+            const SDL_FRect& getBoundingBox(){ return this->_boundingBox; }
+            const SDL_FRect *getBoundingBox_Ptr(){ return &(this->_boundingBox); }
+            const Vec2D_Float &getLastPosition(){ return this->_lastPosition; }
+            const bool &isItOnGround(){ return this->_isOnGround; }
+            
+            void setVelocity(const Vec2D_Float &_newVelocity){ this->_velocity = _newVelocity; }
+
+            // must be extended
+            virtual void update(float dt_s) = 0;
+
+            
+
+    };
+
+
+    
+
+
+
+    class PlatformModel : GameObjectModel {
+
+        friend class WorldModel;
         
+        public:
+
+            PlatformModel(
+                const SDL_FRect &bounding_box,
+                const std::string &ownerId,
+                const Vec2D_Float &initialVelocity,
+                const bool &isItStatic
+            );
+
+            ~PlatformModel();
+
+            void update(float dt_s); 
+
+            // Getters
+            const Vec2D_Float& getVelocity(){ return this->_velocity; }
+            const std::string& getOwnerId(){ return this->_ownerId; }
+            const SDL_FRect& getBoundingBox(){ return this->_boundingBox; }
+        
+            // Setters
+            void setVelocity( const Vec2D_Float &_newVelocity ){ this->_velocity = _newVelocity; }
+            void setBoundingBox( const SDL_FRect &newBb ){ this->_boundingBox = newBb; }
     };
 
-    struct ObjectToPlatformCollisionPair{
-        BoxPhysicsModel *box_p;
-        RectPlatformPhysicsModel *plat_p;
-        StraightFloatLine *platformBoundary;
-        float resultingImpactAbsortion;
 
+    class ActorModel : public GameObjectModel {
+
+        // make the overall physics runtime
+        // a friend of this class
+        friend class WorldModel;
+        // determines bounciness
+        float _impactAbsortionCoef = 0;
+        // max velocity this Actor can go to.
+        float _terminalVelocity = 50;
+        PlatformModel *_currentGround = NULL;
+        float _velocityX_rel_to_currentGround = 0;
+        // Used for collision resolution
+        Vec2D_Float _lastPosition = {0,0};
+
+        void _releaseGround();
+
+        public:
+
+            ActorModel( 
+                const Vec2D_Float &_initialPosition,
+                const Vec2D_Float &_size,
+                const Vec2D_Float &_initialVelocity,
+                const Vec2D_Float &_initialAcceleration,
+                const std::string &_ownerActorId
+            );
+
+            ~ActorModel();
+            
+            void update(float dt_s);
+            // when collision is detected with the ground, 
+            // run this to set the box into the appropriate line
+            void snapToPlatformModel( PlatformModel *targetPlatform );
+            bool checkIfInBounds();
+            void jump(const Vec2D_Float &dv);
+            void setWalkingVelocity(float walkingVelocity);
+            
+            // GETTER
+            const Vec2D_Float& getVelocity(){ return this->_velocity; }
+            const std::string& getOwnerId(){ return this->_ownerId; }
+            const Vec2D_Float& getLastPosition(){ return this->_lastPosition; }
+            
     };
 
-    struct PlatformGamePhysics {
+    class CollisionPair{
+        public:
 
-        // the velocity that, on collision, we will
-        // ignore values bellow -> smoother snap to lines while bouncing
-        const float VEL_THRESHOLD = 0.2;
-        std::vector<RectPlatformPhysicsModel*> platforms;
-        std::vector<BoxPhysicsModel*> objects;
+            // the 2 models coliding
+            ActorModel *modelA = NULL;
+            PlatformModel *modelB = NULL;
 
-        void resolveModel(Uint32 dt_ms);
-        void removeObject(const std::string ownerId);
-        // void free();
+            // contact faces
+            RectangeFace contactFace_A, contactFace_B;
+            
+            // time since previous step until collision
+            // so must be lower than ful dt
+            float dt_collision;
+    };
+
+    class WorldModel {
+        
+        public:
+
+            // the velocity that, on collision, we will
+            // ignore values bellow -> smoother snap to lines while bouncing
+            const float VEL_THRESHOLD = 0.2;
+            
+            // all of the objects in a single world
+            std::vector<PlatformModel*> platforms;
+            std::vector<ActorModel*> actors;
+
+            void removeObject( const std::string ownerId );
+            void solveStep( float dt_s );
 
         private:
-            void _checkCollisions();
-            StraightFloatLine* _getHitFace( BoxPhysicsModel* box, RectPlatformPhysicsModel* platform );
-            std::vector<ObjectToPlatformCollisionPair> _findObstacles( BoxPhysicsModel* obj );
+            void _resolveActorToPlatformInteractions( float dt_s );
+            CollisionPair _resolveCollision( ActorModel *A, PlatformModel *B );
+            void _setActorPositionsAfterCollision( const CollisionPair & cPair, float dt_s );
+
     };
 }

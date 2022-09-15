@@ -26,14 +26,14 @@ namespace j0g0 {
         Vec2D_Float viewPortToWorld( const Vec2D_Float& viewportPosition );
 
         // Box Transformations
-        FloatRect transformRect_Canvas2Viewport( const SDL_Rect& boxInCanvas );
-        FloatRect transformRect_ViewPort2World( const FloatRect& boxInViewport );
+        SDL_FRect transformRect_Canvas2Viewport( const SDL_Rect& boxInCanvas );
+        SDL_FRect transformRect_ViewPort2World( const SDL_FRect& boxInViewport );
 
-        FloatRect transformRect_World2Viewport( const FloatRect& boxInWorld );
-        SDL_Rect transformRect_Viewport2Canvas( const FloatRect& boxInViewport);
+        SDL_FRect transformRect_World2Viewport( const SDL_FRect& boxInWorld );
+        SDL_Rect transformRect_Viewport2Canvas( const SDL_FRect& boxInViewport);
 
-        FloatRect transformRect_canvasToWorld( const SDL_Rect& boxInCanvas );
-        SDL_Rect transformRect_WorldToCanvas( const FloatRect& boxInWorld );
+        SDL_FRect transformRect_canvasToWorld( const SDL_Rect& boxInCanvas );
+        SDL_Rect transformRect_WorldToCanvas( const SDL_FRect& boxInWorld );
 
         // private:
         float pixel_per_meter;

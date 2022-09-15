@@ -17,15 +17,10 @@ GameState::GameState(RenderingContext* c, SpriteSheetManager *ssm)
 _spriteSheetManager_p(ssm){
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 GameState::~GameState(){
-    _context_p = NULL;
-    _spriteSheetManager_p = NULL;
 }
-
-
 
 /*
  *  PauseState 
@@ -53,7 +48,7 @@ _headerMessage( cntxt, ssm->getSpriteSheet("bitmap-text") )
     _activeOptionIndex = 0;
     // remainging options
     for (auto optText : _optionTexts){
-        BitmapText opt( cntxt, _spriteSheetManager_p->getSpriteSheet("bitmap-text") );
+        BitmapTextLine opt( cntxt, _spriteSheetManager_p->getSpriteSheet("bitmap-text") );
         opt.setContent(optText);
 
         opt.setPositionInCanvas({
@@ -183,7 +178,7 @@ PauseState::_PauseActionsEnum PauseState::_actionKeyMap( SDL_Keycode key ){
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PauseState::_renderSelectionCarat(){
     // do it very stupid for now
-    BitmapText &activeOpt = _options[_activeOptionIndex];
+    BitmapTextLine &activeOpt = _options[_activeOptionIndex];
     Vec2D_Int position = activeOpt.getPositionInCanvas();
 
     SDL_Rect carat = {
@@ -218,13 +213,6 @@ level( configFilePath, cntxt, ssm )
 
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-PlayState::~PlayState(){
-}
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 void PlayState::render(){
@@ -244,7 +232,7 @@ void PlayState::update(){
         _endStateRequested = true;
     }
 
-    #if DEBUG
+#if DEBUG
 
     int _ellapsedTimeSinceLastDisplay = SDL_GetTicks() - lastDisplay;
     frameCounter++;
@@ -258,7 +246,7 @@ void PlayState::update(){
         frameCounter = 0;
     }
 
-    #endif
+#endif
     
     
 }
@@ -267,6 +255,11 @@ void PlayState::update(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 size_t PlayState::handleEvents(){
+
+    if (_endStateRequested){
+        return (size_t)GameStateEnum::STATE_GAME_OVER_SCREEN;
+    }
+
     size_t retval = GameStateEnum::STATE_PLAY;
     SDL_Event e;
     while( SDL_PollEvent( &e ) != 0 )
@@ -283,6 +276,85 @@ size_t PlayState::handleEvents(){
                 level.handleEvents(e);
             }
         }
+    }
+    return retval;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+TimedMessageState::TimedMessageState(
+    RenderingContext* c, 
+    SpriteSheetManager *ssm,
+    std::string &message,
+    int durationMs
+):GameState(c,ssm),
+_line(c, ssm->getSpriteSheet("bitmap-text") ){
+    _background_color = {.r = 240, .g = 246, .b= 240, .a = 255 };
+    _message = message;
+    _durationMs = durationMs;
+
+    // init line
+    _line.setContent(_message);
+    _line.setPositionInCanvas(
+        {
+            .x = (_context_p->config.canvasSize.x - _line.getContentSize().x)/2,
+            .y = 100
+        }
+    );
+
+    _start_click = SDL_GetTicks();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void TimedMessageState::render(){
+    
+    _context_p->beginRenderStep();
+    _context_p->setBackgroundColor(_background_color);
+    
+    _line.render();
+
+    _context_p->endRenderStep();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void TimedMessageState::update(){
+    Uint32 now = SDL_GetTicks();
+
+    if ( (now - _start_click) >= _durationMs * 1000 ){
+
+        _endStateRequested = true;
+
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+size_t TimedMessageState::handleEvents(){
+
+    size_t retval = GameStateEnum::STATE_GAME_OVER_SCREEN;
+    SDL_Event e;
+    
+    while( SDL_PollEvent( &e ) != 0 )
+    {
+        if (e.type == SDL_QUIT) {
+            
+            return GameStateEnum::STATE_EXIT;
+            
+        } else if ( _endStateRequested || (
+            e.type == SDL_KEYDOWN 
+            && ( e.key.keysym.sym == SDLK_RETURN 
+            || e.key.keysym.sym == SDLK_SPACE
+            || e.key.keysym.sym == SDLK_ESCAPE )
+        )
+       ){
+        return GameStateEnum::STATE_PAUSE;
+       }
     }
     return retval;
 }

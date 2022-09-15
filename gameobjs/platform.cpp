@@ -4,128 +4,9 @@
 using namespace j0g0;
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-bool MovingRectPlatformKeyFrame::compare( const MovingRectPlatformKeyFrame &o1,  const MovingRectPlatformKeyFrame &o2){
-    return o1.t_arrival_s < o2.t_arrival_s;
-}
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-MovingRectPlatform::MovingRectPlatform(    
-    RenderingContext* _cntxt, 
-    SpriteSheet* _ss, 
-    ViewPort* vp,
-    PlatformConfig &p)
-:RectPlatform(_cntxt, _ss, vp, p ){
 
-    assert(p.keyPositions_vec.size() > 0);
-
-    _keyFrames = _getKeyFramesFromConfig(p);
-
-    // max_element returns an iterator
-    // dereference it to use it.
-    // MovingRectPlatformKeyFrame lastEl = *std::max_element( _keyFrames.begin(), _keyFrames.end(), MovingRectPlatformKeyFrame::compare );
-
-    // sort instead
-    std::sort( _keyFrames.begin(), _keyFrames.end(), MovingRectPlatformKeyFrame::compare );
-    auto lastEl = *_keyFrames.end();
-
-    _totaCycleDuration_s = lastEl.t_arrival_s + lastEl.t_wait_s;
-    _currentCycleTime_s = 0;
-    _currentKeyFrame_Index = 0;
-
-
-    _model.box.x = _keyFrames[ _currentKeyFrame_Index ].p.x;
-    _model.box.y = _keyFrames[ _currentKeyFrame_Index ].p.y;
-    
-
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-void MovingRectPlatform::update(float dt_s){
-
-    _currentCycleTime_s += dt_s;
-
-
-    MovingRectPlatformKeyFrame& currentFrame = _keyFrames[_currentKeyFrame_Index];
-    MovingRectPlatformKeyFrame& next = _currentKeyFrame_Index < _keyFrames.size() - 1 ?
-        _keyFrames[ _currentKeyFrame_Index + 1 ] 
-        : _keyFrames[0];
-    
-    // assume 1 sec of travel time for the last frame.
-    
-    // current keyFrame is ended - just go to the next
-    if (_currentCycleTime_s >= next.t_arrival_s && next.t_arrival_s != 0 ){
-        
-        _currentKeyFrame_Index++;
-        
-        _model.box.x = _keyFrames[ _currentKeyFrame_Index ].p.x;
-        _model.box.y = _keyFrames[ _currentKeyFrame_Index ].p.y;
-
-        _model.velocity.x = 0;
-        _model.velocity.y = 0;
-
-    } else 
-    // cycle is turned.
-    if ( next.t_arrival_s == 0 && _currentCycleTime_s >=  currentFrame.t_arrival_s + currentFrame.t_wait_s + 2 ){
-
-        _currentCycleTime_s = 0;
-        _currentKeyFrame_Index = 0;
-
-        _model.box.x = _keyFrames[ _currentKeyFrame_Index ].p.x;
-        _model.box.y = _keyFrames[ _currentKeyFrame_Index ].p.y;
-
-        _model.velocity.x = 0;
-        _model.velocity.y = 0;
-
-    } else 
-    // current waiting phase is over    
-    if (_currentCycleTime_s >= (currentFrame.t_arrival_s + currentFrame.t_wait_s)){
-        
-        // traveling to next position
-        float totalTravelTime = next.t_arrival_s == 0 ?
-            2 :
-            next.t_arrival_s - (currentFrame.t_arrival_s + currentFrame.t_wait_s);
-
-        float currentTravelTime = _currentCycleTime_s - (currentFrame.t_arrival_s + currentFrame.t_wait_s);
-
-        Vec2D_Float slope = {
-            .x = ( next.p.x - currentFrame.p.x ) / totalTravelTime,
-            .y = ( next.p.y - currentFrame.p.y ) / totalTravelTime
-        };
-
-        _model.box.x = currentFrame.p.x + currentTravelTime * slope.x;
-        _model.box.y = currentFrame.p.y + currentTravelTime * slope.y;
-
-        _model.velocity.x = slope.x;
-        _model.velocity.y = slope.y;
-    }
-
-    // else we dont change the position
-    _model.update(dt_s);
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromConfig(PlatformConfig &properties){
-    
-    std::vector<MovingRectPlatformKeyFrame> retVal;
-
-    for (auto keyFrameIterator : properties.keyPositions_vec){
-        retVal.push_back({
-            .p = keyFrameIterator.point,
-            .t_arrival_s = keyFrameIterator.timeArrival_s,
-            .t_wait_s = keyFrameIterator.timeRest_s
-        });
-    }
-
-    return retVal;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,9 +24,9 @@ _model({
         .w = (float)(_properties.sizeInTiles.x * _ss->getSliceSize().x) / vp->pixel_per_meter,
         .h = (float)(_properties.sizeInTiles.y * _ss->getSliceSize().y) / vp->pixel_per_meter
     },
-    _properties.ellasticCoef,
-    _properties.frictionCoef,
-    p.id
+    p.id,
+    {0,0},
+    !_properties.isMovingPlatform
 ),
 _spriteSheet_p(_ss),
 _tileMap( _ss->getSliceSize(), p.sizeInTiles, _calculateTileSetFromConfig(), p.tileMapSpriteSliceMatrix ),
@@ -155,7 +36,7 @@ _viewport_p(vp)
     // If a fill direction is specified in the config.
     if (_properties.fillDirection.x != 0 || _properties.fillDirection.y!=0){
         // Alter the bounding box to include the filled area
-        _model.box = _calculate_WorldTotalArea();
+        _model.setBoundingBox( _calculate_WorldTotalArea() );
     }
 
 
@@ -172,13 +53,15 @@ void RectPlatform::render(){
         return;
     }
 
+    const SDL_FRect &modelBox = _model.getBoundingBox();
+
     // render entire color fill before even if larger than
     // viewport - the naive approach - SDL will optimize
     if ( _properties.fillDirection.y < 0 ){
 
         SDL_Rect fill_rect = _viewport_p->transformRect_Viewport2Canvas(
             _viewport_p->transformRect_World2Viewport(
-                _model.box
+                modelBox
         ));
         
         _applyOffsetsToFillArea(fill_rect);
@@ -208,14 +91,12 @@ void RectPlatform::render(){
         positionCanvas = _viewport_p->viewPortToCanvas( 
             _viewport_p->worldToViewPort(
                 {
-                    .x = _model.box.x,
-                    .y = _model.box.y
+                    .x = modelBox.x,
+                    .y = modelBox.y
                 }
             )
         );
-    
     }
-
 
     const Vec2D_Int& platformSize = _tileMap.getSizeInTiles();
 
@@ -241,7 +122,7 @@ void RectPlatform::render(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-RectPlatformPhysicsModel *RectPlatform::getPhysicsModel_ptr(){
+PlatformModel *RectPlatform::getPhysicsModel_ptr(){
     return &_model;
 }
 
@@ -297,29 +178,34 @@ std::vector<SpriteAnimationSlice> RectPlatform::_calculateTileSetFromConfig(){
 // Returns bool value used to decide if the Platform should be rendered.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool RectPlatform::_isVisible(){
-    return true;
+
+    // return true;
+
+    const SDL_FRect &modelBox = _model.getBoundingBox();
     // For platforms with filled adjacent area the visibility detection 
     // must include the fill area
-    return (_model.box.x + _model.box.w) > _viewport_p->positionInWorld.x
-        && _model.box.x < (_viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x)
-        && (_model.box.y + _model.box.h) > _viewport_p->positionInWorld.y
-        && _model.box.y < (_viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y);
+    return (modelBox.x + modelBox.w) > _viewport_p->positionInWorld.x
+        && modelBox.x < (_viewport_p->positionInWorld.x + _viewport_p->sizeInWorld.x)
+        && (modelBox.y + modelBox.h) > _viewport_p->positionInWorld.y
+        && modelBox.y < (_viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y);
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-FloatRect RectPlatform::_calculate_WorldTotalArea(){
+SDL_FRect RectPlatform::_calculate_WorldTotalArea(){
 
     assert( !_properties.isMovingPlatform );
+
+    const SDL_FRect actorBox = _model.getBoundingBox();
 
     // TODO - only fill bellow is considered - include other cases
     if ( _properties.fillDirection.y < 0 ){
         return {
-            .x = _model.box.x,
+            .x = actorBox.x,
             .y = 0,
-            .w = _model.box.w,
-            .h = _model.box.y + _model.box.h
+            .w = actorBox.w,
+            .h = actorBox.y + actorBox.h
         };
 
     } else {
@@ -330,7 +216,7 @@ FloatRect RectPlatform::_calculate_WorldTotalArea(){
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-FloatRect RectPlatform::_calculate_RenderedFillArea(){
+SDL_FRect RectPlatform::_calculate_RenderedFillArea(){
 
     // // Moving Platforms cannot have the "Fill" property set.
     assert(!_properties.isMovingPlatform);
@@ -360,3 +246,148 @@ FloatRect RectPlatform::_calculate_RenderedFillArea(){
 
     return {0,0,0,0};
 }
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool MovingRectPlatformKeyFrame::compare( const MovingRectPlatformKeyFrame &o1,  const MovingRectPlatformKeyFrame &o2){
+    return o1.t_arrival_s < o2.t_arrival_s;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+MovingRectPlatform::MovingRectPlatform(    
+    RenderingContext* _cntxt, 
+    SpriteSheet* _ss, 
+    ViewPort* vp,
+    PlatformConfig &p)
+:RectPlatform(_cntxt, _ss, vp, p ){
+
+    assert(p.keyPositions_vec.size() > 0);
+
+    _keyFrames = _getKeyFramesFromConfig(p);
+
+    // max_element returns an iterator
+    // dereference it to use it.
+    // MovingRectPlatformKeyFrame lastEl = *std::max_element( _keyFrames.begin(), _keyFrames.end(), MovingRectPlatformKeyFrame::compare );
+
+    // sort instead
+    std::sort( _keyFrames.begin(), _keyFrames.end(), MovingRectPlatformKeyFrame::compare );
+    auto lastEl = *_keyFrames.end();
+
+    _totaCycleDuration_s = lastEl.t_arrival_s + lastEl.t_wait_s;
+    _currentCycleTime_s = 0;
+    _currentKeyFrame_Index = 0;
+
+    const SDL_FRect& oldBB = _model.getBoundingBox();
+
+    SDL_FRect newBB = {
+        .x = _keyFrames[ _currentKeyFrame_Index ].p.x,
+        .y = _keyFrames[ _currentKeyFrame_Index ].p.y,
+        .w = oldBB.w,
+        .h = oldBB.h
+    };
+    
+    _model.setBoundingBox( newBB );
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void MovingRectPlatform::update(float dt_s){
+
+    const SDL_FRect &modelBox = _model.getBoundingBox();
+    const Vec2D_Float &modelVelocity = _model.getVelocity();
+
+    _currentCycleTime_s += dt_s;
+
+
+    MovingRectPlatformKeyFrame& currentFrame = _keyFrames[_currentKeyFrame_Index];
+    MovingRectPlatformKeyFrame& next = _currentKeyFrame_Index < _keyFrames.size() - 1 ?
+        _keyFrames[ _currentKeyFrame_Index + 1 ] 
+        : _keyFrames[0];
+    
+    // assume 1 sec of travel time for the last frame.
+    
+    // current keyFrame is ended - just go to the next
+    if (_currentCycleTime_s >= next.t_arrival_s && next.t_arrival_s != 0 ){
+        
+        _currentKeyFrame_Index++;
+        
+        _model.setBoundingBox({
+            .w = modelBox.w,
+            .h = modelBox.h,
+            .x = _keyFrames[ _currentKeyFrame_Index ].p.x,
+            .y = _keyFrames[ _currentKeyFrame_Index ].p.y
+        });
+
+        // _model.velocity.x = 0;
+        // _model.velocity.y = 0;
+        _model.setVelocity({0,0});
+
+    } else 
+    // cycle is turned.
+    if ( next.t_arrival_s == 0 && _currentCycleTime_s >=  currentFrame.t_arrival_s + currentFrame.t_wait_s + 2 ){
+
+        _currentCycleTime_s = 0;
+        _currentKeyFrame_Index = 0;
+
+        _model.setBoundingBox({
+            .w = modelBox.w,
+            .h = modelBox.h,
+            .x = _keyFrames[ _currentKeyFrame_Index ].p.x,
+            .y = _keyFrames[ _currentKeyFrame_Index ].p.y
+        });
+        _model.setVelocity({0,0});
+
+    } else 
+    // current waiting phase is over    
+    if (_currentCycleTime_s >= (currentFrame.t_arrival_s + currentFrame.t_wait_s)){
+        
+        // traveling to next position
+        float totalTravelTime = next.t_arrival_s == 0 ?
+            2 :
+            next.t_arrival_s - (currentFrame.t_arrival_s + currentFrame.t_wait_s);
+
+        float currentTravelTime = _currentCycleTime_s - (currentFrame.t_arrival_s + currentFrame.t_wait_s);
+
+        Vec2D_Float slope = {
+            .x = ( next.p.x - currentFrame.p.x ) / totalTravelTime,
+            .y = ( next.p.y - currentFrame.p.y ) / totalTravelTime
+        };
+
+        _model.setBoundingBox({
+            .w = modelBox.w,
+            .h = modelBox.h,
+            .x = currentFrame.p.x + currentTravelTime * slope.x,
+            .y = currentFrame.p.y + currentTravelTime * slope.y
+        });
+        _model.setVelocity({slope.x,slope.y});
+
+    }
+
+    // else we dont change the position
+    _model.update(dt_s);
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+std::vector<MovingRectPlatformKeyFrame> MovingRectPlatform::_getKeyFramesFromConfig(PlatformConfig &properties){
+    
+    std::vector<MovingRectPlatformKeyFrame> retVal;
+
+    for (auto keyFrameIterator : properties.keyPositions_vec){
+        retVal.push_back({
+            .p = keyFrameIterator.point,
+            .t_arrival_s = keyFrameIterator.timeArrival_s,
+            .t_wait_s = keyFrameIterator.timeRest_s
+        });
+    }
+
+    return retVal;
+}
+

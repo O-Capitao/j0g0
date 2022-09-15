@@ -1,436 +1,541 @@
 #include "physics.hpp"
-
 #include "math.h"
-
 #include "game-defines.hpp"
 
 using namespace j0g0;
 
-BoxPhysicsModel::BoxPhysicsModel(
-    float m,
-    float fc,
-    const Vec2D_Float &p,
-    const FloatRect &b,
-    const std::string& ownerId,
-    const Vec2D_Float &v0,
-    bool _isBounceable )
+
+
+// GameObjectModel
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+GameObjectModel::GameObjectModel(
+    const Vec2D_Float &_initialPosition,
+    const Vec2D_Float &_size,
+    const Vec2D_Float &_initialVelocity,
+    const Vec2D_Float &_initialAcceleration,
+    const std::string &_ownerObjectId,
+    bool _isItStatic,
+    bool _isItMassive
+)
+:_boundingBox({
+    .x = _initialPosition.x,
+    .y = _initialPosition.y,
+    .w = _size.x,
+    .h = _size.y
+}),
+_velocity( _initialVelocity ),
+_acceleration( _initialAcceleration ),
+_isOnGround( false ),
+_ownerId( _ownerObjectId ),
+_isStatic( _isItStatic ),
+_isMassive( _isItMassive ){
+
+    #if DEBUG
+        printf("GameObjectModel has been built for %s\n", _ownerId.c_str());
+    #endif
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+GameObjectModel::~GameObjectModel(){
+
+    #if DEBUG
+        printf("Destroyed GameObjectModel %s\n", _ownerId.c_str());
+    #endif
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// PlatformModel
+//
+PlatformModel::PlatformModel(
+    const SDL_FRect &bb,
+    const std::string &ownerId,
+    const Vec2D_Float &v_0,
+    const bool &isItStatic
+): GameObjectModel(
+    {bb.x, bb.y},
+    {bb.w, bb.h},
+    v_0,
+    {0,0},
+    ownerId,
+    isItStatic,
+    true )
 {
-    _ownerId = ownerId;
-    _mass = m;
-    _frictionCoef = fc;
-    _velocity = v0;
-    
-    _platRelativeVelocity = {.x=0, .y=0};
 
-    _acceleration = {.x = 0, .y = -9.8};
-    _terminalVelocity = 50;
+    #if DEBUG
+        printf("PlatformModel has been built for %s\n", _ownerId.c_str());
+    #endif
 
-    box = b;
-
-    _currentGroundLine_p = nullptr;
-    _currentGroundVelocity_p = nullptr;
-    _currentGroundOwnerId = "";
-
-    // objects start falling -> on the 1st step we set them in Ground
-    FALLING = true;
-
-    isBounceable = _isBounceable;
-
-    _impactAbsortionCoef = 0.5;
-
-    _PENETRATION_TOLERANCE = box.w / 2;
+    _lastPosition = {_boundingBox.x, _boundingBox.y};
 }
 
-void BoxPhysicsModel::update(float dt){
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+PlatformModel::~PlatformModel(){
+    #if DEBUG
+        printf("PlatformModel has been destroyed for %s\n", _ownerId.c_str());
+    #endif  
+}
 
 
-    if (FALLING){
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void PlatformModel::update(float dt_s){
 
-        if ( abs(_velocity.x /2 + _velocity.y/2) < _terminalVelocity ){
-            _velocity.x += _acceleration.x * dt ;
-            _velocity.y += _acceleration.y * dt ;
-        }
+    _lastPosition = {_boundingBox.x, _boundingBox.y};
+    if (_eligibleForUpdate && !_isStatic && ( _velocity.x != 0 || _velocity.y != 0)){
 
-    } else {
-        
-        _velocity.x = _currentGroundVelocity_p->x + _platRelativeVelocity.x;
-        _velocity.y = _currentGroundVelocity_p->y;
-    
-    
+        _boundingBox.x += _velocity.x * dt_s;
+        _boundingBox.y += _velocity.y * dt_s;
+
     }
-
-    box.x += dt * _velocity.x;
-    box.y += dt * _velocity.y; 
-
 }
 
-void BoxPhysicsModel::releaseGround(){
-    _currentGroundLine_p = NULL;
-    _currentGroundVelocity_p = NULL;
-    _currentGroundOwnerId = "";
-    FALLING = true;
-}
 
- const Vec2D_Float& BoxPhysicsModel::getVelocity(){
-    return _velocity;
-}
-
-const std::string &BoxPhysicsModel::getOwnerId(){
-    return _ownerId;
-}
-
-void BoxPhysicsModel::snapToLine(
-    StraightFloatLine *l,
-    Vec2D_Float *targetPlatformVelocity_p,
-    const std::string &platId
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// ActorModel
+//
+ActorModel::ActorModel( 
+    const Vec2D_Float &_initialPosition,
+    const Vec2D_Float &_size,
+    const Vec2D_Float &_initialVelocity,
+    const Vec2D_Float &_initialAcceleration,
+    const std::string &_ownerActorId
+):GameObjectModel(
+    _initialPosition,
+    _size,
+    _initialVelocity,
+    _initialAcceleration,
+    _ownerActorId,
+    false,
+    false // actors are not massive
 ){
 
-    // metod 1 - find penetration and restore it in movement axis
-    float penetration;
+    _eligibleForUpdate = true;
+    _lastPosition = _initialPosition;
+    
+    #if DEBUG
+        printf("ActorModel has been built for %s\n", _ownerId.c_str());
+    #endif
+}
 
-    // we can't land on Vertical Line
-    // include also the case of trying to snap to a line which is over the box's feet
-    //      in this case treat like vertical wall
-    if (l->horizontalLength == 0 
-        || ( l->verticalLength == 0 && _velocity.y < 0 && l->point_a.y > (box.y + _PENETRATION_TOLERANCE) )
-    )
-    {
 
-        if ( (_velocity.x - targetPlatformVelocity_p->x) > 0){
 
-            penetration = l->point_a.x  - (box.x + box.w);
-        } else {
-            penetration =  l->point_a.x - box.x;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ActorModel::~ActorModel(){
+    #if DEBUG
+        printf("ActorModel has been destroyed for %s\n", _ownerId.c_str());
+    #endif
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void ActorModel::update(float dt_s){
+    
+    if (!_eligibleForUpdate){
+        return;
+    }
+
+    _lastPosition = {
+        .x = _boundingBox.x,
+        .y = _boundingBox.y
+    };
+
+    if (!_isOnGround){
+
+        if ( abs(_velocity.x /2 + _velocity.y/2) < _terminalVelocity ){
+            _velocity.x += _acceleration.x * dt_s ;
+            _velocity.y += _acceleration.y * dt_s ;
         }
 
-        // restore penetration 
-        box.x += penetration;
-        _velocity.x = targetPlatformVelocity_p->x;
-
-        // bounce back?
-
-    // Horizonal Lines.
     } else {
+
+        assert( _currentGround != NULL );
         
-        // Hit  the bott of Platform with Top of Box - No Landing
-        if (_velocity.y > 0){
+        const Vec2D_Float &platVelocity = _currentGround->getVelocity();
         
-            penetration = l->point_a.y - (box.y + box.h);
-
-            // // restore penetration 
-            box.y += 2 * penetration;
-            _velocity.y = (1 - _impactAbsortionCoef) * -_velocity.y;
-
-            // box.y = l->point_a.y; - box.h;
-        
-        } else {
-
-            // // Case for collision with Hor. Line from above
-            // // // possibility to land/ slide whatev. Change state
-            penetration =  l->point_a.y - box.y;
-
-            // // restore penetration 
-            box.y += penetration;
-
-            #if DEBUG
-            printf("Snapping to Line: pA.x=%f , pa.y=%f \n", l->point_a.x, l->point_a.y );
-            #endif
-
-            // the box has landed
-            FALLING = false;
-
-            _velocity = {
-                .x = targetPlatformVelocity_p->x, .y = targetPlatformVelocity_p->y
-            };
-
-            _currentGroundLine_p = l ;
-            _currentGroundVelocity_p = targetPlatformVelocity_p;
-            _currentGroundOwnerId = platId;
-
-         }
-    }
-}
-
-bool BoxPhysicsModel::checkIfInBounds(){
-    return (box.y + box.h < 0);
-}
-
-void BoxPhysicsModel::jump( const Vec2D_Float &dv ){
-        assert(!FALLING);
-        
-        _velocity.x += ( _currentGroundVelocity_p->x + dv.x );
-        _velocity.y += ( _currentGroundVelocity_p->y +  dv.y );
-
-        FALLING = true;
-        releaseGround();
-
-        // give this to get some clear space between
-        // the jumping Player and the potentially moving platform under him
-        // and avoid firing the collision detector.
-        box.y+=0.1;
+        _velocity.x = platVelocity.x + _velocityX_rel_to_currentGround;
+        _velocity.y = platVelocity.y;
     }
 
-
-void BoxPhysicsModel::setWalkingVelocity(float walkingVelocity){
-    if (!FALLING){
-        _platRelativeVelocity.x = walkingVelocity;
-    }
-}
-
-RectPlatformPhysicsModel::RectPlatformPhysicsModel(
-    const FloatRect &bounding_box,
-    float ellastic_coef,
-    float friction_coef,
-    const std::string &ownerId
-):box(bounding_box),
-frictionCoef(friction_coef),
-ellasticCoef(ellastic_coef)
-{   
-    _ownerId = ownerId;
-
-    initBorders();
-
-    velocity = {
-        .x = 0, .y = 0
-    };
-
-    acceleration = {
-        .x = 0, .y = 0
-    };
-}
-
-void RectPlatformPhysicsModel::initBorders(){
-       // UP
-    // fill matrix of border lines
-    bordersShiftedToOrigin[0] = {
-        .point_a = { .x = 0, .y = box.h },
-        .normal = { .x = 0, .y = 1 },
-        .horizontalLength = box.w,
-        .verticalLength = 0
-    };
-    // LEFT
-    // fill matrix of border lines
-    bordersShiftedToOrigin[1] = {
-        .point_a = { .x = 0, .y = 0 },
-        .normal = { .x = -1, .y = 0 },
-        .horizontalLength = 0,
-        .verticalLength = box.h
-    };
-    // DWN
-    // fill matrix of border lines
-    bordersShiftedToOrigin[2] = { 
-        .point_a = { .x = 0, .y = 0 },
-        .normal = { .x = 0, .y = -1 },
-        .horizontalLength = box.w,
-        .verticalLength = 0
-    };
-    // RIGHT
-    // fill matrix of border lines
-    bordersShiftedToOrigin[3] = {
-        .point_a = { .x = box.w, .y = 0 },
-        .normal = { .x = 1, .y = 0 },
-        .horizontalLength = 0,
-        .verticalLength = box.h
-    };
-
-    for (int i = 0 ; i < 4; i++){
-        instantBorders[i] = bordersShiftedToOrigin[i];
-    }
-
-    updateBorders();
+    _boundingBox.x += dt_s * _velocity.x;
+    _boundingBox.y += dt_s * _velocity.y; 
 
 }
 
-// keep the data structures in the same memory space -> otherwise
-// Actors standing in this plat will have stale pointers
-void RectPlatformPhysicsModel::updateBorders(){
-    for (int i = 0 ; i < 4; i++){
-        instantBorders[i].point_a.x = box.x + bordersShiftedToOrigin[i].point_a.x;
-        instantBorders[i].point_a.y = box.y + bordersShiftedToOrigin[i].point_a.y;
-    }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Called specifically if Actor's state changes from being in the air
+// to being set in a platform
+void ActorModel::snapToPlatformModel( PlatformModel *tgt_p ){
+    
+    _isOnGround = true;
+    
+    assert( _currentGround == NULL );
+
+    // no slide when landing.
+    _velocityX_rel_to_currentGround = 0;
+    _velocity = tgt_p->getVelocity();
+
+    SDL_FRect _tgtBB = tgt_p->getBoundingBox();
+    _boundingBox.y = _tgtBB.y + _tgtBB.h;
+    _currentGround = tgt_p;
 }
 
-void RectPlatformPhysicsModel::setVelocity(const Vec2D_Float &_newVelocity){
-    velocity.x = _newVelocity.x;
-    velocity.y = _newVelocity.y;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+bool ActorModel::checkIfInBounds(){
+    return _boundingBox.y > 0;
 }
 
-void RectPlatformPhysicsModel::update(float dt_s){
-    if (velocity.x != 0 || velocity.y != 0){
 
-        box.x += velocity.x * dt_s;
-        box.y += velocity.y * dt_s;
-
-        updateBorders();
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void ActorModel::setWalkingVelocity(float walkingVelocity){
+    if (_isOnGround){
+        _velocityX_rel_to_currentGround = walkingVelocity;
     }
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void ActorModel::jump( const Vec2D_Float &dv ){
 
-// More proper evaluation of a overlap state between 1 box and n platforms/rectangular objects
-// moving at some (or no) velocity.
-std::vector<ObjectToPlatformCollisionPair> PlatformGamePhysics::_findObstacles( BoxPhysicsModel* obj ){
+    assert( _isOnGround && _currentGround != NULL );
+    
+    const Vec2D_Float &currentGroundVelocity = _currentGround->getVelocity();
 
-    std::vector<ObjectToPlatformCollisionPair> retval;
+    _velocity.x += ( currentGroundVelocity.x + dv.x );
+    _velocity.y += ( currentGroundVelocity.y +  dv.y );
 
-    // do it naive fr now
-    for ( int i = 0; i < platforms.size(); i++ ){
+    _isOnGround = false;
+    _releaseGround();
 
-        auto p = platforms[i];
+    // give this to get some clear space between
+    // the jumping Player and the potentially moving platform under him
+    // and avoid firing the collision detector.
+    _boundingBox.y+=0.1;
+}
 
-        if (!obj->FALLING && obj->_currentGroundOwnerId == p->getOwnerId() ){
-            // DO nothing in the case
-            // that the box is not falling
-            // and the collision that was detected is the ground
-            // the box stands on.
-        
-        }else if (
-            (p->box).overlapsWith( obj->box )    
-        ){
-            ObjectToPlatformCollisionPair res = {
-                .box_p = obj,
-                .plat_p = p,
-                .platformBoundary = _getHitFace( obj, p )
-            };
 
-            retval.push_back( res );
-            
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void ActorModel::_releaseGround(){
+    _currentGround = NULL;
+    _velocityX_rel_to_currentGround = 0;
+    _isOnGround = false;
+}
+
+
+
+// WorldModel
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void WorldModel::solveStep(float dt_s){
+    _resolveActorToPlatformInteractions(dt_s);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+void WorldModel::_resolveActorToPlatformInteractions(float dt_s){
+    
+    std::vector<CollisionPair> contacts;
+
+    for (ActorModel *a: actors){
+
+        if (a->_eligibleForUpdate){
+
+            for (PlatformModel *p : platforms){
+
+                // if ( p->_eligibleForUpdate){
+                
+                // find all platforms that are shown in screen
+                if (true){
+
+                    if ( SDL_HasIntersectionF( &(a->getBoundingBox()), &(p->getBoundingBox())) ){
+                        // Find another CollisionPair for which A is the present Actor
+                        // const std::string &ownerId = a->_ownerId;
+                        CollisionPair curr_contact = _resolveCollision( a, p );
+                        const std::string &actorId = a->getOwnerId();
+
+                        std::vector<CollisionPair>::iterator i =  std::find_if( 
+                            contacts.begin(), contacts.end(),
+                            [actorId](const CollisionPair &cp) -> 
+                                bool { 
+                                    return cp.modelA->getOwnerId().compare( actorId ) == 0; 
+                                }
+                        );
+
+                        if (i != contacts.end()){
+                            const CollisionPair & alreadyIn = *i;
+                            if (alreadyIn.dt_collision > curr_contact.dt_collision ){
+                                (*i) = curr_contact;
+                            }
+
+                        } else {
+                            contacts.push_back( curr_contact );
+                        }
+                    }                    
+                }
+            }
         }
     }
+
+    // by this point there should be 1 Collision pair for each Actor that collided.
+    for (CollisionPair cp : contacts){
+        _setActorPositionsAfterCollision(cp, dt_s);
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+void WorldModel::_setActorPositionsAfterCollision(const CollisionPair & cPair, float dt_s){
+    
+    if (cPair.contactFace_A == RectangeFace::BOTTOM ){
+        // // landing..
+
+        assert(cPair.modelA != NULL);
+        assert(cPair.modelB != NULL);
+
+        cPair.modelA->snapToPlatformModel(cPair.modelB);
+
+    } else {
+        // Simple collision
+        
+        // A IS THE ONE THAT WILL MOVE,
+        // just let it move 
+        cPair.modelA->_boundingBox.x = cPair.modelA->_lastPosition.x + cPair.dt_collision * cPair.modelA->_velocity.x;
+        cPair.modelA->_boundingBox.y = cPair.modelA->_lastPosition.y + cPair.dt_collision * cPair.modelA->_velocity.y;
+
+        // set appropriate velocity - NO SLIP
+        cPair.modelA->setVelocity({0,0});
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CollisionPair WorldModel::_resolveCollision( ActorModel *A, PlatformModel *B ){
+    
+    assert(A->_isMassive || B->_isMassive);
+
+    CollisionPair retval;
+    retval.modelA = A;
+    retval.modelB = B;
+
+    // last position
+    const Vec2D_Float &lastPositionA = A->getLastPosition();
+    const Vec2D_Float &lastPositionB = B->getLastPosition();
+
+    const Vec2D_Float &vA = A->getVelocity();
+    const Vec2D_Float &vB = B->getVelocity();
+
+    const Vec2D_Float vel_A_rel_to_B = {
+        .x = vA.x - vB.x,
+        .y = vA.y - vB.y
+    };
+
+    // bounding Box is at current position
+    const SDL_FRect &bbA = A->getBoundingBox();
+    const SDL_FRect &bbB = B->getBoundingBox();
+
+    const Vec2D_Float pos_A_rel_to_B_lastPosition = {
+        .x = lastPositionA.x - lastPositionB.x,
+        .y = lastPositionA.y - lastPositionB.y
+    };
+
+    float distanceToAxisA_to_B;
+
+    if(A->_isOnGround){
+        // special case for ground-ground contact\
+
+
+        if ( vel_A_rel_to_B.x > 0){
+            retval.contactFace_A = RectangeFace::RIGHT;
+            retval.contactFace_B = RectangeFace::LEFT;
+            distanceToAxisA_to_B = lastPositionB.x - (lastPositionA.x + bbA.w);
+        } else {
+            retval.contactFace_A = RectangeFace::LEFT;
+            retval.contactFace_B = RectangeFace::RIGHT;
+            distanceToAxisA_to_B = (lastPositionB.x + bbB.w) - lastPositionA.x;
+        }
+
+        retval.dt_collision = distanceToAxisA_to_B / vA.x;
+
+        // assert(retval.dt_collision > 0);
+
+           return retval;
+    }
+
+
+
+
+    /*  
+                     2     . 1            . 2
+                    _ _ _ _.______________. _ _ _ _
+                   1       |     B        | 1
+                    _ _ _ _|______________|_ _ _ _ _
+                    2      . 1            . 2
+                           .              .
+     */
+    // scenario 1 - Object A was in Areas "1" before the collision -> 1 possible outcome, 
+    //              function of position and velocity
+
+    // Object A was above/bellow B -> vertical collision
+    if ( pos_A_rel_to_B_lastPosition.x > -bbA.w && pos_A_rel_to_B_lastPosition.x < bbB.w ) {
+
+        if ( vel_A_rel_to_B.y > 0 ){
+            retval.contactFace_A = RectangeFace::UP;
+            retval.contactFace_B = RectangeFace::BOTTOM;
+
+            distanceToAxisA_to_B = (-pos_A_rel_to_B_lastPosition.y) - bbA.h;
+            retval.dt_collision = distanceToAxisA_to_B / vel_A_rel_to_B.y; 
+            
+        } else {
+            retval.contactFace_A = RectangeFace::BOTTOM;
+            retval.contactFace_B = RectangeFace::UP;
+
+            distanceToAxisA_to_B = pos_A_rel_to_B_lastPosition.y - bbB.h;
+            retval.dt_collision = distanceToAxisA_to_B / vel_A_rel_to_B.y;
+        }
+    // Object A was left/right from B -> horizntal collision
+    } else if ( pos_A_rel_to_B_lastPosition.y > - bbA.h && pos_A_rel_to_B_lastPosition.y < bbB.h ){
+
+        if ( vel_A_rel_to_B.x > 0 ){
+            retval.contactFace_A = RectangeFace::RIGHT;
+            retval.contactFace_B = RectangeFace::LEFT;
+
+            distanceToAxisA_to_B = (-pos_A_rel_to_B_lastPosition.x) - bbA.w;
+            retval.dt_collision = distanceToAxisA_to_B / vel_A_rel_to_B.x;
+        } else {
+            retval.contactFace_A = RectangeFace::LEFT;
+            retval.contactFace_B = RectangeFace::RIGHT;
+
+            distanceToAxisA_to_B = pos_A_rel_to_B_lastPosition.x - bbB.w;
+            retval.dt_collision = distanceToAxisA_to_B / vel_A_rel_to_B.x;
+        }
+    // scenario 2 - Oject A in Areas "2"
+    // Ambiguity Must Be solved    
+    } else {
+        // upper left
+        if (pos_A_rel_to_B_lastPosition.x < -bbA.w && pos_A_rel_to_B_lastPosition.y > bbB.h ){
+
+            float distanceToVerticalColl = pos_A_rel_to_B_lastPosition.y - bbB.h;
+            float distanceToHorizontalColl = (-pos_A_rel_to_B_lastPosition.x) - bbA.w;
+
+            float dtVertCollision = distanceToVerticalColl / vel_A_rel_to_B.y;
+            float dtHorCollision = distanceToHorizontalColl / vel_A_rel_to_B.x;
+
+            if (dtVertCollision < dtHorCollision){
+
+                retval.dt_collision = dtVertCollision;
+                retval.contactFace_A = RectangeFace::BOTTOM;
+                retval.contactFace_B = RectangeFace::UP;
+
+            } else {
+                retval.dt_collision = dtHorCollision;
+                retval.contactFace_A = RectangeFace::RIGHT;
+                retval.contactFace_B = RectangeFace::LEFT;
+            }
+
+        }
+        // bottom left  
+        else if ( pos_A_rel_to_B_lastPosition.x < -bbA.w && pos_A_rel_to_B_lastPosition.y < -bbA.h  ){
+            
+            float distanceToVerticalColl = (-pos_A_rel_to_B_lastPosition.y) - bbA.h;
+            float distanceToHorizontalColl = (-pos_A_rel_to_B_lastPosition.x) - bbA.w;
+
+            float dtVertCollision = distanceToVerticalColl / vel_A_rel_to_B.y;
+            float dtHorCollision = distanceToHorizontalColl / vel_A_rel_to_B.x;
+
+            if (dtVertCollision < dtHorCollision){
+
+                retval.dt_collision = dtVertCollision;
+                retval.contactFace_A = RectangeFace::UP;
+                retval.contactFace_B = RectangeFace::BOTTOM;
+
+            } else {
+                retval.dt_collision = dtHorCollision;
+                retval.contactFace_A = RectangeFace::RIGHT;
+                retval.contactFace_B = RectangeFace::LEFT;
+            }
+
+        }
+        // top right
+        else if ( pos_A_rel_to_B_lastPosition.x > bbB.w && pos_A_rel_to_B_lastPosition.y > bbB.h ){
+            float distanceToVerticalColl = pos_A_rel_to_B_lastPosition.y - bbB.h;
+            float distanceToHorizontalColl = pos_A_rel_to_B_lastPosition.x - bbB.w;
+
+            float dtVertCollision = distanceToVerticalColl / vel_A_rel_to_B.y;
+            float dtHorCollision = distanceToHorizontalColl / vel_A_rel_to_B.x;
+
+            if (dtVertCollision < dtHorCollision){
+
+                retval.dt_collision = dtVertCollision;
+                retval.contactFace_A = RectangeFace::BOTTOM;
+                retval.contactFace_B = RectangeFace::UP;
+
+            } else {
+                retval.dt_collision = dtHorCollision;
+                retval.contactFace_A = RectangeFace::LEFT;
+                retval.contactFace_B = RectangeFace::RIGHT;
+            }
+        // bottom right
+        } else if ( pos_A_rel_to_B_lastPosition.x > bbB.w && pos_A_rel_to_B_lastPosition.y < -bbA.h ){
+            float distanceToVerticalColl = (-pos_A_rel_to_B_lastPosition.y) - bbA.h;
+            float distanceToHorizontalColl = pos_A_rel_to_B_lastPosition.x - bbB.w;
+
+            float dtVertCollision = distanceToVerticalColl / vel_A_rel_to_B.y;
+            float dtHorCollision = distanceToHorizontalColl / vel_A_rel_to_B.x;
+
+            if (dtVertCollision < dtHorCollision){
+
+                retval.dt_collision = dtVertCollision;
+                retval.contactFace_A = RectangeFace::UP;
+                retval.contactFace_B = RectangeFace::BOTTOM;
+
+            } else {
+                retval.dt_collision = dtHorCollision;
+                retval.contactFace_A = RectangeFace::LEFT;
+                retval.contactFace_B = RectangeFace::RIGHT;
+            }
+        } else {
+            throw std::runtime_error("Invalid Collision state\n;");
+        }
+    }
+
 
     return retval;
 }
 
 
 
-void PlatformGamePhysics::resolveModel( Uint32 dt_ms ){
-
-    for (BoxPhysicsModel* box_p : objects){
-
-        std::vector<ObjectToPlatformCollisionPair> obstacles = _findObstacles(box_p);
-
-        if (obstacles.size()){
-
-            for (ObjectToPlatformCollisionPair collisionPair : obstacles){
-
-                bool nonNegligibleYVelocity = abs( box_p->_velocity.y - collisionPair.plat_p->velocity.y ) > VEL_THRESHOLD;
-                bool nonNegligibleXVelocity = abs( box_p->_velocity.x - collisionPair.plat_p->velocity.x ) > VEL_THRESHOLD;
-
-                if (box_p->FALLING){
-
-                    if (collisionPair.plat_p->ellasticCoef>0 && box_p->isBounceable && (nonNegligibleYVelocity || nonNegligibleXVelocity)){
-                        // there can be some bounce back
-                        // vertical impact
-
-                        if (collisionPair.platformBoundary->verticalLength == 0 && nonNegligibleYVelocity){
-                        
-                            box_p->box.y = collisionPair.platformBoundary->point_a.y;
-                            box_p->_velocity.y =  -collisionPair.plat_p->ellasticCoef * box_p->_velocity.y;
-                        
-                        } else if (collisionPair.platformBoundary->horizontalLength == 0 && nonNegligibleXVelocity){
-                            
-                            box_p->box.x = collisionPair.platformBoundary->point_a.x - box_p->box.w;
-                            box_p->_velocity.x = -collisionPair.plat_p->ellasticCoef * box_p->_velocity.x;
-                        
-                        }
-
-                    } else {
-
-                        box_p->snapToLine(
-                            collisionPair.platformBoundary,
-                            &(collisionPair.plat_p->velocity),
-                            collisionPair.plat_p->getOwnerId()
-                        );
-
-                    }
-
-                } else {
-                    // box is moving along a surface already.
-                    // we will not snap, only stop the movement
-                    if (collisionPair.platformBoundary->horizontalLength == 0){
-
-                        box_p->_velocity.x = 0;
-                        box_p->box.x = collisionPair.platformBoundary->normal.x > 0 ?
-                            (collisionPair.platformBoundary->point_a.x)
-                            : (collisionPair.platformBoundary->point_a.x - box_p->box.w);
-
-                    }
-                }
-            }
-        }
-
-        // resolve ground/fall
-        if (!box_p->FALLING){
-
-            StraightFloatLine *boxGround = box_p->_currentGroundLine_p;
-            if ( (box_p->box.x > (boxGround->point_a.x + boxGround->horizontalLength)) || ( (box_p->box.x + box_p->box.w) < boxGround->point_a.x  ) ){
-#if DEBUG
-                printf("Ran out of ground: box.x: %f - End of Box: %f - Beg Of Plat: %f  - End of Plat: %f\n", 
-                (box_p->box.x), (box_p->box.x + box_p->box.w), (boxGround->point_a.x), (boxGround->point_a.x + boxGround->horizontalLength) );
-#endif
-
-                box_p->FALLING = true;
-                box_p->releaseGround();
-
-            }
-        }
-    }
-}
-
-void PlatformGamePhysics::removeObject( const std::string id ){
-    for ( auto it = objects.begin(); it != objects.end(); ){
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+void WorldModel::removeObject( const std::string id ){
+    for ( auto it = actors.begin(); it != actors.end(); ){
         if ((*it)->_ownerId == id){
         //    delete * it;
-           it = objects.erase(it); 
+           it = actors.erase(it); 
         } else{
             ++it;
         }
     }
 }
-
-const float TOLERANCE = 1e-3;
-
- StraightFloatLine* PlatformGamePhysics::_getHitFace( BoxPhysicsModel* b, RectPlatformPhysicsModel* p ){
-
-    int borderIndex = 4; // a bad result...
-
-    Vec2D_Float relVel  = {
-        .x = b->_velocity.x - p->velocity.x,
-        .y = b->_velocity.y - p->velocity.y
-    };
-
-    if (abs(relVel.x) < TOLERANCE){
-        borderIndex = relVel.y > 0  ? 2 : 0;
-    } else if (abs(relVel.y) < TOLERANCE){
-        borderIndex = relVel.x > 0 ? 1 : 3;
-    } else {
-
-        // oblique collision via dot product
-        // init counters for index 0 = TOP.
-        // SPECIAL CASE . we will only detect a TOP hit
-        // if the box's feet are located over the TOP of the ºplatform (plus tolerance
-        float winnerProjection = 0;
-        if ( b->_velocity.y < 0 && p->instantBorders[0].point_a.y < (b->box.y + b->_PENETRATION_TOLERANCE )){
-            winnerProjection = relVel.calcScalarProductWith( p->instantBorders[0].normal );
-        }
-        
-        int winnerIndex = 0;
-        float candidate = 0;
-        
-        // not clear which one..
-        for (int i = 1; i < 4; i++){
-            
-            candidate = relVel.calcScalarProductWith( p->instantBorders[i].normal );
-            if (candidate < winnerProjection){
-                winnerProjection = candidate;
-                winnerIndex = i;
-            }
-        }
-
-        borderIndex =  winnerIndex;
-    }
-
-    assert(borderIndex != 4);
-
-    return &(p->instantBorders[borderIndex]);
- }

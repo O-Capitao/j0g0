@@ -27,7 +27,7 @@ namespace j0g0 {
 
         protected:
             PropConfig _config;
-            FloatRect _box;
+            SDL_FRect _box;
             SpriteSheet *_spriteSheet_p;
             ViewPort *_viewPort_p;
 

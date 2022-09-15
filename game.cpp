@@ -78,17 +78,16 @@ void Game::run(){
 
 void Game::changeState(){
 
-    if (state != nullptr && state->getEndStateRequested()){
-        nextState = GameStateEnum::STATE_PAUSE;
-    } 
+
 
     if( nextState != stateId ){
         
         switch (nextState){
-            case GameStateEnum::STATE_PAUSE:
+            case GameStateEnum::STATE_PAUSE: {
                 state = new PauseState( context,spriteSheetManager );
                 break;
-            case GameStateEnum::STATE_PLAY:
+            }
+            case GameStateEnum::STATE_PLAY: {
             
                 // delete (current) pause state 
                 bool restartRequested = state->RESTART_FLAG;
@@ -102,8 +101,21 @@ void Game::changeState(){
                 }
                 
                 state = _playState;
-                
                 break;
+            }
+            case GameStateEnum::STATE_GAME_OVER_SCREEN: {
+
+                std::string caption = "GAME OVER";
+
+                state = new TimedMessageState(
+                    context,
+                    spriteSheetManager,
+                    caption,
+                    5000
+                );
+            
+                break;
+            }
         }
 
         stateId = nextState;

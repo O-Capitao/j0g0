@@ -37,6 +37,9 @@ _viewport_p(vp)
     if (_properties.fillDirection.x != 0 || _properties.fillDirection.y!=0){
         // Alter the bounding box to include the filled area
         _model.setBoundingBox( _calculate_WorldTotalArea() );
+        const SDL_FRect &updatedBB = _model.getBoundingBox();
+
+        _model.setLastPosition( { updatedBB.x, updatedBB.y} );
     }
 
 
@@ -225,22 +228,20 @@ SDL_FRect RectPlatform::_calculate_RenderedFillArea(){
         
 
         if (_properties.fillDirection.y < 0){
+            const SDL_FRect &temp_bb = _model.getBoundingBox();
 
-            // // Fill down
-            // if ( 
-            //     _model.box.y > _viewport_p->positionInWorld.y
-            //     && _model.box.y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y
-            // ){
-            //     return {
-            //         .w = _model.box.w,
-            //         .h = _model.box.y - _viewport_p->positionInWorld.y,
-            //         .x = _model.box.x,
-            //         .y = _viewport_p->positionInWorld.y
-            //     };
-            // }
-
-            // naive approach - just pass on the full rectangle
-
+            // Fill down
+            if ( 
+                temp_bb.y > _viewport_p->positionInWorld.y
+                && temp_bb.y < _viewport_p->positionInWorld.y + _viewport_p->sizeInWorld.y
+            ){
+                return {
+                    .w = temp_bb.w,
+                    .h = temp_bb.y - _viewport_p->positionInWorld.y,
+                    .x = temp_bb.x,
+                    .y = _viewport_p->positionInWorld.y
+                };
+            }
         }
     }
 
@@ -249,7 +250,8 @@ SDL_FRect RectPlatform::_calculate_RenderedFillArea(){
 
 
 
-
+//
+// MovingRectPlatformKeyFrame
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 bool MovingRectPlatformKeyFrame::compare( const MovingRectPlatformKeyFrame &o1,  const MovingRectPlatformKeyFrame &o2){
@@ -257,6 +259,10 @@ bool MovingRectPlatformKeyFrame::compare( const MovingRectPlatformKeyFrame &o1, 
 }
 
 
+
+
+//
+// MovingRectPlatform
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 MovingRectPlatform::MovingRectPlatform(    

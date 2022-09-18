@@ -85,8 +85,8 @@ namespace j0g0 {
             PlatformModel(
                 const SDL_FRect &bounding_box,
                 const std::string &ownerId,
-                const Vec2D_Float &initialVelocity,
-                const bool &isItStatic
+                const Vec2D_Float &initialVelocity = {0,0},
+                const bool &isItStatic = true
             );
 
             ~PlatformModel();
@@ -101,6 +101,7 @@ namespace j0g0 {
             // Setters
             void setVelocity( const Vec2D_Float &_newVelocity ){ this->_velocity = _newVelocity; }
             void setBoundingBox( const SDL_FRect &newBb ){ this->_boundingBox = newBb; }
+            void setLastPosition( const Vec2D_Float &lp){ this->_lastPosition = lp; }
     };
 
 

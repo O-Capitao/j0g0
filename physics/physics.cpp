@@ -66,8 +66,8 @@ PlatformModel::PlatformModel(
     {0,0},
     ownerId,
     isItStatic,
-    true )
-{
+    true
+){
 
     #if DEBUG
         printf("PlatformModel has been built for %s\n", _ownerId.c_str());
@@ -265,7 +265,7 @@ void WorldModel::_resolveActorToPlatformInteractions(float dt_s){
 
                 // if ( p->_eligibleForUpdate){
                 
-                // find all platforms that are shown in screen
+                // TODO find all platforms that are shown in screen
                 if (true){
 
                     if ( SDL_HasIntersectionF( &(a->getBoundingBox()), &(p->getBoundingBox())) ){
